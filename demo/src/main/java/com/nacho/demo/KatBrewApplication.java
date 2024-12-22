@@ -8,10 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.nacho")
 @ConfigurationProperties("com.nacho.core.properties")
-public class KRC20BackendApplication {
+public class KatBrewApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(com.nacho.demo.KRC20BackendApplication.class, args);
+        SpringApplication.run(KatBrewApplication.class, args);
     }
 
 }

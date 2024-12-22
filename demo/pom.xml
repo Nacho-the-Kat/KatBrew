@@ -39,7 +39,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
-                    <mainClass>com.nacho.demo.KRC20BackendApplication</mainClass>
+                    <mainClass>com.nacho.demo.KatBrewApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

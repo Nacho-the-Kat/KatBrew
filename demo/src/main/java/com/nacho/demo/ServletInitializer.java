@@ -16,7 +16,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(KRC20BackendApplication.class);
+        return application.sources(KatBrewApplication.class);
     }
 
 }
