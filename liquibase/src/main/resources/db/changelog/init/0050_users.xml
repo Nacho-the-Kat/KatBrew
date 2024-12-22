@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM users WHERE username = 'crixus'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="Users">
+            <column name="username" value="crixus"/>
+            <column name="password" value="ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Users">
+                <where>
+                    username = 'crixus'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

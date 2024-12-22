@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="en">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="SPRING_SESSION_ATTRIBUTES"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="SPRING_SESSION_ATTRIBUTES">
+            <column name="SESSION_PRIMARY_ID" type="CHAR(36)"/>
+            <column name="ATTRIBUTE_NAME" type="VARCHAR(200)"/>
+            <column name="ATTRIBUTE_BYTES" type="LONGBLOB"/>
+        </createTable>
+
+        <addPrimaryKey constraintName="SPRING_SESSION_ATTRIBUTES_PK" tableName="SPRING_SESSION_ATTRIBUTES"
+                       columnNames="SESSION_PRIMARY_ID, ATTRIBUTE_NAME"/>
+        <addForeignKeyConstraint baseTableName="SPRING_SESSION_ATTRIBUTES"
+                                 baseColumnNames="SESSION_PRIMARY_ID"
+                                 constraintName="SPRING_SESSION_ATTRIBUTES_FK"
+                                 referencedTableName="SPRING_SESSION"
+                                 referencedColumnNames="PRIMARY_ID"
+                                 onDelete="CASCADE"/>
+
+        <rollback>
+            <dropPrimaryKey tableName="SPRING_SESSION_ATTRIBUTES" constraintName="SPRING_SESSION_ATTRIBUTES_PK"/>
+            <dropAllForeignKeyConstraints baseTableName="SPRING_SESSION_ATTRIBUTES"/>
+            <dropTable tableName="SPRING_SESSION_ATTRIBUTES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="en">
+        <preConditions onError="MARK_RAN">
+            <tableExists tableName="SPRING_SESSION_ATTRIBUTES"/>
+        </preConditions>
+
+        <addNotNullConstraint columnDataType="CHAR(36)" tableName="SPRING_SESSION_ATTRIBUTES" columnName="SESSION_PRIMARY_ID"/>
+        <addNotNullConstraint columnDataType="VARCHAR(200)" tableName="SPRING_SESSION_ATTRIBUTES" columnName="ATTRIBUTE_NAME"/>
+        <addNotNullConstraint columnDataType="LONGBLOB" tableName="SPRING_SESSION_ATTRIBUTES" columnName="ATTRIBUTE_BYTES"/>
+
+        <rollback>
+            <dropNotNullConstraint tableName="SPRING_SESSION_ATTRIBUTES" columnName="SESSION_PRIMARY_ID"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION_ATTRIBUTES" columnName="ATTRIBUTE_NAME"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION_ATTRIBUTES" columnName="ATTRIBUTE_BYTES"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="en">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="SPRING_SESSION"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="SPRING_SESSION">
+            <column name="PRIMARY_ID" type="CHAR(36)"/>
+            <column name="SESSION_ID" type="CHAR(36)"/>
+            <column name="CREATION_TIME" type="BIGINT"/>
+            <column name="LAST_ACCESS_TIME" type="BIGINT"/>
+            <column name="MAX_INACTIVE_INTERVAL" type="BIGINT"/>
+            <column name="EXPIRY_TIME" type="BIGINT"/>
+            <column name="PRINCIPAL_NAME" type="VARCHAR(100)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="SPRING_SESSION"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="en">
+        <preConditions onError="MARK_RAN">
+            <tableExists tableName="SPRING_SESSION"/>
+        </preConditions>
+
+        <addPrimaryKey constraintName="SPRING_SESSION_PK" tableName="SPRING_SESSION" columnNames="PRIMARY_ID"/>
+        <addNotNullConstraint columnDataType="CHAR(36)" tableName="SPRING_SESSION" columnName="PRIMARY_ID"/>
+        <addNotNullConstraint columnDataType="CHAR(36)" tableName="SPRING_SESSION" columnName="SESSION_ID"/>
+        <addNotNullConstraint columnDataType="BIGINT" tableName="SPRING_SESSION" columnName="CREATION_TIME"/>
+        <addNotNullConstraint columnDataType="BIGINT" tableName="SPRING_SESSION" columnName="LAST_ACCESS_TIME"/>
+        <addNotNullConstraint columnDataType="BIGINT" tableName="SPRING_SESSION" columnName="MAX_INACTIVE_INTERVAL"/>
+        <addNotNullConstraint columnDataType="BIGINT" tableName="SPRING_SESSION" columnName="EXPIRY_TIME"/>
+
+        <rollback>
+            <dropPrimaryKey tableName="SPRING_SESSION" constraintName="SPRING_SESSION_PK"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="PRIMARY_ID"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="SESSION_ID"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="CREATION_TIME"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="LAST_ACCESS_TIME"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="MAX_INACTIVE_INTERVAL"/>
+            <dropNotNullConstraint tableName="SPRING_SESSION" columnName="EXPIRY_TIME"/>
+        </rollback>
+
+    </changeSet>
+
+    <changeSet id="3" author="en">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <indexExists tableName="SPRING_SESSION" columnNames="SESSION_ID" indexName="SPRING_SESSION_IX1"/>
+                <indexExists tableName="SPRING_SESSION" columnNames="EXPIRY_TIME" indexName="SPRING_SESSION_IX2"/>
+                <indexExists tableName="SPRING_SESSION" columnNames="PRINCIPAL_NAME" indexName="SPRING_SESSION_IX3"/>
+            </not>
+        </preConditions>
+
+        <createIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX1" unique="true">
+            <column name="SESSION_ID"/>
+        </createIndex>
+        <createIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX2">
+            <column name="EXPIRY_TIME"/>
+        </createIndex>
+        <createIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX3">
+            <column name="PRINCIPAL_NAME"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX1"/>
+            <dropIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX2"/>
+            <dropIndex tableName="SPRING_SESSION" indexName="SPRING_SESSION_IX3"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
