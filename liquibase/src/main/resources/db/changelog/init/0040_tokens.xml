@@ -16,12 +16,18 @@
             <column type="INT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_TOKENS" nullable="false"/>
             </column>
-            <column type="VARCHAR(255)" name="username">
-                <constraints nullable="false"/>
+            <column type="VARCHAR(255)" name="tick">
+                <constraints nullable="false" unique="true"/>
             </column>
-            <column type="VARCHAR(255)" name="password">
-                <constraints nullable="false"/>
-            </column>
+            <column type="bigint" name="max"/>
+            <column type="bigint" name="lim"/>
+            <column type="bigint" name="pre"/>
+            <column type="bigint" name="mts_add"/>
+            <column type="int" name="holder_total"/>
+            <column type="int" name="dec"/>
+            <column type="bigint" name="minted"/>
+            <column type="VARCHAR(10)" name="state"/>
+            <column type="VARCHAR(255)" name="logo"/>
         </createTable>
 
         <rollback>
