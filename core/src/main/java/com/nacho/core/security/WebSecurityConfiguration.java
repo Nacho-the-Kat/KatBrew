@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 public class WebSecurityConfiguration {
 
     private final CustomUsernamePasswordAuthenticationManager customUsernamePasswordAuthenticationManager;
+//    private final CorsConfig corsConfig;
 
     @Bean
     public ServletContextInitializer csrfOverwrite() {
@@ -41,7 +42,6 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authenticationManager(customUsernamePasswordAuthenticationManager)
