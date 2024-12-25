@@ -5,7 +5,6 @@ package com.nacho.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 
 /**
@@ -13,6 +12,16 @@ import java.time.LocalDateTime;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public interface IToken extends Serializable {
+
+    /**
+     * Setter for <code>public.Token.id</code>.
+     */
+    public void setId(Integer value);
+
+    /**
+     * Getter for <code>public.Token.id</code>.
+     */
+    public Integer getId();
 
     /**
      * Setter for <code>public.Token.tick</code>.
@@ -27,82 +36,72 @@ public interface IToken extends Serializable {
     /**
      * Setter for <code>public.Token.max</code>.
      */
-    public void setMax(String value);
+    public void setMax(Long value);
 
     /**
      * Getter for <code>public.Token.max</code>.
      */
-    public String getMax();
+    public Long getMax();
 
     /**
      * Setter for <code>public.Token.lim</code>.
      */
-    public void setLim(String value);
+    public void setLim(Long value);
 
     /**
      * Getter for <code>public.Token.lim</code>.
      */
-    public String getLim();
+    public Long getLim();
 
     /**
      * Setter for <code>public.Token.pre</code>.
      */
-    public void setPre(String value);
+    public void setPre(Long value);
 
     /**
      * Getter for <code>public.Token.pre</code>.
      */
-    public String getPre();
+    public Long getPre();
 
     /**
-     * Setter for <code>public.Token.to</code>.
+     * Setter for <code>public.Token.mts_add</code>.
      */
-    public void setTo(String value);
+    public void setMtsAdd(Long value);
 
     /**
-     * Getter for <code>public.Token.to</code>.
+     * Getter for <code>public.Token.mts_add</code>.
      */
-    public String getTo();
+    public Long getMtsAdd();
+
+    /**
+     * Setter for <code>public.Token.holder_total</code>.
+     */
+    public void setHolderTotal(Integer value);
+
+    /**
+     * Getter for <code>public.Token.holder_total</code>.
+     */
+    public Integer getHolderTotal();
 
     /**
      * Setter for <code>public.Token.dec</code>.
      */
-    public void setDec(String value);
+    public void setDec(Integer value);
 
     /**
      * Getter for <code>public.Token.dec</code>.
      */
-    public String getDec();
+    public Integer getDec();
 
     /**
      * Setter for <code>public.Token.minted</code>.
      */
-    public void setMinted(String value);
+    public void setMinted(Long value);
 
     /**
      * Getter for <code>public.Token.minted</code>.
      */
-    public String getMinted();
-
-    /**
-     * Setter for <code>public.Token.opScoreAdd</code>.
-     */
-    public void setOpscoreadd(String value);
-
-    /**
-     * Getter for <code>public.Token.opScoreAdd</code>.
-     */
-    public String getOpscoreadd();
-
-    /**
-     * Setter for <code>public.Token.opScoreMod</code>.
-     */
-    public void setOpscoremod(String value);
-
-    /**
-     * Getter for <code>public.Token.opScoreMod</code>.
-     */
-    public String getOpscoremod();
+    public Long getMinted();
 
     /**
      * Setter for <code>public.Token.state</code>.
@@ -113,66 +112,6 @@ public interface IToken extends Serializable {
      * Getter for <code>public.Token.state</code>.
      */
     public String getState();
-
-    /**
-     * Setter for <code>public.Token.hashRev</code>.
-     */
-    public void setHashrev(String value);
-
-    /**
-     * Getter for <code>public.Token.hashRev</code>.
-     */
-    public String getHashrev();
-
-    /**
-     * Setter for <code>public.Token.mtsAdd</code>.
-     */
-    public void setMtsadd(String value);
-
-    /**
-     * Getter for <code>public.Token.mtsAdd</code>.
-     */
-    public String getMtsadd();
-
-    /**
-     * Setter for <code>public.Token.holderTotal</code>.
-     */
-    public void setHoldertotal(Integer value);
-
-    /**
-     * Getter for <code>public.Token.holderTotal</code>.
-     */
-    public Integer getHoldertotal();
-
-    /**
-     * Setter for <code>public.Token.transferTotal</code>.
-     */
-    public void setTransfertotal(Integer value);
-
-    /**
-     * Getter for <code>public.Token.transferTotal</code>.
-     */
-    public Integer getTransfertotal();
-
-    /**
-     * Setter for <code>public.Token.mintTotal</code>.
-     */
-    public void setMinttotal(Integer value);
-
-    /**
-     * Getter for <code>public.Token.mintTotal</code>.
-     */
-    public Integer getMinttotal();
-
-    /**
-     * Setter for <code>public.Token.lastUpdated</code>.
-     */
-    public void setLastupdated(LocalDateTime value);
-
-    /**
-     * Getter for <code>public.Token.lastUpdated</code>.
-     */
-    public LocalDateTime getLastupdated();
 
     /**
      * Setter for <code>public.Token.logo</code>.

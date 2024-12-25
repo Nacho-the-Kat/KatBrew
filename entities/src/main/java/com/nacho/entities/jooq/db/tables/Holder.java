@@ -4,7 +4,6 @@
 package com.nacho.entities.jooq.db.tables;
 
 
-import com.nacho.entities.jooq.db.Indexes;
 import com.nacho.entities.jooq.db.Keys;
 import com.nacho.entities.jooq.db.Public;
 import com.nacho.entities.jooq.db.tables.Balance.BalancePath;
@@ -17,7 +16,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
+import org.jooq.Identity;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -61,7 +60,7 @@ public class Holder extends TableImpl<HolderRecord> {
     /**
      * The column <code>public.Holder.id</code>.
      */
-    public final TableField<HolderRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("nextval('\"Holder_id_seq\"'::regclass)"), SQLDataType.INTEGER)), this, "");
+    public final TableField<HolderRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.Holder.address</code>.
@@ -136,13 +135,18 @@ public class Holder extends TableImpl<HolderRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.HOLDER_ADDRESS_KEY);
+    public Identity<HolderRecord, Integer> getIdentity() {
+        return (Identity<HolderRecord, Integer>) super.getIdentity();
     }
 
     @Override
     public UniqueKey<HolderRecord> getPrimaryKey() {
-        return Keys.HOLDER_PKEY;
+        return Keys.PK_HOLDER;
+    }
+
+    @Override
+    public List<UniqueKey<HolderRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.HOLDER_ADDRESS_KEY);
     }
 
     private transient BalancePath _balance;
@@ -153,7 +157,7 @@ public class Holder extends TableImpl<HolderRecord> {
      */
     public BalancePath balance() {
         if (_balance == null)
-            _balance = new BalancePath(this, null, Keys.BALANCE__BALANCE_HOLDERID_FKEY.getInverseKey());
+            _balance = new BalancePath(this, null, Keys.BALANCE__FK_BALANCE_HOLDER.getInverseKey());
 
         return _balance;
     }

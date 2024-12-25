@@ -7,23 +7,19 @@ package com.nacho.entities.jooq.db;
 import com.nacho.entities.jooq.db.tables.Announcements;
 import com.nacho.entities.jooq.db.tables.Balance;
 import com.nacho.entities.jooq.db.tables.Holder;
-import com.nacho.entities.jooq.db.tables.Lastupdate;
-import com.nacho.entities.jooq.db.tables.Pricedata;
+import com.nacho.entities.jooq.db.tables.PriceData;
 import com.nacho.entities.jooq.db.tables.Token;
-import com.nacho.entities.jooq.db.tables.Tokens;
 import com.nacho.entities.jooq.db.tables.Transaction;
 import com.nacho.entities.jooq.db.tables.Users;
-import com.nacho.entities.jooq.db.tables._PrismaMigrations;
+import com.nacho.entities.jooq.db.tables.Whitelist;
 import com.nacho.entities.jooq.db.tables.records.AnnouncementsRecord;
 import com.nacho.entities.jooq.db.tables.records.BalanceRecord;
 import com.nacho.entities.jooq.db.tables.records.HolderRecord;
-import com.nacho.entities.jooq.db.tables.records.LastupdateRecord;
-import com.nacho.entities.jooq.db.tables.records.PricedataRecord;
+import com.nacho.entities.jooq.db.tables.records.PriceDataRecord;
 import com.nacho.entities.jooq.db.tables.records.TokenRecord;
-import com.nacho.entities.jooq.db.tables.records.TokensRecord;
 import com.nacho.entities.jooq.db.tables.records.TransactionRecord;
 import com.nacho.entities.jooq.db.tables.records.UsersRecord;
-import com.nacho.entities.jooq.db.tables.records._PrismaMigrationsRecord;
+import com.nacho.entities.jooq.db.tables.records.WhitelistRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -43,23 +39,23 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<_PrismaMigrationsRecord> _PRISMA_MIGRATIONS_PKEY = Internal.createUniqueKey(_PrismaMigrations._PRISMA_MIGRATIONS, DSL.name("_prisma_migrations_pkey"), new TableField[] { _PrismaMigrations._PRISMA_MIGRATIONS.ID }, true);
-    public static final UniqueKey<AnnouncementsRecord> ANNOUNCEMENTS_PKEY = Internal.createUniqueKey(Announcements.ANNOUNCEMENTS, DSL.name("Announcements_pkey"), new TableField[] { Announcements.ANNOUNCEMENTS.ID }, true);
-    public static final UniqueKey<BalanceRecord> BALANCE_PKEY = Internal.createUniqueKey(Balance.BALANCE, DSL.name("Balance_pkey"), new TableField[] { Balance.BALANCE.ID }, true);
-    public static final UniqueKey<HolderRecord> HOLDER_PKEY = Internal.createUniqueKey(Holder.HOLDER, DSL.name("Holder_pkey"), new TableField[] { Holder.HOLDER.ID }, true);
-    public static final UniqueKey<LastupdateRecord> LASTUPDATE_PKEY = Internal.createUniqueKey(Lastupdate.LASTUPDATE, DSL.name("LastUpdate_pkey"), new TableField[] { Lastupdate.LASTUPDATE.ID }, true);
-    public static final UniqueKey<PricedataRecord> PRICEDATA_PKEY = Internal.createUniqueKey(Pricedata.PRICEDATA, DSL.name("PriceData_pkey"), new TableField[] { Pricedata.PRICEDATA.ID }, true);
-    public static final UniqueKey<TokenRecord> TOKEN_PKEY = Internal.createUniqueKey(Token.TOKEN, DSL.name("Token_pkey"), new TableField[] { Token.TOKEN.TICK }, true);
-    public static final UniqueKey<TokensRecord> PK_TOKENS = Internal.createUniqueKey(Tokens.TOKENS, DSL.name("pk_tokens"), new TableField[] { Tokens.TOKENS.ID }, true);
-    public static final UniqueKey<TransactionRecord> TRANSACTION_PKEY = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("Transaction_pkey"), new TableField[] { Transaction.TRANSACTION.HASHREV }, true);
+    public static final UniqueKey<AnnouncementsRecord> PK_ANNOUNCEMENTS = Internal.createUniqueKey(Announcements.ANNOUNCEMENTS, DSL.name("pk_announcements"), new TableField[] { Announcements.ANNOUNCEMENTS.ID }, true);
+    public static final UniqueKey<BalanceRecord> PK_BALANCE = Internal.createUniqueKey(Balance.BALANCE, DSL.name("pk_balance"), new TableField[] { Balance.BALANCE.ID }, true);
+    public static final UniqueKey<HolderRecord> HOLDER_ADDRESS_KEY = Internal.createUniqueKey(Holder.HOLDER, DSL.name("Holder_address_key"), new TableField[] { Holder.HOLDER.ADDRESS }, true);
+    public static final UniqueKey<HolderRecord> PK_HOLDER = Internal.createUniqueKey(Holder.HOLDER, DSL.name("pk_holder"), new TableField[] { Holder.HOLDER.ID }, true);
+    public static final UniqueKey<PriceDataRecord> PK_PRICE_DATA = Internal.createUniqueKey(PriceData.PRICE_DATA, DSL.name("PK_Price_Data"), new TableField[] { PriceData.PRICE_DATA.ID }, true);
+    public static final UniqueKey<TokenRecord> PK_TOKEN = Internal.createUniqueKey(Token.TOKEN, DSL.name("pk_token"), new TableField[] { Token.TOKEN.ID }, true);
+    public static final UniqueKey<TokenRecord> TOKEN_TICK_KEY = Internal.createUniqueKey(Token.TOKEN, DSL.name("Token_tick_key"), new TableField[] { Token.TOKEN.TICK }, true);
+    public static final UniqueKey<TransactionRecord> PK_TRANSACTION = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("pk_transaction"), new TableField[] { Transaction.TRANSACTION.ID }, true);
     public static final UniqueKey<UsersRecord> PK_USERS = Internal.createUniqueKey(Users.USERS, DSL.name("pk_users"), new TableField[] { Users.USERS.ID }, true);
+    public static final UniqueKey<WhitelistRecord> PK_WHITELIST = Internal.createUniqueKey(Whitelist.WHITELIST, DSL.name("pk_whitelist"), new TableField[] { Whitelist.WHITELIST.ID }, true);
+    public static final UniqueKey<WhitelistRecord> WHITELIST_ADDRESS_KEY = Internal.createUniqueKey(Whitelist.WHITELIST, DSL.name("Whitelist_address_key"), new TableField[] { Whitelist.WHITELIST.ADDRESS }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<BalanceRecord, HolderRecord> BALANCE__BALANCE_HOLDERID_FKEY = Internal.createForeignKey(Balance.BALANCE, DSL.name("Balance_holderId_fkey"), new TableField[] { Balance.BALANCE.HOLDERID }, Keys.HOLDER_PKEY, new TableField[] { Holder.HOLDER.ID }, true);
-    public static final ForeignKey<BalanceRecord, TokenRecord> BALANCE__BALANCE_TOKENTICK_FKEY = Internal.createForeignKey(Balance.BALANCE, DSL.name("Balance_tokenTick_fkey"), new TableField[] { Balance.BALANCE.TOKENTICK }, Keys.TOKEN_PKEY, new TableField[] { Token.TOKEN.TICK }, true);
-    public static final ForeignKey<PricedataRecord, TokenRecord> PRICEDATA__PRICEDATA_TICK_FKEY = Internal.createForeignKey(Pricedata.PRICEDATA, DSL.name("PriceData_tick_fkey"), new TableField[] { Pricedata.PRICEDATA.TICK }, Keys.TOKEN_PKEY, new TableField[] { Token.TOKEN.TICK }, true);
-    public static final ForeignKey<TransactionRecord, TokenRecord> TRANSACTION__TRANSACTION_TICK_FKEY = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("Transaction_tick_fkey"), new TableField[] { Transaction.TRANSACTION.TICK }, Keys.TOKEN_PKEY, new TableField[] { Token.TOKEN.TICK }, true);
+    public static final ForeignKey<BalanceRecord, HolderRecord> BALANCE__FK_BALANCE_HOLDER = Internal.createForeignKey(Balance.BALANCE, DSL.name("fk_balance_holder"), new TableField[] { Balance.BALANCE.HOLDER_ID }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
+    public static final ForeignKey<PriceDataRecord, TokenRecord> PRICE_DATA__FK_PRICE_DATA_TOKEN = Internal.createForeignKey(PriceData.PRICE_DATA, DSL.name("fk_price_data_token"), new TableField[] { PriceData.PRICE_DATA.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
+    public static final ForeignKey<TransactionRecord, TokenRecord> TRANSACTION__FK_TRANSACTION_TOKEN = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transaction_token"), new TableField[] { Transaction.TRANSACTION.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
 }

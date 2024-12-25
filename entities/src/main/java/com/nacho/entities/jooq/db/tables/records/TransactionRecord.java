@@ -7,6 +7,8 @@ package com.nacho.entities.jooq.db.tables.records;
 import com.nacho.entities.jooq.db.tables.Transaction;
 import com.nacho.entities.jooq.db.tables.interfaces.ITransaction;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -20,19 +22,51 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.Transaction.hashRev</code>.
+     * Setter for <code>public.Transaction.id</code>.
      */
     @Override
-    public void setHashrev(String value) {
+    public void setId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.hashRev</code>.
+     * Getter for <code>public.Transaction.id</code>.
+     */
+    @Override
+    public Long getId() {
+        return (Long) get(0);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.fk_token</code>.
+     */
+    @Override
+    public void setFkToken(Integer value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.fk_token</code>.
+     */
+    @Override
+    public Integer getFkToken() {
+        return (Integer) get(1);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.hashrev</code>.
+     */
+    @Override
+    public void setHashrev(String value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.hashrev</code>.
      */
     @Override
     public String getHashrev() {
-        return (String) get(0);
+        return (String) get(2);
     }
 
     /**
@@ -40,7 +74,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setP(String value) {
-        set(1, value);
+        set(3, value);
     }
 
     /**
@@ -48,7 +82,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getP() {
-        return (String) get(1);
+        return (String) get(3);
     }
 
     /**
@@ -56,7 +90,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setOp(String value) {
-        set(2, value);
+        set(4, value);
     }
 
     /**
@@ -64,23 +98,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getOp() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.Transaction.tick</code>.
-     */
-    @Override
-    public void setTick(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.Transaction.tick</code>.
-     */
-    @Override
-    public String getTick() {
-        return (String) get(3);
+        return (String) get(4);
     }
 
     /**
@@ -88,7 +106,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setAmt(String value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
@@ -96,7 +114,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getAmt() {
-        return (String) get(4);
+        return (String) get(5);
     }
 
     /**
@@ -104,7 +122,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setFrom(String value) {
-        set(5, value);
+        set(6, value);
     }
 
     /**
@@ -112,7 +130,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getFrom() {
-        return (String) get(5);
+        return (String) get(6);
     }
 
     /**
@@ -120,7 +138,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setTo(String value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
@@ -128,87 +146,87 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getTo() {
-        return (String) get(6);
-    }
-
-    /**
-     * Setter for <code>public.Transaction.opScore</code>.
-     */
-    @Override
-    public void setOpscore(String value) {
-        set(7, value);
-    }
-
-    /**
-     * Getter for <code>public.Transaction.opScore</code>.
-     */
-    @Override
-    public String getOpscore() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>public.Transaction.feeRev</code>.
+     * Setter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public void setFeerev(String value) {
+    public void setOpScore(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.feeRev</code>.
+     * Getter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public String getFeerev() {
+    public String getOpScore() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>public.Transaction.txAccept</code>.
+     * Setter for <code>public.Transaction.fee_rev</code>.
      */
     @Override
-    public void setTxaccept(String value) {
+    public void setFeeRev(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.txAccept</code>.
+     * Getter for <code>public.Transaction.fee_rev</code>.
      */
     @Override
-    public String getTxaccept() {
+    public String getFeeRev() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>public.Transaction.opAccept</code>.
+     * Setter for <code>public.Transaction.tx_accept</code>.
      */
     @Override
-    public void setOpaccept(String value) {
+    public void setTxAccept(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.opAccept</code>.
+     * Getter for <code>public.Transaction.tx_accept</code>.
      */
     @Override
-    public String getOpaccept() {
+    public String getTxAccept() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>public.Transaction.opError</code>.
+     * Setter for <code>public.Transaction.op_accept</code>.
      */
     @Override
-    public void setOperror(String value) {
+    public void setOpAccept(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.opError</code>.
+     * Getter for <code>public.Transaction.op_accept</code>.
      */
     @Override
-    public String getOperror() {
+    public String getOpAccept() {
         return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.op_error</code>.
+     */
+    @Override
+    public void setOpError(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.op_error</code>.
+     */
+    @Override
+    public String getOpError() {
+        return (String) get(12);
     }
 
     /**
@@ -216,7 +234,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public void setCheckpoint(String value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
@@ -224,103 +242,119 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      */
     @Override
     public String getCheckpoint() {
-        return (String) get(12);
-    }
-
-    /**
-     * Setter for <code>public.Transaction.mtsAdd</code>.
-     */
-    @Override
-    public void setMtsadd(String value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>public.Transaction.mtsAdd</code>.
-     */
-    @Override
-    public String getMtsadd() {
         return (String) get(13);
-    }
-
-    /**
-     * Setter for <code>public.Transaction.mtsMod</code>.
-     */
-    @Override
-    public void setMtsmod(String value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>public.Transaction.mtsMod</code>.
-     */
-    @Override
-    public String getMtsmod() {
-        return (String) get(14);
     }
 
     /**
      * Setter for <code>public.Transaction.max</code>.
      */
     @Override
-    public void setMax(String value) {
-        set(15, value);
+    public void setMax(Long value) {
+        set(14, value);
     }
 
     /**
      * Getter for <code>public.Transaction.max</code>.
      */
     @Override
-    public String getMax() {
-        return (String) get(15);
+    public Long getMax() {
+        return (Long) get(14);
     }
 
     /**
      * Setter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public void setLim(String value) {
-        set(16, value);
+    public void setLim(Long value) {
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public String getLim() {
-        return (String) get(16);
+    public Long getLim() {
+        return (Long) get(15);
     }
 
     /**
      * Setter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public void setPre(String value) {
-        set(17, value);
+    public void setPre(Long value) {
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public String getPre() {
-        return (String) get(17);
+    public Long getPre() {
+        return (Long) get(16);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.mts_add</code>.
+     */
+    @Override
+    public void setMtsAdd(Long value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.mts_add</code>.
+     */
+    @Override
+    public Long getMtsAdd() {
+        return (Long) get(17);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.mts_mod</code>.
+     */
+    @Override
+    public void setMtsMod(Long value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.mts_mod</code>.
+     */
+    @Override
+    public Long getMtsMod() {
+        return (Long) get(18);
     }
 
     /**
      * Setter for <code>public.Transaction.dec</code>.
      */
     @Override
-    public void setDec(String value) {
-        set(18, value);
+    public void setDec(Integer value) {
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.Transaction.dec</code>.
      */
     @Override
-    public String getDec() {
-        return (String) get(18);
+    public Integer getDec() {
+        return (Integer) get(19);
+    }
+
+    /**
+     * Setter for <code>public.Transaction.timestamp</code>.
+     */
+    @Override
+    public void setTimestamp(LocalDateTime value) {
+        set(20, value);
+    }
+
+    /**
+     * Getter for <code>public.Transaction.timestamp</code>.
+     */
+    @Override
+    public LocalDateTime getTimestamp() {
+        return (LocalDateTime) get(20);
     }
 
     // -------------------------------------------------------------------------
@@ -328,7 +362,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<String> key() {
+    public Record1<Long> key() {
         return (Record1) super.key();
     }
 
@@ -338,25 +372,27 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
 
     @Override
     public void from(ITransaction from) {
+        setId(from.getId());
+        setFkToken(from.getFkToken());
         setHashrev(from.getHashrev());
         setP(from.getP());
         setOp(from.getOp());
-        setTick(from.getTick());
         setAmt(from.getAmt());
         setFrom(from.getFrom());
         setTo(from.getTo());
-        setOpscore(from.getOpscore());
-        setFeerev(from.getFeerev());
-        setTxaccept(from.getTxaccept());
-        setOpaccept(from.getOpaccept());
-        setOperror(from.getOperror());
+        setOpScore(from.getOpScore());
+        setFeeRev(from.getFeeRev());
+        setTxAccept(from.getTxAccept());
+        setOpAccept(from.getOpAccept());
+        setOpError(from.getOpError());
         setCheckpoint(from.getCheckpoint());
-        setMtsadd(from.getMtsadd());
-        setMtsmod(from.getMtsmod());
         setMax(from.getMax());
         setLim(from.getLim());
         setPre(from.getPre());
+        setMtsAdd(from.getMtsAdd());
+        setMtsMod(from.getMtsMod());
         setDec(from.getDec());
+        setTimestamp(from.getTimestamp());
         resetChangedOnNotNull();
     }
 
@@ -380,28 +416,30 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(String hashrev, String p, String op, String tick, String amt, String from, String to, String opscore, String feerev, String txaccept, String opaccept, String operror, String checkpoint, String mtsadd, String mtsmod, String max, String lim, String pre, String dec) {
+    public TransactionRecord(Long id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, Long max, Long lim, Long pre, Long mtsAdd, Long mtsMod, Integer dec, LocalDateTime timestamp) {
         super(Transaction.TRANSACTION);
 
+        setId(id);
+        setFkToken(fkToken);
         setHashrev(hashrev);
         setP(p);
         setOp(op);
-        setTick(tick);
         setAmt(amt);
         setFrom(from);
         setTo(to);
-        setOpscore(opscore);
-        setFeerev(feerev);
-        setTxaccept(txaccept);
-        setOpaccept(opaccept);
-        setOperror(operror);
+        setOpScore(opScore);
+        setFeeRev(feeRev);
+        setTxAccept(txAccept);
+        setOpAccept(opAccept);
+        setOpError(opError);
         setCheckpoint(checkpoint);
-        setMtsadd(mtsadd);
-        setMtsmod(mtsmod);
         setMax(max);
         setLim(lim);
         setPre(pre);
+        setMtsAdd(mtsAdd);
+        setMtsMod(mtsMod);
         setDec(dec);
+        setTimestamp(timestamp);
         resetChangedOnNotNull();
     }
 
@@ -412,25 +450,27 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         super(Transaction.TRANSACTION);
 
         if (value != null) {
+            setId(value.getId());
+            setFkToken(value.getFkToken());
             setHashrev(value.getHashrev());
             setP(value.getP());
             setOp(value.getOp());
-            setTick(value.getTick());
             setAmt(value.getAmt());
             setFrom(value.getFrom());
             setTo(value.getTo());
-            setOpscore(value.getOpscore());
-            setFeerev(value.getFeerev());
-            setTxaccept(value.getTxaccept());
-            setOpaccept(value.getOpaccept());
-            setOperror(value.getOperror());
+            setOpScore(value.getOpScore());
+            setFeeRev(value.getFeeRev());
+            setTxAccept(value.getTxAccept());
+            setOpAccept(value.getOpAccept());
+            setOpError(value.getOpError());
             setCheckpoint(value.getCheckpoint());
-            setMtsadd(value.getMtsadd());
-            setMtsmod(value.getMtsmod());
             setMax(value.getMax());
             setLim(value.getLim());
             setPre(value.getPre());
+            setMtsAdd(value.getMtsAdd());
+            setMtsMod(value.getMtsMod());
             setDec(value.getDec());
+            setTimestamp(value.getTimestamp());
             resetChangedOnNotNull();
         }
     }

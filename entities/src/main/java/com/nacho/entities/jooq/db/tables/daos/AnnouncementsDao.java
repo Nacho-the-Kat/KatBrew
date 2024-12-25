@@ -100,18 +100,18 @@ public class AnnouncementsDao extends DAOImpl<AnnouncementsRecord, com.nacho.ent
     }
 
     /**
-     * Fetch records that have <code>imageUrl BETWEEN lowerInclusive AND
+     * Fetch records that have <code>image_url BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Announcements> fetchRangeOfImageurl(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Announcements.ANNOUNCEMENTS.IMAGEURL, lowerInclusive, upperInclusive);
+    public List<com.nacho.entities.jooq.db.tables.pojos.Announcements> fetchRangeOfImageUrl(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Announcements.ANNOUNCEMENTS.IMAGE_URL, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>imageUrl IN (values)</code>
+     * Fetch records that have <code>image_url IN (values)</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Announcements> fetchByImageurl(String... values) {
-        return fetch(Announcements.ANNOUNCEMENTS.IMAGEURL, values);
+    public List<com.nacho.entities.jooq.db.tables.pojos.Announcements> fetchByImageUrl(String... values) {
+        return fetch(Announcements.ANNOUNCEMENTS.IMAGE_URL, values);
     }
 
     /**

@@ -8,26 +8,25 @@
     <changeSet id="1" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <not>
-                <tableExists tableName="Announcements"/>
+                <tableExists tableName="Balance"/>
             </not>
         </preConditions>
 
-        <createTable tableName="Announcements">
+        <createTable tableName="Balance">
             <column type="INT" name="id" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="PK_ANNOUNCEMENTS" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_BALANCE" nullable="false"/>
             </column>
-            <column type="text" name="title">
+            <column type="int" name="holder_id">
                 <constraints nullable="false"/>
             </column>
-            <column type="text" name="text"/>
-            <column type="text" name="image_url"/>
-            <column type="datetime" name="timestamp" defaultValue="NOW()">
-                <constraints nullable="false"/>
-            </column>
+            <column type="bigint" name="balance"/>
+            <column type="text" name="tick" />
         </createTable>
+        <addForeignKeyConstraint baseTableName="Balance" baseColumnNames="holder_id" constraintName="FK_BALANCE_HOLDER" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
 
         <rollback>
-            <dropTable tableName="Announcements"/>
+            <dropTable tableName="Balance"/>
         </rollback>
     </changeSet>
 

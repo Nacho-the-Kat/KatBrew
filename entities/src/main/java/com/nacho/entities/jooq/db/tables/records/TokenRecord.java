@@ -7,8 +7,6 @@ package com.nacho.entities.jooq.db.tables.records;
 import com.nacho.entities.jooq.db.tables.Token;
 import com.nacho.entities.jooq.db.tables.interfaces.IToken;
 
-import java.time.LocalDateTime;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -22,11 +20,27 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     private static final long serialVersionUID = 1L;
 
     /**
+     * Setter for <code>public.Token.id</code>.
+     */
+    @Override
+    public void setId(Integer value) {
+        set(0, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.id</code>.
+     */
+    @Override
+    public Integer getId() {
+        return (Integer) get(0);
+    }
+
+    /**
      * Setter for <code>public.Token.tick</code>.
      */
     @Override
     public void setTick(String value) {
-        set(0, value);
+        set(1, value);
     }
 
     /**
@@ -34,135 +48,119 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public String getTick() {
-        return (String) get(0);
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>public.Token.max</code>.
      */
     @Override
-    public void setMax(String value) {
-        set(1, value);
+    public void setMax(Long value) {
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.Token.max</code>.
      */
     @Override
-    public String getMax() {
-        return (String) get(1);
+    public Long getMax() {
+        return (Long) get(2);
     }
 
     /**
      * Setter for <code>public.Token.lim</code>.
      */
     @Override
-    public void setLim(String value) {
-        set(2, value);
+    public void setLim(Long value) {
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.Token.lim</code>.
      */
     @Override
-    public String getLim() {
-        return (String) get(2);
+    public Long getLim() {
+        return (Long) get(3);
     }
 
     /**
      * Setter for <code>public.Token.pre</code>.
      */
     @Override
-    public void setPre(String value) {
-        set(3, value);
+    public void setPre(Long value) {
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.Token.pre</code>.
      */
     @Override
-    public String getPre() {
-        return (String) get(3);
+    public Long getPre() {
+        return (Long) get(4);
     }
 
     /**
-     * Setter for <code>public.Token.to</code>.
+     * Setter for <code>public.Token.mts_add</code>.
      */
     @Override
-    public void setTo(String value) {
-        set(4, value);
+    public void setMtsAdd(Long value) {
+        set(5, value);
     }
 
     /**
-     * Getter for <code>public.Token.to</code>.
+     * Getter for <code>public.Token.mts_add</code>.
      */
     @Override
-    public String getTo() {
-        return (String) get(4);
+    public Long getMtsAdd() {
+        return (Long) get(5);
+    }
+
+    /**
+     * Setter for <code>public.Token.holder_total</code>.
+     */
+    @Override
+    public void setHolderTotal(Integer value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.holder_total</code>.
+     */
+    @Override
+    public Integer getHolderTotal() {
+        return (Integer) get(6);
     }
 
     /**
      * Setter for <code>public.Token.dec</code>.
      */
     @Override
-    public void setDec(String value) {
-        set(5, value);
+    public void setDec(Integer value) {
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.Token.dec</code>.
      */
     @Override
-    public String getDec() {
-        return (String) get(5);
+    public Integer getDec() {
+        return (Integer) get(7);
     }
 
     /**
      * Setter for <code>public.Token.minted</code>.
      */
     @Override
-    public void setMinted(String value) {
-        set(6, value);
+    public void setMinted(Long value) {
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.Token.minted</code>.
      */
     @Override
-    public String getMinted() {
-        return (String) get(6);
-    }
-
-    /**
-     * Setter for <code>public.Token.opScoreAdd</code>.
-     */
-    @Override
-    public void setOpscoreadd(String value) {
-        set(7, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.opScoreAdd</code>.
-     */
-    @Override
-    public String getOpscoreadd() {
-        return (String) get(7);
-    }
-
-    /**
-     * Setter for <code>public.Token.opScoreMod</code>.
-     */
-    @Override
-    public void setOpscoremod(String value) {
-        set(8, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.opScoreMod</code>.
-     */
-    @Override
-    public String getOpscoremod() {
-        return (String) get(8);
+    public Long getMinted() {
+        return (Long) get(8);
     }
 
     /**
@@ -182,107 +180,11 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     }
 
     /**
-     * Setter for <code>public.Token.hashRev</code>.
-     */
-    @Override
-    public void setHashrev(String value) {
-        set(10, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.hashRev</code>.
-     */
-    @Override
-    public String getHashrev() {
-        return (String) get(10);
-    }
-
-    /**
-     * Setter for <code>public.Token.mtsAdd</code>.
-     */
-    @Override
-    public void setMtsadd(String value) {
-        set(11, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.mtsAdd</code>.
-     */
-    @Override
-    public String getMtsadd() {
-        return (String) get(11);
-    }
-
-    /**
-     * Setter for <code>public.Token.holderTotal</code>.
-     */
-    @Override
-    public void setHoldertotal(Integer value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.holderTotal</code>.
-     */
-    @Override
-    public Integer getHoldertotal() {
-        return (Integer) get(12);
-    }
-
-    /**
-     * Setter for <code>public.Token.transferTotal</code>.
-     */
-    @Override
-    public void setTransfertotal(Integer value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.transferTotal</code>.
-     */
-    @Override
-    public Integer getTransfertotal() {
-        return (Integer) get(13);
-    }
-
-    /**
-     * Setter for <code>public.Token.mintTotal</code>.
-     */
-    @Override
-    public void setMinttotal(Integer value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.mintTotal</code>.
-     */
-    @Override
-    public Integer getMinttotal() {
-        return (Integer) get(14);
-    }
-
-    /**
-     * Setter for <code>public.Token.lastUpdated</code>.
-     */
-    @Override
-    public void setLastupdated(LocalDateTime value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.lastUpdated</code>.
-     */
-    @Override
-    public LocalDateTime getLastupdated() {
-        return (LocalDateTime) get(15);
-    }
-
-    /**
      * Setter for <code>public.Token.logo</code>.
      */
     @Override
     public void setLogo(String value) {
-        set(16, value);
+        set(10, value);
     }
 
     /**
@@ -290,7 +192,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public String getLogo() {
-        return (String) get(16);
+        return (String) get(10);
     }
 
     // -------------------------------------------------------------------------
@@ -298,7 +200,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<String> key() {
+    public Record1<Integer> key() {
         return (Record1) super.key();
     }
 
@@ -308,22 +210,16 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
 
     @Override
     public void from(IToken from) {
+        setId(from.getId());
         setTick(from.getTick());
         setMax(from.getMax());
         setLim(from.getLim());
         setPre(from.getPre());
-        setTo(from.getTo());
+        setMtsAdd(from.getMtsAdd());
+        setHolderTotal(from.getHolderTotal());
         setDec(from.getDec());
         setMinted(from.getMinted());
-        setOpscoreadd(from.getOpscoreadd());
-        setOpscoremod(from.getOpscoremod());
         setState(from.getState());
-        setHashrev(from.getHashrev());
-        setMtsadd(from.getMtsadd());
-        setHoldertotal(from.getHoldertotal());
-        setTransfertotal(from.getTransfertotal());
-        setMinttotal(from.getMinttotal());
-        setLastupdated(from.getLastupdated());
         setLogo(from.getLogo());
         resetChangedOnNotNull();
     }
@@ -348,25 +244,19 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     /**
      * Create a detached, initialised TokenRecord
      */
-    public TokenRecord(String tick, String max, String lim, String pre, String to, String dec, String minted, String opscoreadd, String opscoremod, String state, String hashrev, String mtsadd, Integer holdertotal, Integer transfertotal, Integer minttotal, LocalDateTime lastupdated, String logo) {
+    public TokenRecord(Integer id, String tick, Long max, Long lim, Long pre, Long mtsAdd, Integer holderTotal, Integer dec, Long minted, String state, String logo) {
         super(Token.TOKEN);
 
+        setId(id);
         setTick(tick);
         setMax(max);
         setLim(lim);
         setPre(pre);
-        setTo(to);
+        setMtsAdd(mtsAdd);
+        setHolderTotal(holderTotal);
         setDec(dec);
         setMinted(minted);
-        setOpscoreadd(opscoreadd);
-        setOpscoremod(opscoremod);
         setState(state);
-        setHashrev(hashrev);
-        setMtsadd(mtsadd);
-        setHoldertotal(holdertotal);
-        setTransfertotal(transfertotal);
-        setMinttotal(minttotal);
-        setLastupdated(lastupdated);
         setLogo(logo);
         resetChangedOnNotNull();
     }
@@ -378,22 +268,16 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         super(Token.TOKEN);
 
         if (value != null) {
+            setId(value.getId());
             setTick(value.getTick());
             setMax(value.getMax());
             setLim(value.getLim());
             setPre(value.getPre());
-            setTo(value.getTo());
+            setMtsAdd(value.getMtsAdd());
+            setHolderTotal(value.getHolderTotal());
             setDec(value.getDec());
             setMinted(value.getMinted());
-            setOpscoreadd(value.getOpscoreadd());
-            setOpscoremod(value.getOpscoremod());
             setState(value.getState());
-            setHashrev(value.getHashrev());
-            setMtsadd(value.getMtsadd());
-            setHoldertotal(value.getHoldertotal());
-            setTransfertotal(value.getTransfertotal());
-            setMinttotal(value.getMinttotal());
-            setLastupdated(value.getLastupdated());
             setLogo(value.getLogo());
             resetChangedOnNotNull();
         }

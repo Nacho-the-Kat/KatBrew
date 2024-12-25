@@ -8,15 +8,15 @@
     <changeSet id="1" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <not>
-                <tableExists tableName="Tokens"/>
+                <tableExists tableName="Token"/>
             </not>
         </preConditions>
 
-        <createTable tableName="Tokens">
+        <createTable tableName="Token">
             <column type="INT" name="id" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="PK_TOKENS" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_TOKEN" nullable="false"/>
             </column>
-            <column type="VARCHAR(255)" name="tick">
+            <column type="text" name="tick">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column type="bigint" name="max"/>
@@ -26,8 +26,8 @@
             <column type="int" name="holder_total"/>
             <column type="int" name="dec"/>
             <column type="bigint" name="minted"/>
-            <column type="VARCHAR(10)" name="state"/>
-            <column type="VARCHAR(255)" name="logo"/>
+            <column type="text" name="state"/>
+            <column type="text" name="logo"/>
         </createTable>
 
         <rollback>

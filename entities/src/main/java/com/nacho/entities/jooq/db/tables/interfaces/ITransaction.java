@@ -5,6 +5,7 @@ package com.nacho.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 
 /**
@@ -14,12 +15,32 @@ import java.io.Serializable;
 public interface ITransaction extends Serializable {
 
     /**
-     * Setter for <code>public.Transaction.hashRev</code>.
+     * Setter for <code>public.Transaction.id</code>.
+     */
+    public void setId(Long value);
+
+    /**
+     * Getter for <code>public.Transaction.id</code>.
+     */
+    public Long getId();
+
+    /**
+     * Setter for <code>public.Transaction.fk_token</code>.
+     */
+    public void setFkToken(Integer value);
+
+    /**
+     * Getter for <code>public.Transaction.fk_token</code>.
+     */
+    public Integer getFkToken();
+
+    /**
+     * Setter for <code>public.Transaction.hashrev</code>.
      */
     public void setHashrev(String value);
 
     /**
-     * Getter for <code>public.Transaction.hashRev</code>.
+     * Getter for <code>public.Transaction.hashrev</code>.
      */
     public String getHashrev();
 
@@ -42,16 +63,6 @@ public interface ITransaction extends Serializable {
      * Getter for <code>public.Transaction.op</code>.
      */
     public String getOp();
-
-    /**
-     * Setter for <code>public.Transaction.tick</code>.
-     */
-    public void setTick(String value);
-
-    /**
-     * Getter for <code>public.Transaction.tick</code>.
-     */
-    public String getTick();
 
     /**
      * Setter for <code>public.Transaction.amt</code>.
@@ -84,54 +95,54 @@ public interface ITransaction extends Serializable {
     public String getTo();
 
     /**
-     * Setter for <code>public.Transaction.opScore</code>.
+     * Setter for <code>public.Transaction.op_score</code>.
      */
-    public void setOpscore(String value);
+    public void setOpScore(String value);
 
     /**
-     * Getter for <code>public.Transaction.opScore</code>.
+     * Getter for <code>public.Transaction.op_score</code>.
      */
-    public String getOpscore();
+    public String getOpScore();
 
     /**
-     * Setter for <code>public.Transaction.feeRev</code>.
+     * Setter for <code>public.Transaction.fee_rev</code>.
      */
-    public void setFeerev(String value);
+    public void setFeeRev(String value);
 
     /**
-     * Getter for <code>public.Transaction.feeRev</code>.
+     * Getter for <code>public.Transaction.fee_rev</code>.
      */
-    public String getFeerev();
+    public String getFeeRev();
 
     /**
-     * Setter for <code>public.Transaction.txAccept</code>.
+     * Setter for <code>public.Transaction.tx_accept</code>.
      */
-    public void setTxaccept(String value);
+    public void setTxAccept(String value);
 
     /**
-     * Getter for <code>public.Transaction.txAccept</code>.
+     * Getter for <code>public.Transaction.tx_accept</code>.
      */
-    public String getTxaccept();
+    public String getTxAccept();
 
     /**
-     * Setter for <code>public.Transaction.opAccept</code>.
+     * Setter for <code>public.Transaction.op_accept</code>.
      */
-    public void setOpaccept(String value);
+    public void setOpAccept(String value);
 
     /**
-     * Getter for <code>public.Transaction.opAccept</code>.
+     * Getter for <code>public.Transaction.op_accept</code>.
      */
-    public String getOpaccept();
+    public String getOpAccept();
 
     /**
-     * Setter for <code>public.Transaction.opError</code>.
+     * Setter for <code>public.Transaction.op_error</code>.
      */
-    public void setOperror(String value);
+    public void setOpError(String value);
 
     /**
-     * Getter for <code>public.Transaction.opError</code>.
+     * Getter for <code>public.Transaction.op_error</code>.
      */
-    public String getOperror();
+    public String getOpError();
 
     /**
      * Setter for <code>public.Transaction.checkpoint</code>.
@@ -144,64 +155,74 @@ public interface ITransaction extends Serializable {
     public String getCheckpoint();
 
     /**
-     * Setter for <code>public.Transaction.mtsAdd</code>.
-     */
-    public void setMtsadd(String value);
-
-    /**
-     * Getter for <code>public.Transaction.mtsAdd</code>.
-     */
-    public String getMtsadd();
-
-    /**
-     * Setter for <code>public.Transaction.mtsMod</code>.
-     */
-    public void setMtsmod(String value);
-
-    /**
-     * Getter for <code>public.Transaction.mtsMod</code>.
-     */
-    public String getMtsmod();
-
-    /**
      * Setter for <code>public.Transaction.max</code>.
      */
-    public void setMax(String value);
+    public void setMax(Long value);
 
     /**
      * Getter for <code>public.Transaction.max</code>.
      */
-    public String getMax();
+    public Long getMax();
 
     /**
      * Setter for <code>public.Transaction.lim</code>.
      */
-    public void setLim(String value);
+    public void setLim(Long value);
 
     /**
      * Getter for <code>public.Transaction.lim</code>.
      */
-    public String getLim();
+    public Long getLim();
 
     /**
      * Setter for <code>public.Transaction.pre</code>.
      */
-    public void setPre(String value);
+    public void setPre(Long value);
 
     /**
      * Getter for <code>public.Transaction.pre</code>.
      */
-    public String getPre();
+    public Long getPre();
+
+    /**
+     * Setter for <code>public.Transaction.mts_add</code>.
+     */
+    public void setMtsAdd(Long value);
+
+    /**
+     * Getter for <code>public.Transaction.mts_add</code>.
+     */
+    public Long getMtsAdd();
+
+    /**
+     * Setter for <code>public.Transaction.mts_mod</code>.
+     */
+    public void setMtsMod(Long value);
+
+    /**
+     * Getter for <code>public.Transaction.mts_mod</code>.
+     */
+    public Long getMtsMod();
 
     /**
      * Setter for <code>public.Transaction.dec</code>.
      */
-    public void setDec(String value);
+    public void setDec(Integer value);
 
     /**
      * Getter for <code>public.Transaction.dec</code>.
      */
-    public String getDec();
+    public Integer getDec();
+
+    /**
+     * Setter for <code>public.Transaction.timestamp</code>.
+     */
+    public void setTimestamp(LocalDateTime value);
+
+    /**
+     * Getter for <code>public.Transaction.timestamp</code>.
+     */
+    public LocalDateTime getTimestamp();
 
     // -------------------------------------------------------------------------
     // FROM and INTO

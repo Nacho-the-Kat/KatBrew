@@ -36,50 +36,50 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     }
 
     /**
+     * Setter for <code>public.Balance.holder_id</code>.
+     */
+    @Override
+    public void setHolderId(Integer value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.Balance.holder_id</code>.
+     */
+    @Override
+    public Integer getHolderId() {
+        return (Integer) get(1);
+    }
+
+    /**
      * Setter for <code>public.Balance.balance</code>.
      */
     @Override
-    public void setBalance(String value) {
-        set(1, value);
+    public void setBalance(Long value) {
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.Balance.balance</code>.
      */
     @Override
-    public String getBalance() {
-        return (String) get(1);
+    public Long getBalance() {
+        return (Long) get(2);
     }
 
     /**
-     * Setter for <code>public.Balance.holderId</code>.
+     * Setter for <code>public.Balance.tick</code>.
      */
     @Override
-    public void setHolderid(Integer value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.Balance.holderId</code>.
-     */
-    @Override
-    public Integer getHolderid() {
-        return (Integer) get(2);
-    }
-
-    /**
-     * Setter for <code>public.Balance.tokenTick</code>.
-     */
-    @Override
-    public void setTokentick(String value) {
+    public void setTick(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.Balance.tokenTick</code>.
+     * Getter for <code>public.Balance.tick</code>.
      */
     @Override
-    public String getTokentick() {
+    public String getTick() {
         return (String) get(3);
     }
 
@@ -99,9 +99,9 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     @Override
     public void from(IBalance from) {
         setId(from.getId());
+        setHolderId(from.getHolderId());
         setBalance(from.getBalance());
-        setHolderid(from.getHolderid());
-        setTokentick(from.getTokentick());
+        setTick(from.getTick());
         resetChangedOnNotNull();
     }
 
@@ -125,13 +125,13 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     /**
      * Create a detached, initialised BalanceRecord
      */
-    public BalanceRecord(Integer id, String balance, Integer holderid, String tokentick) {
+    public BalanceRecord(Integer id, Integer holderId, Long balance, String tick) {
         super(Balance.BALANCE);
 
         setId(id);
+        setHolderId(holderId);
         setBalance(balance);
-        setHolderid(holderid);
-        setTokentick(tokentick);
+        setTick(tick);
         resetChangedOnNotNull();
     }
 
@@ -143,9 +143,9 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
 
         if (value != null) {
             setId(value.getId());
+            setHolderId(value.getHolderId());
             setBalance(value.getBalance());
-            setHolderid(value.getHolderid());
-            setTokentick(value.getTokentick());
+            setTick(value.getTick());
             resetChangedOnNotNull();
         }
     }

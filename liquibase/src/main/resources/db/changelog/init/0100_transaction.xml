@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="Transaction"/>
+            </not>
+        </preConditions>
+        <createTable tableName="Transaction">
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
+            </column>
+            <column type="int" name="fk_token">
+                <constraints nullable="false"/>
+            </column>
+            <column type="text" name="hashrev"/>
+            <column type="text" name="p"/>
+            <column type="text" name="op"/>
+            <column type="text" name="amt"/>
+            <column type="text" name="from"/>
+            <column type="text" name="to"/>
+            <column type="text" name="op_score"/>
+            <column type="text" name="fee_rev"/>
+            <column type="text" name="tx_accept"/>
+            <column type="text" name="op_accept"/>
+            <column type="text" name="op_error"/>
+            <column type="text" name="checkpoint"/>
+            <column type="bigint" name="max"/>
+            <column type="bigint" name="lim"/>
+            <column type="bigint" name="pre"/>
+            <column type="bigint" name="mts_add"/>
+            <column type="bigint" name="mts_mod"/>
+            <column type="int" name="dec" />
+            <column type="datetime" name="timestamp" defaultValue="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token" constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
+                                 referencedColumnNames="id"/>
+
+        <rollback>
+            <dropTable tableName="Transaction"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

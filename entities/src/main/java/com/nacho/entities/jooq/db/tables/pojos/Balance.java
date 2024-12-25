@@ -16,29 +16,29 @@ public class Balance implements IBalance {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String balance;
-    private Integer holderid;
-    private String tokentick;
+    private Integer holderId;
+    private Long balance;
+    private String tick;
 
     public Balance() {}
 
     public Balance(IBalance value) {
         this.id = value.getId();
+        this.holderId = value.getHolderId();
         this.balance = value.getBalance();
-        this.holderid = value.getHolderid();
-        this.tokentick = value.getTokentick();
+        this.tick = value.getTick();
     }
 
     public Balance(
         Integer id,
-        String balance,
-        Integer holderid,
-        String tokentick
+        Integer holderId,
+        Long balance,
+        String tick
     ) {
         this.id = id;
+        this.holderId = holderId;
         this.balance = balance;
-        this.holderid = holderid;
-        this.tokentick = tokentick;
+        this.tick = tick;
     }
 
     /**
@@ -58,10 +58,26 @@ public class Balance implements IBalance {
     }
 
     /**
+     * Getter for <code>public.Balance.holder_id</code>.
+     */
+    @Override
+    public Integer getHolderId() {
+        return this.holderId;
+    }
+
+    /**
+     * Setter for <code>public.Balance.holder_id</code>.
+     */
+    @Override
+    public void setHolderId(Integer holderId) {
+        this.holderId = holderId;
+    }
+
+    /**
      * Getter for <code>public.Balance.balance</code>.
      */
     @Override
-    public String getBalance() {
+    public Long getBalance() {
         return this.balance;
     }
 
@@ -69,40 +85,24 @@ public class Balance implements IBalance {
      * Setter for <code>public.Balance.balance</code>.
      */
     @Override
-    public void setBalance(String balance) {
+    public void setBalance(Long balance) {
         this.balance = balance;
     }
 
     /**
-     * Getter for <code>public.Balance.holderId</code>.
+     * Getter for <code>public.Balance.tick</code>.
      */
     @Override
-    public Integer getHolderid() {
-        return this.holderid;
+    public String getTick() {
+        return this.tick;
     }
 
     /**
-     * Setter for <code>public.Balance.holderId</code>.
+     * Setter for <code>public.Balance.tick</code>.
      */
     @Override
-    public void setHolderid(Integer holderid) {
-        this.holderid = holderid;
-    }
-
-    /**
-     * Getter for <code>public.Balance.tokenTick</code>.
-     */
-    @Override
-    public String getTokentick() {
-        return this.tokentick;
-    }
-
-    /**
-     * Setter for <code>public.Balance.tokenTick</code>.
-     */
-    @Override
-    public void setTokentick(String tokentick) {
-        this.tokentick = tokentick;
+    public void setTick(String tick) {
+        this.tick = tick;
     }
 
     @Override
@@ -120,23 +120,23 @@ public class Balance implements IBalance {
         }
         else if (!this.id.equals(other.id))
             return false;
+        if (this.holderId == null) {
+            if (other.holderId != null)
+                return false;
+        }
+        else if (!this.holderId.equals(other.holderId))
+            return false;
         if (this.balance == null) {
             if (other.balance != null)
                 return false;
         }
         else if (!this.balance.equals(other.balance))
             return false;
-        if (this.holderid == null) {
-            if (other.holderid != null)
+        if (this.tick == null) {
+            if (other.tick != null)
                 return false;
         }
-        else if (!this.holderid.equals(other.holderid))
-            return false;
-        if (this.tokentick == null) {
-            if (other.tokentick != null)
-                return false;
-        }
-        else if (!this.tokentick.equals(other.tokentick))
+        else if (!this.tick.equals(other.tick))
             return false;
         return true;
     }
@@ -146,9 +146,9 @@ public class Balance implements IBalance {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+        result = prime * result + ((this.holderId == null) ? 0 : this.holderId.hashCode());
         result = prime * result + ((this.balance == null) ? 0 : this.balance.hashCode());
-        result = prime * result + ((this.holderid == null) ? 0 : this.holderid.hashCode());
-        result = prime * result + ((this.tokentick == null) ? 0 : this.tokentick.hashCode());
+        result = prime * result + ((this.tick == null) ? 0 : this.tick.hashCode());
         return result;
     }
 
@@ -157,9 +157,9 @@ public class Balance implements IBalance {
         StringBuilder sb = new StringBuilder("Balance (");
 
         sb.append(id);
+        sb.append(", ").append(holderId);
         sb.append(", ").append(balance);
-        sb.append(", ").append(holderid);
-        sb.append(", ").append(tokentick);
+        sb.append(", ").append(tick);
 
         sb.append(")");
         return sb.toString();
@@ -172,9 +172,9 @@ public class Balance implements IBalance {
     @Override
     public void from(IBalance from) {
         setId(from.getId());
+        setHolderId(from.getHolderId());
         setBalance(from.getBalance());
-        setHolderid(from.getHolderid());
-        setTokentick(from.getTokentick());
+        setTick(from.getTick());
     }
 
     @Override

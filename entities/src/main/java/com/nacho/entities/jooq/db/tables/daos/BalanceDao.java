@@ -69,47 +69,47 @@ public class BalanceDao extends DAOImpl<BalanceRecord, com.nacho.entities.jooq.d
     }
 
     /**
+     * Fetch records that have <code>holder_id BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfHolderId(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(Balance.BALANCE.HOLDER_ID, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>holder_id IN (values)</code>
+     */
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByHolderId(Integer... values) {
+        return fetch(Balance.BALANCE.HOLDER_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>balance BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfBalance(String lowerInclusive, String upperInclusive) {
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfBalance(Long lowerInclusive, Long upperInclusive) {
         return fetchRange(Balance.BALANCE.BALANCE_, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>balance IN (values)</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByBalance(String... values) {
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByBalance(Long... values) {
         return fetch(Balance.BALANCE.BALANCE_, values);
     }
 
     /**
-     * Fetch records that have <code>holderId BETWEEN lowerInclusive AND
+     * Fetch records that have <code>tick BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfHolderid(Integer lowerInclusive, Integer upperInclusive) {
-        return fetchRange(Balance.BALANCE.HOLDERID, lowerInclusive, upperInclusive);
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfTick(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Balance.BALANCE.TICK, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>holderId IN (values)</code>
+     * Fetch records that have <code>tick IN (values)</code>
      */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByHolderid(Integer... values) {
-        return fetch(Balance.BALANCE.HOLDERID, values);
-    }
-
-    /**
-     * Fetch records that have <code>tokenTick BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchRangeOfTokentick(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Balance.BALANCE.TOKENTICK, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>tokenTick IN (values)</code>
-     */
-    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByTokentick(String... values) {
-        return fetch(Balance.BALANCE.TOKENTICK, values);
+    public List<com.nacho.entities.jooq.db.tables.pojos.Balance> fetchByTick(String... values) {
+        return fetch(Balance.BALANCE.TICK, values);
     }
 }

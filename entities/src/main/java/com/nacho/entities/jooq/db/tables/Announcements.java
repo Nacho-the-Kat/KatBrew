@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
@@ -53,7 +54,7 @@ public class Announcements extends TableImpl<AnnouncementsRecord> {
     /**
      * The column <code>public.Announcements.id</code>.
      */
-    public final TableField<AnnouncementsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("nextval('\"Announcements_id_seq\"'::regclass)"), SQLDataType.INTEGER)), this, "");
+    public final TableField<AnnouncementsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.Announcements.title</code>.
@@ -66,14 +67,14 @@ public class Announcements extends TableImpl<AnnouncementsRecord> {
     public final TableField<AnnouncementsRecord, String> TEXT = createField(DSL.name("text"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Announcements.imageUrl</code>.
+     * The column <code>public.Announcements.image_url</code>.
      */
-    public final TableField<AnnouncementsRecord, String> IMAGEURL = createField(DSL.name("imageUrl"), SQLDataType.CLOB, this, "");
+    public final TableField<AnnouncementsRecord, String> IMAGE_URL = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Announcements.timestamp</code>.
      */
-    public final TableField<AnnouncementsRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(3).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<AnnouncementsRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "");
 
     private Announcements(Name alias, Table<AnnouncementsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -110,8 +111,13 @@ public class Announcements extends TableImpl<AnnouncementsRecord> {
     }
 
     @Override
+    public Identity<AnnouncementsRecord, Integer> getIdentity() {
+        return (Identity<AnnouncementsRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<AnnouncementsRecord> getPrimaryKey() {
-        return Keys.ANNOUNCEMENTS_PKEY;
+        return Keys.PK_ANNOUNCEMENTS;
     }
 
     @Override

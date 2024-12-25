@@ -82,4 +82,18 @@ public class HolderDao extends DAOImpl<HolderRecord, com.nacho.entities.jooq.db.
     public List<com.nacho.entities.jooq.db.tables.pojos.Holder> fetchByAddress(String... values) {
         return fetch(Holder.HOLDER.ADDRESS, values);
     }
+
+    /**
+     * Fetch a unique record that has <code>address = value</code>
+     */
+    public com.nacho.entities.jooq.db.tables.pojos.Holder fetchOneByAddress(String value) {
+        return fetchOne(Holder.HOLDER.ADDRESS, value);
+    }
+
+    /**
+     * Fetch a unique record that has <code>address = value</code>
+     */
+    public Optional<com.nacho.entities.jooq.db.tables.pojos.Holder> fetchOptionalByAddress(String value) {
+        return fetchOptional(Holder.HOLDER.ADDRESS, value);
+    }
 }

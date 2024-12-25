@@ -4,12 +4,12 @@
 package com.nacho.entities.jooq.db.tables;
 
 
-import com.nacho.entities.jooq.db.Indexes;
 import com.nacho.entities.jooq.db.Keys;
 import com.nacho.entities.jooq.db.Public;
 import com.nacho.entities.jooq.db.tables.Token.TokenPath;
 import com.nacho.entities.jooq.db.tables.records.TransactionRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
+import org.jooq.Identity;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -59,24 +59,29 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     /**
-     * The column <code>public.Transaction.hashRev</code>.
+     * The column <code>public.Transaction.id</code>.
      */
-    public final TableField<TransactionRecord, String> HASHREV = createField(DSL.name("hashRev"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.Transaction.fk_token</code>.
+     */
+    public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.Transaction.hashrev</code>.
+     */
+    public final TableField<TransactionRecord, String> HASHREV = createField(DSL.name("hashrev"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.p</code>.
      */
-    public final TableField<TransactionRecord, String> P = createField(DSL.name("p"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> P = createField(DSL.name("p"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.op</code>.
      */
-    public final TableField<TransactionRecord, String> OP = createField(DSL.name("op"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Transaction.tick</code>.
-     */
-    public final TableField<TransactionRecord, String> TICK = createField(DSL.name("tick"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> OP = createField(DSL.name("op"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.amt</code>.
@@ -86,72 +91,77 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.from</code>.
      */
-    public final TableField<TransactionRecord, String> FROM = createField(DSL.name("from"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> FROM = createField(DSL.name("from"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.to</code>.
      */
-    public final TableField<TransactionRecord, String> TO = createField(DSL.name("to"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> TO = createField(DSL.name("to"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.opScore</code>.
+     * The column <code>public.Transaction.op_score</code>.
      */
-    public final TableField<TransactionRecord, String> OPSCORE = createField(DSL.name("opScore"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.feeRev</code>.
+     * The column <code>public.Transaction.fee_rev</code>.
      */
-    public final TableField<TransactionRecord, String> FEEREV = createField(DSL.name("feeRev"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> FEE_REV = createField(DSL.name("fee_rev"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.txAccept</code>.
+     * The column <code>public.Transaction.tx_accept</code>.
      */
-    public final TableField<TransactionRecord, String> TXACCEPT = createField(DSL.name("txAccept"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> TX_ACCEPT = createField(DSL.name("tx_accept"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.opAccept</code>.
+     * The column <code>public.Transaction.op_accept</code>.
      */
-    public final TableField<TransactionRecord, String> OPACCEPT = createField(DSL.name("opAccept"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> OP_ACCEPT = createField(DSL.name("op_accept"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.opError</code>.
+     * The column <code>public.Transaction.op_error</code>.
      */
-    public final TableField<TransactionRecord, String> OPERROR = createField(DSL.name("opError"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> OP_ERROR = createField(DSL.name("op_error"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.checkpoint</code>.
      */
-    public final TableField<TransactionRecord, String> CHECKPOINT = createField(DSL.name("checkpoint"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Transaction.mtsAdd</code>.
-     */
-    public final TableField<TransactionRecord, String> MTSADD = createField(DSL.name("mtsAdd"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Transaction.mtsMod</code>.
-     */
-    public final TableField<TransactionRecord, String> MTSMOD = createField(DSL.name("mtsMod"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TransactionRecord, String> CHECKPOINT = createField(DSL.name("checkpoint"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.max</code>.
      */
-    public final TableField<TransactionRecord, String> MAX = createField(DSL.name("max"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, Long> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Transaction.lim</code>.
      */
-    public final TableField<TransactionRecord, String> LIM = createField(DSL.name("lim"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, Long> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Transaction.pre</code>.
      */
-    public final TableField<TransactionRecord, String> PRE = createField(DSL.name("pre"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, Long> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.Transaction.mts_add</code>.
+     */
+    public final TableField<TransactionRecord, Long> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.Transaction.mts_mod</code>.
+     */
+    public final TableField<TransactionRecord, Long> MTS_MOD = createField(DSL.name("mts_mod"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Transaction.dec</code>.
      */
-    public final TableField<TransactionRecord, String> DEC = createField(DSL.name("dec"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, Integer> DEC = createField(DSL.name("dec"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.Transaction.timestamp</code>.
+     */
+    public final TableField<TransactionRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "");
 
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -221,18 +231,18 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.TRANSACTION_TICK_MTSADD_IDX);
+    public Identity<TransactionRecord, Long> getIdentity() {
+        return (Identity<TransactionRecord, Long>) super.getIdentity();
     }
 
     @Override
     public UniqueKey<TransactionRecord> getPrimaryKey() {
-        return Keys.TRANSACTION_PKEY;
+        return Keys.PK_TRANSACTION;
     }
 
     @Override
     public List<ForeignKey<TransactionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.TRANSACTION__TRANSACTION_TICK_FKEY);
+        return Arrays.asList(Keys.TRANSACTION__FK_TRANSACTION_TOKEN);
     }
 
     private transient TokenPath _token;
@@ -242,7 +252,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
      */
     public TokenPath token() {
         if (_token == null)
-            _token = new TokenPath(this, Keys.TRANSACTION__TRANSACTION_TICK_FKEY, null);
+            _token = new TokenPath(this, Keys.TRANSACTION__FK_TRANSACTION_TOKEN, null);
 
         return _token;
     }

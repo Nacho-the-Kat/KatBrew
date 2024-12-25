@@ -24,34 +24,34 @@ public interface IBalance extends Serializable {
     public Integer getId();
 
     /**
+     * Setter for <code>public.Balance.holder_id</code>.
+     */
+    public void setHolderId(Integer value);
+
+    /**
+     * Getter for <code>public.Balance.holder_id</code>.
+     */
+    public Integer getHolderId();
+
+    /**
      * Setter for <code>public.Balance.balance</code>.
      */
-    public void setBalance(String value);
+    public void setBalance(Long value);
 
     /**
      * Getter for <code>public.Balance.balance</code>.
      */
-    public String getBalance();
+    public Long getBalance();
 
     /**
-     * Setter for <code>public.Balance.holderId</code>.
+     * Setter for <code>public.Balance.tick</code>.
      */
-    public void setHolderid(Integer value);
+    public void setTick(String value);
 
     /**
-     * Getter for <code>public.Balance.holderId</code>.
+     * Getter for <code>public.Balance.tick</code>.
      */
-    public Integer getHolderid();
-
-    /**
-     * Setter for <code>public.Balance.tokenTick</code>.
-     */
-    public void setTokentick(String value);
-
-    /**
-     * Getter for <code>public.Balance.tokenTick</code>.
-     */
-    public String getTokentick();
+    public String getTick();
 
     // -------------------------------------------------------------------------
     // FROM and INTO

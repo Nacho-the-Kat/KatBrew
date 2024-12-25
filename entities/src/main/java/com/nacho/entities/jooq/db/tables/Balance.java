@@ -7,7 +7,6 @@ package com.nacho.entities.jooq.db.tables;
 import com.nacho.entities.jooq.db.Keys;
 import com.nacho.entities.jooq.db.Public;
 import com.nacho.entities.jooq.db.tables.Holder.HolderPath;
-import com.nacho.entities.jooq.db.tables.Token.TokenPath;
 import com.nacho.entities.jooq.db.tables.records.BalanceRecord;
 
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -60,22 +60,22 @@ public class Balance extends TableImpl<BalanceRecord> {
     /**
      * The column <code>public.Balance.id</code>.
      */
-    public final TableField<BalanceRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("nextval('\"Balance_id_seq\"'::regclass)"), SQLDataType.INTEGER)), this, "");
+    public final TableField<BalanceRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.Balance.holder_id</code>.
+     */
+    public final TableField<BalanceRecord, Integer> HOLDER_ID = createField(DSL.name("holder_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.Balance.balance</code>.
      */
-    public final TableField<BalanceRecord, String> BALANCE_ = createField(DSL.name("balance"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<BalanceRecord, Long> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.Balance.holderId</code>.
+     * The column <code>public.Balance.tick</code>.
      */
-    public final TableField<BalanceRecord, Integer> HOLDERID = createField(DSL.name("holderId"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Balance.tokenTick</code>.
-     */
-    public final TableField<BalanceRecord, String> TOKENTICK = createField(DSL.name("tokenTick"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<BalanceRecord, String> TICK = createField(DSL.name("tick"), SQLDataType.CLOB, this, "");
 
     private Balance(Name alias, Table<BalanceRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -145,13 +145,18 @@ public class Balance extends TableImpl<BalanceRecord> {
     }
 
     @Override
+    public Identity<BalanceRecord, Integer> getIdentity() {
+        return (Identity<BalanceRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<BalanceRecord> getPrimaryKey() {
-        return Keys.BALANCE_PKEY;
+        return Keys.PK_BALANCE;
     }
 
     @Override
     public List<ForeignKey<BalanceRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.BALANCE__BALANCE_HOLDERID_FKEY, Keys.BALANCE__BALANCE_TOKENTICK_FKEY);
+        return Arrays.asList(Keys.BALANCE__FK_BALANCE_HOLDER);
     }
 
     private transient HolderPath _holder;
@@ -161,21 +166,9 @@ public class Balance extends TableImpl<BalanceRecord> {
      */
     public HolderPath holder() {
         if (_holder == null)
-            _holder = new HolderPath(this, Keys.BALANCE__BALANCE_HOLDERID_FKEY, null);
+            _holder = new HolderPath(this, Keys.BALANCE__FK_BALANCE_HOLDER, null);
 
         return _holder;
-    }
-
-    private transient TokenPath _token;
-
-    /**
-     * Get the implicit join path to the <code>public.Token</code> table.
-     */
-    public TokenPath token() {
-        if (_token == null)
-            _token = new TokenPath(this, Keys.BALANCE__BALANCE_TOKENTICK_FKEY, null);
-
-        return _token;
     }
 
     @Override

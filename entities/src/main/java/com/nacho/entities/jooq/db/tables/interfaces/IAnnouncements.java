@@ -45,14 +45,14 @@ public interface IAnnouncements extends Serializable {
     public String getText();
 
     /**
-     * Setter for <code>public.Announcements.imageUrl</code>.
+     * Setter for <code>public.Announcements.image_url</code>.
      */
-    public void setImageurl(String value);
+    public void setImageUrl(String value);
 
     /**
-     * Getter for <code>public.Announcements.imageUrl</code>.
+     * Getter for <code>public.Announcements.image_url</code>.
      */
-    public String getImageurl();
+    public String getImageUrl();
 
     /**
      * Setter for <code>public.Announcements.timestamp</code>.

@@ -20,7 +20,7 @@ public class Announcements implements IAnnouncements {
     private Integer id;
     private String title;
     private String text;
-    private String imageurl;
+    private String imageUrl;
     private LocalDateTime timestamp;
 
     public Announcements() {}
@@ -29,7 +29,7 @@ public class Announcements implements IAnnouncements {
         this.id = value.getId();
         this.title = value.getTitle();
         this.text = value.getText();
-        this.imageurl = value.getImageurl();
+        this.imageUrl = value.getImageUrl();
         this.timestamp = value.getTimestamp();
     }
 
@@ -37,13 +37,13 @@ public class Announcements implements IAnnouncements {
         Integer id,
         String title,
         String text,
-        String imageurl,
+        String imageUrl,
         LocalDateTime timestamp
     ) {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.imageurl = imageurl;
+        this.imageUrl = imageUrl;
         this.timestamp = timestamp;
     }
 
@@ -96,19 +96,19 @@ public class Announcements implements IAnnouncements {
     }
 
     /**
-     * Getter for <code>public.Announcements.imageUrl</code>.
+     * Getter for <code>public.Announcements.image_url</code>.
      */
     @Override
-    public String getImageurl() {
-        return this.imageurl;
+    public String getImageUrl() {
+        return this.imageUrl;
     }
 
     /**
-     * Setter for <code>public.Announcements.imageUrl</code>.
+     * Setter for <code>public.Announcements.image_url</code>.
      */
     @Override
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     /**
@@ -154,11 +154,11 @@ public class Announcements implements IAnnouncements {
         }
         else if (!this.text.equals(other.text))
             return false;
-        if (this.imageurl == null) {
-            if (other.imageurl != null)
+        if (this.imageUrl == null) {
+            if (other.imageUrl != null)
                 return false;
         }
-        else if (!this.imageurl.equals(other.imageurl))
+        else if (!this.imageUrl.equals(other.imageUrl))
             return false;
         if (this.timestamp == null) {
             if (other.timestamp != null)
@@ -176,7 +176,7 @@ public class Announcements implements IAnnouncements {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
         result = prime * result + ((this.text == null) ? 0 : this.text.hashCode());
-        result = prime * result + ((this.imageurl == null) ? 0 : this.imageurl.hashCode());
+        result = prime * result + ((this.imageUrl == null) ? 0 : this.imageUrl.hashCode());
         result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
         return result;
     }
@@ -188,7 +188,7 @@ public class Announcements implements IAnnouncements {
         sb.append(id);
         sb.append(", ").append(title);
         sb.append(", ").append(text);
-        sb.append(", ").append(imageurl);
+        sb.append(", ").append(imageUrl);
         sb.append(", ").append(timestamp);
 
         sb.append(")");
@@ -204,7 +204,7 @@ public class Announcements implements IAnnouncements {
         setId(from.getId());
         setTitle(from.getTitle());
         setText(from.getText());
-        setImageurl(from.getImageurl());
+        setImageUrl(from.getImageUrl());
         setTimestamp(from.getTimestamp());
     }
 

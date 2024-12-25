@@ -6,17 +6,18 @@ package com.nacho.entities.jooq.db.tables;
 
 import com.nacho.entities.jooq.db.Keys;
 import com.nacho.entities.jooq.db.Public;
-import com.nacho.entities.jooq.db.tables.Balance.BalancePath;
-import com.nacho.entities.jooq.db.tables.Pricedata.PricedataPath;
+import com.nacho.entities.jooq.db.tables.PriceData.PriceDataPath;
 import com.nacho.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.nacho.entities.jooq.db.tables.records.TokenRecord;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -58,6 +59,11 @@ public class Token extends TableImpl<TokenRecord> {
     }
 
     /**
+     * The column <code>public.Token.id</code>.
+     */
+    public final TableField<TokenRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
      * The column <code>public.Token.tick</code>.
      */
     public final TableField<TokenRecord, String> TICK = createField(DSL.name("tick"), SQLDataType.CLOB.nullable(false), this, "");
@@ -65,77 +71,42 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.max</code>.
      */
-    public final TableField<TokenRecord, String> MAX = createField(DSL.name("max"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Long> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Token.lim</code>.
      */
-    public final TableField<TokenRecord, String> LIM = createField(DSL.name("lim"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Long> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Token.pre</code>.
      */
-    public final TableField<TokenRecord, String> PRE = createField(DSL.name("pre"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Long> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.Token.to</code>.
+     * The column <code>public.Token.mts_add</code>.
      */
-    public final TableField<TokenRecord, String> TO = createField(DSL.name("to"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Long> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.Token.holder_total</code>.
+     */
+    public final TableField<TokenRecord, Integer> HOLDER_TOTAL = createField(DSL.name("holder_total"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.Token.dec</code>.
      */
-    public final TableField<TokenRecord, String> DEC = createField(DSL.name("dec"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Integer> DEC = createField(DSL.name("dec"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.Token.minted</code>.
      */
-    public final TableField<TokenRecord, String> MINTED = createField(DSL.name("minted"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.opScoreAdd</code>.
-     */
-    public final TableField<TokenRecord, String> OPSCOREADD = createField(DSL.name("opScoreAdd"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.opScoreMod</code>.
-     */
-    public final TableField<TokenRecord, String> OPSCOREMOD = createField(DSL.name("opScoreMod"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TokenRecord, Long> MINTED = createField(DSL.name("minted"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Token.state</code>.
      */
-    public final TableField<TokenRecord, String> STATE = createField(DSL.name("state"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.hashRev</code>.
-     */
-    public final TableField<TokenRecord, String> HASHREV = createField(DSL.name("hashRev"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.mtsAdd</code>.
-     */
-    public final TableField<TokenRecord, String> MTSADD = createField(DSL.name("mtsAdd"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.holderTotal</code>.
-     */
-    public final TableField<TokenRecord, Integer> HOLDERTOTAL = createField(DSL.name("holderTotal"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.transferTotal</code>.
-     */
-    public final TableField<TokenRecord, Integer> TRANSFERTOTAL = createField(DSL.name("transferTotal"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.mintTotal</code>.
-     */
-    public final TableField<TokenRecord, Integer> MINTTOTAL = createField(DSL.name("mintTotal"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.Token.lastUpdated</code>.
-     */
-    public final TableField<TokenRecord, LocalDateTime> LASTUPDATED = createField(DSL.name("lastUpdated"), SQLDataType.LOCALDATETIME(3).nullable(false), this, "");
+    public final TableField<TokenRecord, String> STATE = createField(DSL.name("state"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Token.logo</code>.
@@ -210,34 +181,31 @@ public class Token extends TableImpl<TokenRecord> {
     }
 
     @Override
+    public Identity<TokenRecord, Integer> getIdentity() {
+        return (Identity<TokenRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<TokenRecord> getPrimaryKey() {
-        return Keys.TOKEN_PKEY;
+        return Keys.PK_TOKEN;
     }
 
-    private transient BalancePath _balance;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.Balance</code>
-     * table
-     */
-    public BalancePath balance() {
-        if (_balance == null)
-            _balance = new BalancePath(this, null, Keys.BALANCE__BALANCE_TOKENTICK_FKEY.getInverseKey());
-
-        return _balance;
+    @Override
+    public List<UniqueKey<TokenRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.TOKEN_TICK_KEY);
     }
 
-    private transient PricedataPath _pricedata;
+    private transient PriceDataPath _priceData;
 
     /**
-     * Get the implicit to-many join path to the <code>public.PriceData</code>
+     * Get the implicit to-many join path to the <code>public.Price_Data</code>
      * table
      */
-    public PricedataPath pricedata() {
-        if (_pricedata == null)
-            _pricedata = new PricedataPath(this, null, Keys.PRICEDATA__PRICEDATA_TICK_FKEY.getInverseKey());
+    public PriceDataPath priceData() {
+        if (_priceData == null)
+            _priceData = new PriceDataPath(this, null, Keys.PRICE_DATA__FK_PRICE_DATA_TOKEN.getInverseKey());
 
-        return _pricedata;
+        return _priceData;
     }
 
     private transient TransactionPath _transaction;
@@ -248,7 +216,7 @@ public class Token extends TableImpl<TokenRecord> {
      */
     public TransactionPath transaction() {
         if (_transaction == null)
-            _transaction = new TransactionPath(this, null, Keys.TRANSACTION__TRANSACTION_TICK_FKEY.getInverseKey());
+            _transaction = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_TOKEN.getInverseKey());
 
         return _transaction;
     }

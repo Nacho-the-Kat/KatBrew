@@ -70,18 +70,18 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
     }
 
     /**
-     * Setter for <code>public.Announcements.imageUrl</code>.
+     * Setter for <code>public.Announcements.image_url</code>.
      */
     @Override
-    public void setImageurl(String value) {
+    public void setImageUrl(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.Announcements.imageUrl</code>.
+     * Getter for <code>public.Announcements.image_url</code>.
      */
     @Override
-    public String getImageurl() {
+    public String getImageUrl() {
         return (String) get(3);
     }
 
@@ -119,7 +119,7 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
         setId(from.getId());
         setTitle(from.getTitle());
         setText(from.getText());
-        setImageurl(from.getImageurl());
+        setImageUrl(from.getImageUrl());
         setTimestamp(from.getTimestamp());
         resetChangedOnNotNull();
     }
@@ -144,13 +144,13 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
     /**
      * Create a detached, initialised AnnouncementsRecord
      */
-    public AnnouncementsRecord(Integer id, String title, String text, String imageurl, LocalDateTime timestamp) {
+    public AnnouncementsRecord(Integer id, String title, String text, String imageUrl, LocalDateTime timestamp) {
         super(Announcements.ANNOUNCEMENTS);
 
         setId(id);
         setTitle(title);
         setText(text);
-        setImageurl(imageurl);
+        setImageUrl(imageUrl);
         setTimestamp(timestamp);
         resetChangedOnNotNull();
     }
@@ -165,7 +165,7 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
             setId(value.getId());
             setTitle(value.getTitle());
             setText(value.getText());
-            setImageurl(value.getImageurl());
+            setImageUrl(value.getImageUrl());
             setTimestamp(value.getTimestamp());
             resetChangedOnNotNull();
         }
