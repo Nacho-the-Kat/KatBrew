@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>katBrew</artifactId>
-        <groupId>com.nacho</groupId>
+        <groupId>com.katbrew</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -17,7 +17,7 @@
             <version>4.5.13</version>
         </dependency>
         <dependency>
-            <groupId>com.nacho</groupId>
+            <groupId>com.katbrew</groupId>
             <artifactId>entities-interfaces</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -100,7 +100,7 @@
                                         </database>
                                         <target>
                                             <clean>true</clean>
-                                            <packageName>com.nacho.entities.jooq.db</packageName>
+                                            <packageName>com.katbrew.entities.jooq.db</packageName>
                                             <directory>src/main/java/</directory>
                                         </target>
 
