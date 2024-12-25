@@ -4,8 +4,8 @@ import com.nacho.entities.jooq.db.tables.daos.TokenDao;
 import com.nacho.entities.jooq.db.tables.pojos.Token;
 import com.nacho.entities.jooq.db.tables.records.TokenRecord;
 import com.nacho.exceptions.NotValidException;
-import com.nacho.services.base.BaseEntityService;
-import org.jooq.Configuration;
+import com.nacho.services.base.AbstractJooqService;
+import org.jooq.DSLContext;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TokensService extends BaseEntityService<Token, TokenRecord> {
+public class TokensService extends AbstractJooqService<Token, TokenRecord> {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public TokensService(final Configuration configuration) {
-        super(new TokenDao(), new TokenRecord(), configuration);
+    public TokensService(final DSLContext configuration) {
+        super(new TokenDao(), new TokenRecord(), Token.class, configuration);
         this.jdbcTemplate = new JdbcTemplate(configuration.dsl().parsingDataSource());
     }
 
@@ -35,7 +35,7 @@ public class TokensService extends BaseEntityService<Token, TokenRecord> {
         if (sortBy.contains(";") || sortBy.contains(",")) {
             throw new NotValidException();
         }
-
+        //todo get abstract
         String sql = "select * from \"Token\" order By \"" + sortBy + "\" " + sortOrder + " limit " + limit + " offset " + cursor;
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Token.class));

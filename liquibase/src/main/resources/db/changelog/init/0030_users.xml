@@ -32,7 +32,7 @@
     <changeSet id="2" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM users WHERE username = 'crixus'
+                SELECT count(*) FROM "Users" WHERE username = 'crixus'
             </sqlCheck>
         </preConditions>
 

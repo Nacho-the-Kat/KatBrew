@@ -1,6 +1,6 @@
 package com.nacho.core.multicasting;
 
-import com.nacho.services.base.BaseEntityService;
+import com.nacho.services.base.AbstractJooqService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker(BaseEntityService.MULTICAST_PREFIX);
+        registry.enableSimpleBroker(AbstractJooqService.MULTICAST_PREFIX);
         registry.setApplicationDestinationPrefixes("/");
     }
 }

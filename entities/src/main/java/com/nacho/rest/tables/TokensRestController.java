@@ -1,9 +1,10 @@
 package com.nacho.rest.tables;
 
-import com.nacho.entities.jooq.db.tables.pojos.Pricedata;
+//import com.nacho.entities.jooq.db.tables.pojos.Pricedata;
+
 import com.nacho.entities.jooq.db.tables.pojos.Token;
+import com.nacho.entities.jooq.db.tables.records.TokenRecord;
 import com.nacho.services.base.ApiResponse;
-import com.nacho.services.tables.PriceDataService;
 import com.nacho.services.tables.TokensService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.nacho.rest.base.StaticVariables.API_URL_PREFIX;
@@ -22,17 +22,17 @@ import static com.nacho.rest.base.StaticVariables.API_URL_PREFIX;
 @RequiredArgsConstructor
 public class TokensRestController {
 
-    private final PriceDataService priceDataService;
+//    private final PriceDataService priceDataService;
     private final TokensService tokensService;
 
-    @GetMapping("/TokenPriceData")
-    public ApiResponse<List<Pricedata>> getTokenPriceData(
-            @RequestParam final String tick,
-            @RequestParam final LocalDateTime start,
-            @RequestParam final LocalDateTime end
-    ) {
-        return new ApiResponse<>(priceDataService.getTokenPriceData(tick, start, end));
-    }
+//    @GetMapping("/TokenPriceData")
+//    public ApiResponse<List<Pricedata>> getTokenPriceData(
+//            @RequestParam final String tick,
+//            @RequestParam final LocalDateTime start,
+//            @RequestParam final LocalDateTime end
+//    ) {
+//        return new ApiResponse<>(priceDataService.getTokenPriceData(tick, start, end));
+//    }
 
     @GetMapping("/tokens")
     public ApiResponse<List<Token>> getTokens(@RequestParam Integer limit) {
