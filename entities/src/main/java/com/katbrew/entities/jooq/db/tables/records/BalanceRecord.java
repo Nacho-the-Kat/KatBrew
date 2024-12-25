@@ -7,6 +7,8 @@ package com.katbrew.entities.jooq.db.tables.records;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.interfaces.IBalance;
 
+import java.math.BigInteger;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -55,7 +57,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Setter for <code>public.Balance.balance</code>.
      */
     @Override
-    public void setBalance(Long value) {
+    public void setBalance(BigInteger value) {
         set(2, value);
     }
 
@@ -63,8 +65,8 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Getter for <code>public.Balance.balance</code>.
      */
     @Override
-    public Long getBalance() {
-        return (Long) get(2);
+    public BigInteger getBalance() {
+        return (BigInteger) get(2);
     }
 
     /**
@@ -125,7 +127,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     /**
      * Create a detached, initialised BalanceRecord
      */
-    public BalanceRecord(Integer id, Integer holderId, Long balance, String tick) {
+    public BalanceRecord(Integer id, Integer holderId, BigInteger balance, String tick) {
         super(Balance.BALANCE);
 
         setId(id);

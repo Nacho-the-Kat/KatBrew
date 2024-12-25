@@ -9,6 +9,7 @@ import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.TransactionRecord;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -61,7 +63,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.id</code>.
      */
-    public final TableField<TransactionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<TransactionRecord, BigInteger> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.fk_token</code>.
@@ -131,27 +133,27 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.max</code>.
      */
-    public final TableField<TransactionRecord, Long> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "");
+    public final TableField<TransactionRecord, BigInteger> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.lim</code>.
      */
-    public final TableField<TransactionRecord, Long> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "");
+    public final TableField<TransactionRecord, BigInteger> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.pre</code>.
      */
-    public final TableField<TransactionRecord, Long> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "");
+    public final TableField<TransactionRecord, BigInteger> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.mts_add</code>.
      */
-    public final TableField<TransactionRecord, Long> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "");
+    public final TableField<TransactionRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.mts_mod</code>.
      */
-    public final TableField<TransactionRecord, Long> MTS_MOD = createField(DSL.name("mts_mod"), SQLDataType.BIGINT, this, "");
+    public final TableField<TransactionRecord, BigInteger> MTS_MOD = createField(DSL.name("mts_mod"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.dec</code>.
@@ -231,8 +233,8 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     @Override
-    public Identity<TransactionRecord, Long> getIdentity() {
-        return (Identity<TransactionRecord, Long>) super.getIdentity();
+    public Identity<TransactionRecord, BigInteger> getIdentity() {
+        return (Identity<TransactionRecord, BigInteger>) super.getIdentity();
     }
 
     @Override

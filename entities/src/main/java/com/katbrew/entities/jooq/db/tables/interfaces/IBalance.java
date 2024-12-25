@@ -5,6 +5,9 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
+
+import org.jooq.impl.AutoConverter;
 
 
 /**
@@ -36,12 +39,12 @@ public interface IBalance extends Serializable {
     /**
      * Setter for <code>public.Balance.balance</code>.
      */
-    public void setBalance(Long value);
+    public void setBalance(BigInteger value);
 
     /**
      * Getter for <code>public.Balance.balance</code>.
      */
-    public Long getBalance();
+    public BigInteger getBalance();
 
     /**
      * Setter for <code>public.Balance.tick</code>.

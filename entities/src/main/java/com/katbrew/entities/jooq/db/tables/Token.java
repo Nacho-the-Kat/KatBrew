@@ -10,6 +10,7 @@ import com.katbrew.entities.jooq.db.tables.PriceData.PriceDataPath;
 import com.katbrew.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.TokenRecord;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -71,22 +73,27 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.max</code>.
      */
-    public final TableField<TokenRecord, Long> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "");
+    public final TableField<TokenRecord, BigInteger> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.lim</code>.
      */
-    public final TableField<TokenRecord, Long> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "");
+    public final TableField<TokenRecord, BigInteger> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.pre</code>.
      */
-    public final TableField<TokenRecord, Long> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "");
+    public final TableField<TokenRecord, BigInteger> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.mts_add</code>.
      */
-    public final TableField<TokenRecord, Long> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "");
+    public final TableField<TokenRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+
+    /**
+     * The column <code>public.Token.minted</code>.
+     */
+    public final TableField<TokenRecord, BigInteger> MINTED = createField(DSL.name("minted"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.holder_total</code>.
@@ -97,11 +104,6 @@ public class Token extends TableImpl<TokenRecord> {
      * The column <code>public.Token.dec</code>.
      */
     public final TableField<TokenRecord, Integer> DEC = createField(DSL.name("dec"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.Token.minted</code>.
-     */
-    public final TableField<TokenRecord, Long> MINTED = createField(DSL.name("minted"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.Token.state</code>.

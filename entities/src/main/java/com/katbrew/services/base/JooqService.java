@@ -2,13 +2,11 @@ package com.katbrew.services.base;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.OrderField;
 import org.jooq.Record;
+import org.jooq.*;
 import org.jooq.impl.DAOImpl;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,36 +25,21 @@ import java.util.Objects;
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 @Slf4j
-@SuperBuilder
 @Transactional
-public abstract class AbstractJooqService<T extends Serializable, R extends Record> {
-    
-    public static final String MULTICAST_PREFIX = "/multicast/";
+public abstract class JooqService<T extends Serializable, R extends Record> {
 
+    public static final String MULTICAST_PREFIX = "/multicast/";
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Getter
     private final DAOImpl dao;
 
-    @Getter
-    private final R record;
-
-    private final Class<T> ser;
-
-//
-//    private final Configuration configuration;
-
-    @Autowired
     private final DSLContext dsl;
-
-
-
     private final Class<T> type = (Class<T>) ((ParameterizedType) getClass()
             .getGenericSuperclass())
             .getActualTypeArguments()[0];
-    
-//    @PostConstruct
+
+    //    @PostConstruct
 //    private void setConfiguration() {
 //        dao.setConfiguration(configuration);
 //    }
@@ -82,7 +65,8 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
     public T findOne(final Long id) throws IllegalArgumentException {
         return findOne(id.intValue());
     }
-//
+
+    //
 //    public T findLast(final Field<?> field) {
 //        final Object entityId = configuration
 //                .dsl()
@@ -104,7 +88,8 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
                 .fetch()
                 .into(type);
     }
-//
+
+    //
 //
 //    public List<T> findBy(List<Condition> conditions, int start, int max) {
 //        return configuration
@@ -118,17 +103,16 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
 //                .into(type);
 //    }
 //
-//    public List<T> findBy(final List<Condition> conditions, final List<OrderField<?>> orderFields) {
-//        return configuration
-//                .dsl()
-//                .select()
-//                .from(dao.getTable())
-//                .where(conditions)
-//                .orderBy(orderFields)
-//                .fetch()
-//                .into(type);
-//    }
-//
+    public List<T> findBy(final List<Condition> conditions, final List<OrderField<?>> orderFields) {
+        return dsl
+                .select()
+                .from(dao.getTable())
+                .where(conditions)
+                .orderBy(orderFields)
+                .fetch()
+                .into(type);
+    }
+
     public List<T> findBy(
             final List<Condition> conditions,
             final List<OrderField<?>> orderFields,
@@ -143,6 +127,7 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
                 .fetch()
                 .into(type);
     }
+
     public List<T> findBy(
             final List<OrderField<?>> orderFields,
             final int start,
@@ -155,6 +140,7 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
                 .fetch()
                 .into(type);
     }
+
     public List<T> findBy(
             final OrderField<?> orderFields,
             final int start,
@@ -197,11 +183,11 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
 //        }
 //        return null;
 //    }
-    
-    
+
+
     public T insert(final T entityToInsert) {
         try {
-            final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(ser);
+            final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
 
             this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), internal);
             return internal;
@@ -211,31 +197,29 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
             throw ex;
         }
     }
-//
-//    public void insert(List<T> entitiesToInsert) {
-//        dao.insert(entitiesToInsert);
-//        for (final T entityToInsert : entitiesToInsert) {
-//            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), entityToInsert);
-//        }
-//    }
-//
-    
-//    public void update(final T entityToUpdate) {
-//        dao.update(entityToUpdate);
-//        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
-//    }
-    
-//
-//    public void update(List<T> entitiesToUpdate) {
-//        dao.update(entitiesToUpdate);
-//        for (final T entityToUpdate : entitiesToUpdate) {
-//            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
-//        }
-//    }
 
-    
+    public List<T> insert(List<T> entitiesToInsert) {
+        return entitiesToInsert.stream().map(this::insert).toList();
+    }
+
+
+    //todo because error
+    public void update(final T entityToUpdate) {
+        dao.update(entityToUpdate);
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
+    }
+
+    public void update(List<T> entitiesToUpdate) {
+        entitiesToUpdate.forEach(this::update);
+    }
+
+
     public List<T> findAll() {
-        return dsl.selectFrom(dao.getTable()).fetch().into(ser);
+        return dsl.selectFrom(dao.getTable()).fetch().into(type);
+    }
+
+    public List<T> findAll(List<Field<?>> fields) {
+        return dsl.select(fields).from(dao.getTable()).fetch().into(type);
     }
 //
 //
@@ -274,9 +258,9 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
 //        this.update(entity);
 //    }
 
-  
+
     public String getMulticastUrl(final MULTICAST_TYPE multicastType) {
-        return MULTICAST_PREFIX + getDao().getTable().getName() + multicastType.getUrlSuffix();
+        return MULTICAST_PREFIX + dao.getTable().getName() + multicastType.getUrlSuffix();
     }
 
     public enum MULTICAST_TYPE {
@@ -290,7 +274,7 @@ public abstract class AbstractJooqService<T extends Serializable, R extends Reco
 
         @Getter
         private final String urlSuffix;
-        
+
         MULTICAST_TYPE(final String urlSuffix) {
             this.urlSuffix = urlSuffix;
         }

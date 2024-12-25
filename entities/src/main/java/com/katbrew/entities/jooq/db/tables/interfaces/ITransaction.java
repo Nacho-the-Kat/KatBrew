@@ -5,7 +5,10 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+
+import org.jooq.impl.AutoConverter;
 
 
 /**
@@ -17,12 +20,12 @@ public interface ITransaction extends Serializable {
     /**
      * Setter for <code>public.Transaction.id</code>.
      */
-    public void setId(Long value);
+    public void setId(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.id</code>.
      */
-    public Long getId();
+    public BigInteger getId();
 
     /**
      * Setter for <code>public.Transaction.fk_token</code>.
@@ -157,52 +160,52 @@ public interface ITransaction extends Serializable {
     /**
      * Setter for <code>public.Transaction.max</code>.
      */
-    public void setMax(Long value);
+    public void setMax(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.max</code>.
      */
-    public Long getMax();
+    public BigInteger getMax();
 
     /**
      * Setter for <code>public.Transaction.lim</code>.
      */
-    public void setLim(Long value);
+    public void setLim(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.lim</code>.
      */
-    public Long getLim();
+    public BigInteger getLim();
 
     /**
      * Setter for <code>public.Transaction.pre</code>.
      */
-    public void setPre(Long value);
+    public void setPre(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.pre</code>.
      */
-    public Long getPre();
+    public BigInteger getPre();
 
     /**
      * Setter for <code>public.Transaction.mts_add</code>.
      */
-    public void setMtsAdd(Long value);
+    public void setMtsAdd(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.mts_add</code>.
      */
-    public Long getMtsAdd();
+    public BigInteger getMtsAdd();
 
     /**
      * Setter for <code>public.Transaction.mts_mod</code>.
      */
-    public void setMtsMod(Long value);
+    public void setMtsMod(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.mts_mod</code>.
      */
-    public Long getMtsMod();
+    public BigInteger getMtsMod();
 
     /**
      * Setter for <code>public.Transaction.dec</code>.

@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables.records;
 import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.interfaces.ITransaction;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import org.jooq.Record1;
@@ -25,7 +26,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Setter for <code>public.Transaction.id</code>.
      */
     @Override
-    public void setId(Long value) {
+    public void setId(BigInteger value) {
         set(0, value);
     }
 
@@ -33,8 +34,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.id</code>.
      */
     @Override
-    public Long getId() {
-        return (Long) get(0);
+    public BigInteger getId() {
+        return (BigInteger) get(0);
     }
 
     /**
@@ -249,7 +250,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Setter for <code>public.Transaction.max</code>.
      */
     @Override
-    public void setMax(Long value) {
+    public void setMax(BigInteger value) {
         set(14, value);
     }
 
@@ -257,15 +258,15 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.max</code>.
      */
     @Override
-    public Long getMax() {
-        return (Long) get(14);
+    public BigInteger getMax() {
+        return (BigInteger) get(14);
     }
 
     /**
      * Setter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public void setLim(Long value) {
+    public void setLim(BigInteger value) {
         set(15, value);
     }
 
@@ -273,15 +274,15 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public Long getLim() {
-        return (Long) get(15);
+    public BigInteger getLim() {
+        return (BigInteger) get(15);
     }
 
     /**
      * Setter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public void setPre(Long value) {
+    public void setPre(BigInteger value) {
         set(16, value);
     }
 
@@ -289,15 +290,15 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public Long getPre() {
-        return (Long) get(16);
+    public BigInteger getPre() {
+        return (BigInteger) get(16);
     }
 
     /**
      * Setter for <code>public.Transaction.mts_add</code>.
      */
     @Override
-    public void setMtsAdd(Long value) {
+    public void setMtsAdd(BigInteger value) {
         set(17, value);
     }
 
@@ -305,15 +306,15 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.mts_add</code>.
      */
     @Override
-    public Long getMtsAdd() {
-        return (Long) get(17);
+    public BigInteger getMtsAdd() {
+        return (BigInteger) get(17);
     }
 
     /**
      * Setter for <code>public.Transaction.mts_mod</code>.
      */
     @Override
-    public void setMtsMod(Long value) {
+    public void setMtsMod(BigInteger value) {
         set(18, value);
     }
 
@@ -321,8 +322,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.mts_mod</code>.
      */
     @Override
-    public Long getMtsMod() {
-        return (Long) get(18);
+    public BigInteger getMtsMod() {
+        return (BigInteger) get(18);
     }
 
     /**
@@ -362,7 +363,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<Long> key() {
+    public Record1<BigInteger> key() {
         return (Record1) super.key();
     }
 
@@ -416,7 +417,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(Long id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, Long max, Long lim, Long pre, Long mtsAdd, Long mtsMod, Integer dec, LocalDateTime timestamp) {
+    public TransactionRecord(BigInteger id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger mtsMod, Integer dec, LocalDateTime timestamp) {
         super(Transaction.TRANSACTION);
 
         setId(id);

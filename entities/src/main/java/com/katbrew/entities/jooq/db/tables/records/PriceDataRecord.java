@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables.records;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.interfaces.IPriceData;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import org.jooq.Record1;
@@ -25,7 +26,7 @@ public class PriceDataRecord extends UpdatableRecordImpl<PriceDataRecord> implem
      * Setter for <code>public.Price_Data.id</code>.
      */
     @Override
-    public void setId(Long value) {
+    public void setId(BigInteger value) {
         set(0, value);
     }
 
@@ -33,8 +34,8 @@ public class PriceDataRecord extends UpdatableRecordImpl<PriceDataRecord> implem
      * Getter for <code>public.Price_Data.id</code>.
      */
     @Override
-    public Long getId() {
-        return (Long) get(0);
+    public BigInteger getId() {
+        return (BigInteger) get(0);
     }
 
     /**
@@ -122,7 +123,7 @@ public class PriceDataRecord extends UpdatableRecordImpl<PriceDataRecord> implem
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<Long> key() {
+    public Record1<BigInteger> key() {
         return (Record1) super.key();
     }
 
@@ -161,7 +162,7 @@ public class PriceDataRecord extends UpdatableRecordImpl<PriceDataRecord> implem
     /**
      * Create a detached, initialised PriceDataRecord
      */
-    public PriceDataRecord(Long id, Integer fkToken, Double valueKas, Double valueUsd, Double change_24h, LocalDateTime timestamp) {
+    public PriceDataRecord(BigInteger id, Integer fkToken, Double valueKas, Double valueUsd, Double change_24h, LocalDateTime timestamp) {
         super(PriceData.PRICE_DATA);
 
         setId(id);

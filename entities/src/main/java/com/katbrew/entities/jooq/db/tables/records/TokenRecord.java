@@ -7,6 +7,8 @@ package com.katbrew.entities.jooq.db.tables.records;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.interfaces.IToken;
 
+import java.math.BigInteger;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -55,7 +57,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Setter for <code>public.Token.max</code>.
      */
     @Override
-    public void setMax(Long value) {
+    public void setMax(BigInteger value) {
         set(2, value);
     }
 
@@ -63,15 +65,15 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.max</code>.
      */
     @Override
-    public Long getMax() {
-        return (Long) get(2);
+    public BigInteger getMax() {
+        return (BigInteger) get(2);
     }
 
     /**
      * Setter for <code>public.Token.lim</code>.
      */
     @Override
-    public void setLim(Long value) {
+    public void setLim(BigInteger value) {
         set(3, value);
     }
 
@@ -79,15 +81,15 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.lim</code>.
      */
     @Override
-    public Long getLim() {
-        return (Long) get(3);
+    public BigInteger getLim() {
+        return (BigInteger) get(3);
     }
 
     /**
      * Setter for <code>public.Token.pre</code>.
      */
     @Override
-    public void setPre(Long value) {
+    public void setPre(BigInteger value) {
         set(4, value);
     }
 
@@ -95,15 +97,15 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.pre</code>.
      */
     @Override
-    public Long getPre() {
-        return (Long) get(4);
+    public BigInteger getPre() {
+        return (BigInteger) get(4);
     }
 
     /**
      * Setter for <code>public.Token.mts_add</code>.
      */
     @Override
-    public void setMtsAdd(Long value) {
+    public void setMtsAdd(BigInteger value) {
         set(5, value);
     }
 
@@ -111,8 +113,24 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.mts_add</code>.
      */
     @Override
-    public Long getMtsAdd() {
-        return (Long) get(5);
+    public BigInteger getMtsAdd() {
+        return (BigInteger) get(5);
+    }
+
+    /**
+     * Setter for <code>public.Token.minted</code>.
+     */
+    @Override
+    public void setMinted(BigInteger value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.minted</code>.
+     */
+    @Override
+    public BigInteger getMinted() {
+        return (BigInteger) get(6);
     }
 
     /**
@@ -120,7 +138,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public void setHolderTotal(Integer value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
@@ -128,7 +146,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public Integer getHolderTotal() {
-        return (Integer) get(6);
+        return (Integer) get(7);
     }
 
     /**
@@ -136,7 +154,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public void setDec(Integer value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
@@ -144,23 +162,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public Integer getDec() {
-        return (Integer) get(7);
-    }
-
-    /**
-     * Setter for <code>public.Token.minted</code>.
-     */
-    @Override
-    public void setMinted(Long value) {
-        set(8, value);
-    }
-
-    /**
-     * Getter for <code>public.Token.minted</code>.
-     */
-    @Override
-    public Long getMinted() {
-        return (Long) get(8);
+        return (Integer) get(8);
     }
 
     /**
@@ -216,9 +218,9 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setLim(from.getLim());
         setPre(from.getPre());
         setMtsAdd(from.getMtsAdd());
+        setMinted(from.getMinted());
         setHolderTotal(from.getHolderTotal());
         setDec(from.getDec());
-        setMinted(from.getMinted());
         setState(from.getState());
         setLogo(from.getLogo());
         resetChangedOnNotNull();
@@ -244,7 +246,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     /**
      * Create a detached, initialised TokenRecord
      */
-    public TokenRecord(Integer id, String tick, Long max, Long lim, Long pre, Long mtsAdd, Integer holderTotal, Integer dec, Long minted, String state, String logo) {
+    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer dec, String state, String logo) {
         super(Token.TOKEN);
 
         setId(id);
@@ -253,9 +255,9 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setLim(lim);
         setPre(pre);
         setMtsAdd(mtsAdd);
+        setMinted(minted);
         setHolderTotal(holderTotal);
         setDec(dec);
-        setMinted(minted);
         setState(state);
         setLogo(logo);
         resetChangedOnNotNull();
@@ -274,9 +276,9 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
             setLim(value.getLim());
             setPre(value.getPre());
             setMtsAdd(value.getMtsAdd());
+            setMinted(value.getMinted());
             setHolderTotal(value.getHolderTotal());
             setDec(value.getDec());
-            setMinted(value.getMinted());
             setState(value.getState());
             setLogo(value.getLogo());
             resetChangedOnNotNull();

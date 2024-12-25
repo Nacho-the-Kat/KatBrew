@@ -3,7 +3,7 @@ package com.katbrew.services.tables;
 import com.katbrew.entities.jooq.db.tables.daos.UsersDao;
 import com.katbrew.entities.jooq.db.tables.pojos.Users;
 import com.katbrew.entities.jooq.db.tables.records.UsersRecord;
-import com.katbrew.services.base.AbstractJooqService;
+import com.katbrew.services.base.JooqService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
@@ -13,17 +13,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class UsersService extends AbstractJooqService<Users, UsersRecord> {
-
-    /**
-     * Konstruktor.
-     *
-     * @param dslContext Das Konfigurations Bean mit der Datenbank Konfiguration.
-     */
-    public UsersService(final DSLContext dslContext) {
-        super(new UsersDao(), new UsersRecord(), Users.class, dslContext);
+public class UsersService extends JooqService<Users, UsersRecord> {
+    public UsersService(final DSLContext context) {
+        super(new UsersDao(), context);
     }
-
 
 //    /**
 //     * Liefert den Session User, der die Anfrage gestellt hat.

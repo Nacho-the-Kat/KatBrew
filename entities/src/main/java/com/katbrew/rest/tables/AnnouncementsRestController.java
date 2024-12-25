@@ -21,14 +21,9 @@ public class AnnouncementsRestController {
 
     private final AnnouncementsService announcementsService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ApiResponse<List<Announcements>> getAll() {
         return new ApiResponse<>(announcementsService.findAll());
     }
 
-    @PostMapping(path = "/create", consumes = { MediaType.ALL_VALUE })
-    public void create(@RequestBody final MultipartFile upload) throws IOException {
-        System.out.println("ad");
-//        announcementsService.create(upload, image);
-    }
 }

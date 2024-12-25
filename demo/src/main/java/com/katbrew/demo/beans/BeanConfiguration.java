@@ -17,22 +17,14 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class BeanConfiguration {
 
-    /**
-     * Gibt an ob das Schema auf Produktiv gemappt wird.
-     */
+
     @Value("${database.with-output-mapping}")
     private boolean withOutputMapping;
 
-    /**
-     * Die Datasource aus den dev_application.properties. Sie definieren die Datenbankverbindungsparameter.
-     */
+
     private final DataSource dataSource;
 
-    /**
-     * Die jooq Configuration wird definiert, damit die Services auf die richtige Datenbank zugreifen.
-     *
-     * @return Die {@link org.jooq.Configuration} Bean für den Datenbankzugriff.
-     */
+
     @Bean
     public org.jooq.Configuration configuration() {
 

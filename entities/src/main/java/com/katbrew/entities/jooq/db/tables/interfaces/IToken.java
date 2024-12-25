@@ -5,6 +5,9 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
+
+import org.jooq.impl.AutoConverter;
 
 
 /**
@@ -36,42 +39,52 @@ public interface IToken extends Serializable {
     /**
      * Setter for <code>public.Token.max</code>.
      */
-    public void setMax(Long value);
+    public void setMax(BigInteger value);
 
     /**
      * Getter for <code>public.Token.max</code>.
      */
-    public Long getMax();
+    public BigInteger getMax();
 
     /**
      * Setter for <code>public.Token.lim</code>.
      */
-    public void setLim(Long value);
+    public void setLim(BigInteger value);
 
     /**
      * Getter for <code>public.Token.lim</code>.
      */
-    public Long getLim();
+    public BigInteger getLim();
 
     /**
      * Setter for <code>public.Token.pre</code>.
      */
-    public void setPre(Long value);
+    public void setPre(BigInteger value);
 
     /**
      * Getter for <code>public.Token.pre</code>.
      */
-    public Long getPre();
+    public BigInteger getPre();
 
     /**
      * Setter for <code>public.Token.mts_add</code>.
      */
-    public void setMtsAdd(Long value);
+    public void setMtsAdd(BigInteger value);
 
     /**
      * Getter for <code>public.Token.mts_add</code>.
      */
-    public Long getMtsAdd();
+    public BigInteger getMtsAdd();
+
+    /**
+     * Setter for <code>public.Token.minted</code>.
+     */
+    public void setMinted(BigInteger value);
+
+    /**
+     * Getter for <code>public.Token.minted</code>.
+     */
+    public BigInteger getMinted();
 
     /**
      * Setter for <code>public.Token.holder_total</code>.
@@ -92,16 +105,6 @@ public interface IToken extends Serializable {
      * Getter for <code>public.Token.dec</code>.
      */
     public Integer getDec();
-
-    /**
-     * Setter for <code>public.Token.minted</code>.
-     */
-    public void setMinted(Long value);
-
-    /**
-     * Getter for <code>public.Token.minted</code>.
-     */
-    public Long getMinted();
 
     /**
      * Setter for <code>public.Token.state</code>.

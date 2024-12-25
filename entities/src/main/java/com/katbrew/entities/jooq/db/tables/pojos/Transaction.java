@@ -6,6 +6,7 @@ package com.katbrew.entities.jooq.db.tables.pojos;
 
 import com.katbrew.entities.jooq.db.tables.interfaces.ITransaction;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
@@ -17,7 +18,7 @@ public class Transaction implements ITransaction {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private BigInteger id;
     private Integer fkToken;
     private String hashrev;
     private String p;
@@ -31,11 +32,11 @@ public class Transaction implements ITransaction {
     private String opAccept;
     private String opError;
     private String checkpoint;
-    private Long max;
-    private Long lim;
-    private Long pre;
-    private Long mtsAdd;
-    private Long mtsMod;
+    private BigInteger max;
+    private BigInteger lim;
+    private BigInteger pre;
+    private BigInteger mtsAdd;
+    private BigInteger mtsMod;
     private Integer dec;
     private LocalDateTime timestamp;
 
@@ -66,7 +67,7 @@ public class Transaction implements ITransaction {
     }
 
     public Transaction(
-        Long id,
+        BigInteger id,
         Integer fkToken,
         String hashrev,
         String p,
@@ -80,11 +81,11 @@ public class Transaction implements ITransaction {
         String opAccept,
         String opError,
         String checkpoint,
-        Long max,
-        Long lim,
-        Long pre,
-        Long mtsAdd,
-        Long mtsMod,
+        BigInteger max,
+        BigInteger lim,
+        BigInteger pre,
+        BigInteger mtsAdd,
+        BigInteger mtsMod,
         Integer dec,
         LocalDateTime timestamp
     ) {
@@ -115,7 +116,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.id</code>.
      */
     @Override
-    public Long getId() {
+    public BigInteger getId() {
         return this.id;
     }
 
@@ -123,7 +124,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.id</code>.
      */
     @Override
-    public void setId(Long id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -339,7 +340,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.max</code>.
      */
     @Override
-    public Long getMax() {
+    public BigInteger getMax() {
         return this.max;
     }
 
@@ -347,7 +348,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.max</code>.
      */
     @Override
-    public void setMax(Long max) {
+    public void setMax(BigInteger max) {
         this.max = max;
     }
 
@@ -355,7 +356,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public Long getLim() {
+    public BigInteger getLim() {
         return this.lim;
     }
 
@@ -363,7 +364,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.lim</code>.
      */
     @Override
-    public void setLim(Long lim) {
+    public void setLim(BigInteger lim) {
         this.lim = lim;
     }
 
@@ -371,7 +372,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public Long getPre() {
+    public BigInteger getPre() {
         return this.pre;
     }
 
@@ -379,7 +380,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.pre</code>.
      */
     @Override
-    public void setPre(Long pre) {
+    public void setPre(BigInteger pre) {
         this.pre = pre;
     }
 
@@ -387,7 +388,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.mts_add</code>.
      */
     @Override
-    public Long getMtsAdd() {
+    public BigInteger getMtsAdd() {
         return this.mtsAdd;
     }
 
@@ -395,7 +396,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.mts_add</code>.
      */
     @Override
-    public void setMtsAdd(Long mtsAdd) {
+    public void setMtsAdd(BigInteger mtsAdd) {
         this.mtsAdd = mtsAdd;
     }
 
@@ -403,7 +404,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.mts_mod</code>.
      */
     @Override
-    public Long getMtsMod() {
+    public BigInteger getMtsMod() {
         return this.mtsMod;
     }
 
@@ -411,7 +412,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.mts_mod</code>.
      */
     @Override
-    public void setMtsMod(Long mtsMod) {
+    public void setMtsMod(BigInteger mtsMod) {
         this.mtsMod = mtsMod;
     }
 

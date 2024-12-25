@@ -7,10 +7,12 @@ package com.katbrew.entities.jooq.db.tables.daos;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.records.BalanceRecord;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
 import org.jooq.Configuration;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DAOImpl;
 
 
@@ -87,14 +89,14 @@ public class BalanceDao extends DAOImpl<BalanceRecord, com.katbrew.entities.jooq
      * Fetch records that have <code>balance BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfBalance(Long lowerInclusive, Long upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfBalance(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Balance.BALANCE.BALANCE_, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>balance IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByBalance(Long... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByBalance(BigInteger... values) {
         return fetch(Balance.BALANCE.BALANCE_, values);
     }
 

@@ -7,10 +7,12 @@ package com.katbrew.entities.jooq.db.tables.daos;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.records.TokenRecord;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
 import org.jooq.Configuration;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DAOImpl;
 
 
@@ -101,14 +103,14 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>max BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMax(Long lowerInclusive, Long upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMax(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.MAX, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>max IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMax(Long... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMax(BigInteger... values) {
         return fetch(Token.TOKEN.MAX, values);
     }
 
@@ -116,14 +118,14 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>lim BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfLim(Long lowerInclusive, Long upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfLim(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.LIM, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>lim IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByLim(Long... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByLim(BigInteger... values) {
         return fetch(Token.TOKEN.LIM, values);
     }
 
@@ -131,14 +133,14 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>pre BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfPre(Long lowerInclusive, Long upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfPre(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.PRE, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>pre IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByPre(Long... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByPre(BigInteger... values) {
         return fetch(Token.TOKEN.PRE, values);
     }
 
@@ -146,15 +148,30 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>mts_add BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMtsAdd(Long lowerInclusive, Long upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMtsAdd(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.MTS_ADD, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>mts_add IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMtsAdd(Long... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMtsAdd(BigInteger... values) {
         return fetch(Token.TOKEN.MTS_ADD, values);
+    }
+
+    /**
+     * Fetch records that have <code>minted BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMinted(BigInteger lowerInclusive, BigInteger upperInclusive) {
+        return fetchRange(Token.TOKEN.MINTED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>minted IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMinted(BigInteger... values) {
+        return fetch(Token.TOKEN.MINTED, values);
     }
 
     /**
@@ -185,21 +202,6 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      */
     public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByDec(Integer... values) {
         return fetch(Token.TOKEN.DEC, values);
-    }
-
-    /**
-     * Fetch records that have <code>minted BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMinted(Long lowerInclusive, Long upperInclusive) {
-        return fetchRange(Token.TOKEN.MINTED, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>minted IN (values)</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMinted(Long... values) {
-        return fetch(Token.TOKEN.MINTED, values);
     }
 
     /**

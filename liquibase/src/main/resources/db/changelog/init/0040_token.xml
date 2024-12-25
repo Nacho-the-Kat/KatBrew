@@ -23,9 +23,9 @@
             <column type="bigint" name="lim"/>
             <column type="bigint" name="pre"/>
             <column type="bigint" name="mts_add"/>
+            <column type="bigint" name="minted"/>
             <column type="int" name="holder_total"/>
             <column type="int" name="dec"/>
-            <column type="bigint" name="minted"/>
             <column type="text" name="state"/>
             <column type="text" name="logo"/>
         </createTable>

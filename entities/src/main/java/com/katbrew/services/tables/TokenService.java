@@ -1,26 +1,28 @@
 package com.katbrew.services.tables;
 
+import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.daos.TokenDao;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.entities.jooq.db.tables.records.TokenRecord;
 import com.katbrew.exceptions.NotValidException;
-import com.katbrew.services.base.AbstractJooqService;
+import com.katbrew.services.base.JooqService;
 import org.jooq.DSLContext;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TokensService extends AbstractJooqService<Token, TokenRecord> {
+public class TokenService extends JooqService<Token, TokenRecord> {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public TokensService(final DSLContext configuration) {
-        super(new TokenDao(), new TokenRecord(), Token.class, configuration);
-        this.jdbcTemplate = new JdbcTemplate(configuration.dsl().parsingDataSource());
+    public TokenService(final DSLContext context) {
+        super(new TokenDao(), context);
+        this.jdbcTemplate = new JdbcTemplate(context.dsl().parsingDataSource());
     }
 
     public List<Token> getTokens() {
@@ -35,9 +37,18 @@ public class TokensService extends AbstractJooqService<Token, TokenRecord> {
         if (sortBy.contains(";") || sortBy.contains(",")) {
             throw new NotValidException();
         }
+
         //todo get abstract
         String sql = "select * from \"Token\" order By \"" + sortBy + "\" " + sortOrder + " limit " + limit + " offset " + cursor;
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Token.class));
+    }
+
+    public Token findByTick(final String tick) {
+        List<Token> token = this.findBy(Collections.singletonList(Tables.TOKEN.TICK.eq(tick)));
+        if (token.isEmpty()) {
+            return null;
+        }
+        return token.get(0);
     }
 }

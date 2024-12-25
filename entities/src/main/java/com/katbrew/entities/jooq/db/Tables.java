@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
+import com.katbrew.entities.jooq.db.tables.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.Transaction;
@@ -34,6 +35,11 @@ public class Tables {
      * The table <code>public.Holder</code>.
      */
     public static final Holder HOLDER = Holder.HOLDER;
+
+    /**
+     * The table <code>public.Last_Update</code>.
+     */
+    public static final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
 
     /**
      * The table <code>public.Price_Data</code>.

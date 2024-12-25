@@ -6,6 +6,7 @@ package com.katbrew.entities.jooq.db.tables.pojos;
 
 import com.katbrew.entities.jooq.db.tables.interfaces.IPriceData;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
@@ -17,7 +18,7 @@ public class PriceData implements IPriceData {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private BigInteger id;
     private Integer fkToken;
     private Double valueKas;
     private Double valueUsd;
@@ -36,7 +37,7 @@ public class PriceData implements IPriceData {
     }
 
     public PriceData(
-        Long id,
+        BigInteger id,
         Integer fkToken,
         Double valueKas,
         Double valueUsd,
@@ -55,7 +56,7 @@ public class PriceData implements IPriceData {
      * Getter for <code>public.Price_Data.id</code>.
      */
     @Override
-    public Long getId() {
+    public BigInteger getId() {
         return this.id;
     }
 
@@ -63,7 +64,7 @@ public class PriceData implements IPriceData {
      * Setter for <code>public.Price_Data.id</code>.
      */
     @Override
-    public void setId(Long id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

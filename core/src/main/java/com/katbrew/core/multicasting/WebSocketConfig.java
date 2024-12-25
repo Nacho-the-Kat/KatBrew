@@ -1,6 +1,6 @@
 package com.katbrew.core.multicasting;
 
-import com.katbrew.services.base.AbstractJooqService;
+import com.katbrew.services.base.JooqService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker(AbstractJooqService.MULTICAST_PREFIX);
+        registry.enableSimpleBroker(JooqService.MULTICAST_PREFIX);
         registry.setApplicationDestinationPrefixes("/");
     }
 }

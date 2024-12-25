@@ -9,6 +9,7 @@ import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Holder.HolderPath;
 import com.katbrew.entities.jooq.db.tables.records.BalanceRecord;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -70,7 +72,7 @@ public class Balance extends TableImpl<BalanceRecord> {
     /**
      * The column <code>public.Balance.balance</code>.
      */
-    public final TableField<BalanceRecord, Long> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "");
+    public final TableField<BalanceRecord, BigInteger> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Balance.tick</code>.

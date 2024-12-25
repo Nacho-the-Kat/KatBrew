@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
+import com.katbrew.entities.jooq.db.tables.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.Transaction;
@@ -48,6 +49,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.Holder</code>.
      */
     public final Holder HOLDER = Holder.HOLDER;
+
+    /**
+     * The table <code>public.Last_Update</code>.
+     */
+    public final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
 
     /**
      * The table <code>public.Price_Data</code>.
@@ -93,6 +99,7 @@ public class Public extends SchemaImpl {
             Announcements.ANNOUNCEMENTS,
             Balance.BALANCE,
             Holder.HOLDER,
+            LastUpdate.LAST_UPDATE,
             PriceData.PRICE_DATA,
             Token.TOKEN,
             Transaction.TRANSACTION,

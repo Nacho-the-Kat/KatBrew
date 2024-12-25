@@ -1,4 +1,4 @@
-package com.katbrew.rest.base;
+package com.katbrew.rest.admin;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Announcements;
 import com.katbrew.exceptions.NotValidException;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
@@ -28,8 +29,8 @@ public class FileUploadController {
 
     private final AnnouncementsService announcementsService;
 
-    @RequestMapping("/announcements")
-    @PostMapping
+
+    @PostMapping("/announcements")
     public void uploadAnnouncements(@ModelAttribute UploadAnnouncements upload) {
         try {
             final MultipartFile image = upload.getImage();
@@ -41,9 +42,12 @@ public class FileUploadController {
             announcements.setText(upload.getText());
             announcements.setTitle(upload.getTitle());
             announcements.setTimestamp(LocalDateTime.now());
-            announcementsService.insert(announcements);
-            image.transferTo(Paths.get(root + "/announcements", image.getOriginalFilename()));
 
+            final Announcements newOne = announcementsService.insert(announcements);
+            newOne.setImageUrl("/announcements/" + newOne.getId() + "." + nameSplit[1]);
+
+            image.transferTo(Paths.get(root, newOne.getImageUrl()));
+            announcementsService.update(newOne);
         } catch (IOException e) {
             throw new NotValidException("Fehler beim Hochladen der Datei");
         }

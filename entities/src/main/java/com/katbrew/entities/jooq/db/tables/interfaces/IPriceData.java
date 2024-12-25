@@ -5,7 +5,10 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+
+import org.jooq.impl.AutoConverter;
 
 
 /**
@@ -17,12 +20,12 @@ public interface IPriceData extends Serializable {
     /**
      * Setter for <code>public.Price_Data.id</code>.
      */
-    public void setId(Long value);
+    public void setId(BigInteger value);
 
     /**
      * Getter for <code>public.Price_Data.id</code>.
      */
-    public Long getId();
+    public BigInteger getId();
 
     /**
      * Setter for <code>public.Price_Data.fk_token</code>.

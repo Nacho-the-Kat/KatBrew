@@ -9,6 +9,7 @@ import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.PriceDataRecord;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -61,7 +63,7 @@ public class PriceData extends TableImpl<PriceDataRecord> {
     /**
      * The column <code>public.Price_Data.id</code>.
      */
-    public final TableField<PriceDataRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<PriceDataRecord, BigInteger> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Price_Data.fk_token</code>.
@@ -156,8 +158,8 @@ public class PriceData extends TableImpl<PriceDataRecord> {
     }
 
     @Override
-    public Identity<PriceDataRecord, Long> getIdentity() {
-        return (Identity<PriceDataRecord, Long>) super.getIdentity();
+    public Identity<PriceDataRecord, BigInteger> getIdentity() {
+        return (Identity<PriceDataRecord, BigInteger>) super.getIdentity();
     }
 
     @Override
