@@ -1,6 +1,7 @@
 package com.katbrew.demo.beans;
 
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.conf.*;
 import org.jooq.impl.DefaultConfiguration;
@@ -43,4 +44,8 @@ public class BeanConfiguration {
             return new DefaultConfiguration().set(dataSource).set(SQLDialect.POSTGRES);
         }
     }
+//    @Bean
+//    public DSLContext dslContext() {
+//        return configuration().dsl();
+//    }
 }

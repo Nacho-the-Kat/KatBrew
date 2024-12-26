@@ -4,10 +4,9 @@ import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.daos.PriceDataDao;
 import com.katbrew.entities.jooq.db.tables.pojos.PriceData;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
-import com.katbrew.entities.jooq.db.tables.records.PriceDataRecord;
 import com.katbrew.services.base.JooqService;
+import lombok.RequiredArgsConstructor;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,13 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class PriceDataService extends JooqService<PriceData, PriceDataRecord> {
+@RequiredArgsConstructor
+public class PriceDataService extends JooqService<PriceData, PriceDataDao> {
     private final TokenService tokenService;
-
-    public PriceDataService(final DSLContext context, final TokenService tokenService) {
-        super(new PriceDataDao(), context);
-        this.tokenService = tokenService;
-    }
 
     public List<PriceData> getTokenPriceData(final String tick, final LocalDateTime start, final LocalDateTime end) {
 

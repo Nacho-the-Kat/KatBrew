@@ -22,8 +22,11 @@ public class PriceDataRestController {
 
     private final PriceDataService priceDataService;
 
-    @GetMapping
-    public ApiResponse<List<PriceData>> getTokenPriceData(@RequestParam final String tick, @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+    @GetMapping("/tokenPriceData")
+    public ApiResponse<List<PriceData>> getTokenPriceData(
+            @RequestParam final String tick,
+            @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
         return new ApiResponse<>(priceDataService.getTokenPriceData(tick, start, end));
     }
 

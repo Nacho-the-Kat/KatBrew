@@ -1,55 +1,66 @@
 package com.katbrew.services.base;
 
+import com.katbrew.exceptions.NotValidException;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DAOImpl;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import static org.jooq.impl.DSL.max;
+
 /**
- * Base Service für alle Datenbank Entities.
+ * the base jooq service for the database.
  *
- * @param <T> Das Pojo der Datenbank Tabelle.
- * @param <R> Der Record der Datenbank Tabelle.
+ * @param <T> the pojo of the dataset.
+ * @param <D> the dao of the dataset.
  */
 @SuppressWarnings("unchecked")
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
-public abstract class JooqService<T extends Serializable, R extends Record> {
+public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     public static final String MULTICAST_PREFIX = "/multicast/";
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    private final DAOImpl dao;
+    private DAOImpl dao;
 
-    private final DSLContext dsl;
-    private final Class<T> type = (Class<T>) ((ParameterizedType) getClass()
-            .getGenericSuperclass())
-            .getActualTypeArguments()[0];
+    @Autowired
+    private DSLContext dsl;
+    private final Class<T> type;
 
-    //    @PostConstruct
-//    private void setConfiguration() {
-//        dao.setConfiguration(configuration);
-//    }
-//
-//    @PostConstruct
-//    private void setDsl(){
-//        dsl = DSL.using(configuration);
-//    }
-//
-//
+    public JooqService() {
+        java.lang.reflect.Type[] actualTypeArguments = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments();
+        this.type = (Class<T>) actualTypeArguments[0];
+        java.lang.reflect.Type intDao = actualTypeArguments[1];
+        try {
+            this.dao = ((Class<D>) intDao).getDeclaredConstructor().newInstance();
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            log.error("error while creating the dao", e);
+        }
+    }
+
+    @PostConstruct
+    private void setConfiguration() {
+        dao.setConfiguration(dsl.configuration());
+    }
+
     public T findOne(final Integer id) throws IllegalArgumentException {
 
         final Object entity = dao.findById(id);
@@ -66,20 +77,22 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
         return findOne(id.intValue());
     }
 
-    //
-//    public T findLast(final Field<?> field) {
-//        final Object entityId = configuration
-//                .dsl()
-//                .select(max(field))
-//                .from(dao.getTable())
-//                .fetch()
-//                .getValue(0, 0);
-//        if (entityId != null) {
-//            return findOne((int) entityId);
-//        }
-//        return null;
-//    }
-//
+    public T findLast() {
+        return findLast("id");
+    }
+
+    public T findLast(final String indexColumn) {
+        Field<?> field = getField(indexColumn);
+        Record1<?> result = dsl
+                .select(max(field))
+                .from(dao.getTable())
+                .fetchOne();
+        if (result != null) {
+            return findOne((int) result.value1());
+        }
+        return null;
+    }
+
     public List<T> findBy(final List<Condition> conditions) {
         return dsl
                 .select()
@@ -89,20 +102,25 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
                 .into(type);
     }
 
-    //
-//
-//    public List<T> findBy(List<Condition> conditions, int start, int max) {
-//        return configuration
-//                .dsl()
-//                .select()
-//                .from(dao.getTable())
-//                .where(conditions)
-//                .offset(start)
-//                .limit(max)
-//                .fetch()
-//                .into(type);
-//    }
-//
+    public List<T> findByWithOffset(List<Condition> conditions, int start, int max) {
+        return dsl.select()
+                .from(dao.getTable())
+                .where(conditions)
+                .offset(start)
+                .limit(max)
+                .fetch()
+                .into(type);
+    }
+
+    public List<T> findWithOffset(int start, int max) {
+        return dsl.select()
+                .from(dao.getTable())
+                .offset(start)
+                .limit(max)
+                .fetch()
+                .into(type);
+    }
+
     public List<T> findBy(final List<Condition> conditions, final List<OrderField<?>> orderFields) {
         return dsl
                 .select()
@@ -153,37 +171,34 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
                 .fetch()
                 .into(type);
     }
-//
-//    public List<T> getByOffsetDesc(
-//            final int start,
-//            final int max
-//    ) {
-//        return configuration
-//                .dsl()
-//                .select()
-//                .from(dao.getTable())
-//                .orderBy(DSL.field("id").desc())
-//                .offset(start)
-//                .limit(max)
-//                .fetch()
-//                .into(type);
-//    }
-//
-//    public T findLast(Field<?> field, final List<Condition> conditions) {
-//        final Object entityId = configuration
-//                .dsl()
-//                .select(max(field))
-//                .from(dao.getTable())
-//                .where(conditions)
-//                .fetch()
-//                .getValue(0, 0);
-//
-//        if (entityId != null) {
-//            return findOne((int) entityId);
-//        }
-//        return null;
-//    }
 
+    public List<T> findAllSorted(
+            final String sortBy,
+            final String sortOrder
+    ) {
+        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
+
+        return dsl.selectFrom(dao.getTable())
+                .orderBy(sort)
+                .fetch()
+                .into(type);
+    }
+
+    public List<T> findBySortedLimitOffset(
+            final Integer limit,
+            final Integer offset,
+            final String sortBy,
+            final String sortOrder
+    ) {
+        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
+
+        return dsl.selectFrom(dao.getTable())
+                .orderBy(sort)
+                .offset(offset)
+                .limit(limit)
+                .fetch()
+                .into(type);
+    }
 
     public T insert(final T entityToInsert) {
         try {
@@ -202,8 +217,6 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
         return entitiesToInsert.stream().map(this::insert).toList();
     }
 
-
-    //todo because error
     public void update(final T entityToUpdate) {
         dao.update(entityToUpdate);
         this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
@@ -213,7 +226,6 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
         entitiesToUpdate.forEach(this::update);
     }
 
-
     public List<T> findAll() {
         return dsl.selectFrom(dao.getTable()).fetch().into(type);
     }
@@ -221,48 +233,53 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
     public List<T> findAll(List<Field<?>> fields) {
         return dsl.select(fields).from(dao.getTable()).fetch().into(type);
     }
-//
-//
-//    public void delete(final Integer id) {
-//        final T entityToDelete = findOne(id);
-//        dao.deleteById(id);
-//        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
-//    }
-//
-//
-//    public void delete(List<T> entitiesToDelete) {
-//        dao.delete(entitiesToDelete);
-//        for (final T entityToDelete : entitiesToDelete) {
-//            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
-//        }
-//    }
-//
-//    public void delete(final Long id) {
-//        delete(id.intValue());
-//    }
-//
-//    public void patch(Integer id, Map<String, Object> fieldmap) {
-//        T entity = findOne(id);
-//        if (entity == null) {
-//            throw new NotValidException("Kein eintrag");
-//        }
-//        fieldmap.keySet().forEach(k -> {
-//            java.lang.reflect.Field field = ReflectionUtils.findField(entity.getClass(), k);
-//            if (field != null) {
-//                Method method = ReflectionUtils.findMethod(entity.getClass(), "set" + StringUtils.capitalize(k), field.getType());
-//                if (method != null) {
-//                    ReflectionUtils.invokeMethod(method, entity, fieldmap.get(k));
-//                }
-//            }
-//        });
-//        this.update(entity);
-//    }
 
+
+    public void delete(final Integer id) {
+        final T entityToDelete = findOne(id);
+        dao.deleteById(id);
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
+    }
+
+    public void delete(List<T> entitiesToDelete) {
+        dao.delete(entitiesToDelete);
+        for (final T entityToDelete : entitiesToDelete) {
+            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
+        }
+
+    }
+
+    public void delete(T entityToDelete) {
+        dao.delete(entityToDelete);
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
+    }
+
+    public void delete(final Long id) {
+        this.delete(id.intValue());
+    }
+
+    public void patch(Integer id, Map<String, Object> fieldmap) {
+        T entity = findOne(id);
+        if (entity == null) {
+            throw new NotValidException("No entry for the id");
+        }
+        fieldmap.keySet().forEach(k -> {
+            java.lang.reflect.Field field = ReflectionUtils.findField(entity.getClass(), k);
+            if (field != null) {
+                Method method = ReflectionUtils.findMethod(entity.getClass(), "set" + StringUtils.capitalize(k), field.getType());
+                if (method != null) {
+                    ReflectionUtils.invokeMethod(method, entity, fieldmap.get(k));
+                }
+            }
+        });
+        this.update(entity);
+    }
 
     public String getMulticastUrl(final MULTICAST_TYPE multicastType) {
         return MULTICAST_PREFIX + dao.getTable().getName() + multicastType.getUrlSuffix();
     }
 
+    @Getter
     public enum MULTICAST_TYPE {
 
         UPDATE("/update"),
@@ -272,11 +289,43 @@ public abstract class JooqService<T extends Serializable, R extends Record> {
 
         DELETE("/delete");
 
-        @Getter
         private final String urlSuffix;
 
         MULTICAST_TYPE(final String urlSuffix) {
             this.urlSuffix = urlSuffix;
         }
+    }
+
+    private Field<?> getFieldWithSort(final String col, final String sortDirection) {
+        final Field<?> sort = getField(col);
+
+        if (sortDirection.equals("asc")) {
+            sort.asc();
+        } else {
+            sort.desc();
+        }
+        return sort;
+    }
+
+    private Field<?> getField(final String col) {
+        final Field<?> field = dao.getTable().field(convertToDBCol(col));
+        if (field == null) {
+            throw new NotValidException("field not found");
+        }
+        return field;
+    }
+
+    private String convertToDBCol(final String col) {
+        final StringBuilder str = new StringBuilder();
+        for (int i = 0; i < col.length(); i++) {
+            char internal = col.charAt(i);
+            if (Character.isUpperCase(internal)) {
+                str.append('_');
+                str.append(Character.toLowerCase(internal));
+            } else {
+                str.append(internal);
+            }
+        }
+        return str.toString();
     }
 }
