@@ -4,7 +4,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
-@Component("fetchTokens")
+@Component
 public class FetchTokens implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
