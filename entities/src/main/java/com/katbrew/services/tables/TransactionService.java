@@ -27,8 +27,8 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
             return new ArrayList<>();
         }
         final List<Condition> conditions = List.of(
-                Tables.TRANSACTION.TIMESTAMP.ge(start),
-                Tables.TRANSACTION.TIMESTAMP.le(end),
+//                Tables.TRANSACTION.TIMESTAMP.ge(start),
+//                Tables.TRANSACTION.TIMESTAMP.le(end),
                 Tables.TRANSACTION.FK_TOKEN.eq(token.getId())
         );
         return this.findBy(conditions);

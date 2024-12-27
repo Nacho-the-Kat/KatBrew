@@ -18,20 +18,28 @@ public class LastUpdate implements ILastUpdate {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
+    private String identifier;
+    private String data;
     private LocalDateTime timestamp;
 
     public LastUpdate() {}
 
     public LastUpdate(ILastUpdate value) {
         this.id = value.getId();
+        this.identifier = value.getIdentifier();
+        this.data = value.getData();
         this.timestamp = value.getTimestamp();
     }
 
     public LastUpdate(
         Integer id,
+        String identifier,
+        String data,
         LocalDateTime timestamp
     ) {
         this.id = id;
+        this.identifier = identifier;
+        this.data = data;
         this.timestamp = timestamp;
     }
 
@@ -49,6 +57,38 @@ public class LastUpdate implements ILastUpdate {
     @Override
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * Getter for <code>public.Last_Update.identifier</code>.
+     */
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    /**
+     * Setter for <code>public.Last_Update.identifier</code>.
+     */
+    @Override
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    /**
+     * Getter for <code>public.Last_Update.data</code>.
+     */
+    @Override
+    public String getData() {
+        return this.data;
+    }
+
+    /**
+     * Setter for <code>public.Last_Update.data</code>.
+     */
+    @Override
+    public void setData(String data) {
+        this.data = data;
     }
 
     /**
@@ -82,6 +122,18 @@ public class LastUpdate implements ILastUpdate {
         }
         else if (!this.id.equals(other.id))
             return false;
+        if (this.identifier == null) {
+            if (other.identifier != null)
+                return false;
+        }
+        else if (!this.identifier.equals(other.identifier))
+            return false;
+        if (this.data == null) {
+            if (other.data != null)
+                return false;
+        }
+        else if (!this.data.equals(other.data))
+            return false;
         if (this.timestamp == null) {
             if (other.timestamp != null)
                 return false;
@@ -96,6 +148,8 @@ public class LastUpdate implements ILastUpdate {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+        result = prime * result + ((this.identifier == null) ? 0 : this.identifier.hashCode());
+        result = prime * result + ((this.data == null) ? 0 : this.data.hashCode());
         result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
         return result;
     }
@@ -105,6 +159,8 @@ public class LastUpdate implements ILastUpdate {
         StringBuilder sb = new StringBuilder("LastUpdate (");
 
         sb.append(id);
+        sb.append(", ").append(identifier);
+        sb.append(", ").append(data);
         sb.append(", ").append(timestamp);
 
         sb.append(")");
@@ -118,6 +174,8 @@ public class LastUpdate implements ILastUpdate {
     @Override
     public void from(ILastUpdate from) {
         setId(from.getId());
+        setIdentifier(from.getIdentifier());
+        setData(from.getData());
         setTimestamp(from.getTimestamp());
     }
 

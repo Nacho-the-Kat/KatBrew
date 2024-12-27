@@ -97,6 +97,26 @@ public interface IToken extends Serializable {
     public Integer getHolderTotal();
 
     /**
+     * Setter for <code>public.Token.mint_total</code>.
+     */
+    public void setMintTotal(Integer value);
+
+    /**
+     * Getter for <code>public.Token.mint_total</code>.
+     */
+    public Integer getMintTotal();
+
+    /**
+     * Setter for <code>public.Token.transfer_total</code>.
+     */
+    public void setTransferTotal(BigInteger value);
+
+    /**
+     * Getter for <code>public.Token.transfer_total</code>.
+     */
+    public BigInteger getTransferTotal();
+
+    /**
      * Setter for <code>public.Token.dec</code>.
      */
     public void setDec(Integer value);
@@ -115,6 +135,46 @@ public interface IToken extends Serializable {
      * Getter for <code>public.Token.state</code>.
      */
     public String getState();
+
+    /**
+     * Setter for <code>public.Token.hash_rev</code>.
+     */
+    public void setHashRev(String value);
+
+    /**
+     * Getter for <code>public.Token.hash_rev</code>.
+     */
+    public String getHashRev();
+
+    /**
+     * Setter for <code>public.Token.op_score_mod</code>.
+     */
+    public void setOpScoreMod(String value);
+
+    /**
+     * Getter for <code>public.Token.op_score_mod</code>.
+     */
+    public String getOpScoreMod();
+
+    /**
+     * Setter for <code>public.Token.op_score_add</code>.
+     */
+    public void setOpScoreAdd(String value);
+
+    /**
+     * Getter for <code>public.Token.op_score_add</code>.
+     */
+    public String getOpScoreAdd();
+
+    /**
+     * Setter for <code>public.Token.to</code>.
+     */
+    public void setTo(String value);
+
+    /**
+     * Getter for <code>public.Token.to</code>.
+     */
+    public String getTo();
 
     /**
      * Setter for <code>public.Token.logo</code>.

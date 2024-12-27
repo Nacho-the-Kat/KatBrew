@@ -101,6 +101,16 @@ public class Token extends TableImpl<TokenRecord> {
     public final TableField<TokenRecord, Integer> HOLDER_TOTAL = createField(DSL.name("holder_total"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.Token.mint_total</code>.
+     */
+    public final TableField<TokenRecord, Integer> MINT_TOTAL = createField(DSL.name("mint_total"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.Token.transfer_total</code>.
+     */
+    public final TableField<TokenRecord, BigInteger> TRANSFER_TOTAL = createField(DSL.name("transfer_total"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+
+    /**
      * The column <code>public.Token.dec</code>.
      */
     public final TableField<TokenRecord, Integer> DEC = createField(DSL.name("dec"), SQLDataType.INTEGER, this, "");
@@ -109,6 +119,26 @@ public class Token extends TableImpl<TokenRecord> {
      * The column <code>public.Token.state</code>.
      */
     public final TableField<TokenRecord, String> STATE = createField(DSL.name("state"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.Token.hash_rev</code>.
+     */
+    public final TableField<TokenRecord, String> HASH_REV = createField(DSL.name("hash_rev"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.Token.op_score_mod</code>.
+     */
+    public final TableField<TokenRecord, String> OP_SCORE_MOD = createField(DSL.name("op_score_mod"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.Token.op_score_add</code>.
+     */
+    public final TableField<TokenRecord, String> OP_SCORE_ADD = createField(DSL.name("op_score_add"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.Token.to</code>.
+     */
+    public final TableField<TokenRecord, String> TO = createField(DSL.name("to"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Token.logo</code>.

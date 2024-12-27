@@ -25,6 +25,26 @@ public interface ILastUpdate extends Serializable {
     public Integer getId();
 
     /**
+     * Setter for <code>public.Last_Update.identifier</code>.
+     */
+    public void setIdentifier(String value);
+
+    /**
+     * Getter for <code>public.Last_Update.identifier</code>.
+     */
+    public String getIdentifier();
+
+    /**
+     * Setter for <code>public.Last_Update.data</code>.
+     */
+    public void setData(String value);
+
+    /**
+     * Getter for <code>public.Last_Update.data</code>.
+     */
+    public String getData();
+
+    /**
      * Setter for <code>public.Last_Update.timestamp</code>.
      */
     public void setTimestamp(LocalDateTime value);

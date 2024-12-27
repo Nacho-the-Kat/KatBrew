@@ -6,7 +6,6 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 
 import org.jooq.impl.AutoConverter;
 
@@ -216,16 +215,6 @@ public interface ITransaction extends Serializable {
      * Getter for <code>public.Transaction.dec</code>.
      */
     public Integer getDec();
-
-    /**
-     * Setter for <code>public.Transaction.timestamp</code>.
-     */
-    public void setTimestamp(LocalDateTime value);
-
-    /**
-     * Getter for <code>public.Transaction.timestamp</code>.
-     */
-    public LocalDateTime getTimestamp();
 
     // -------------------------------------------------------------------------
     // FROM and INTO

@@ -25,8 +25,14 @@ public class Token implements IToken {
     private BigInteger mtsAdd;
     private BigInteger minted;
     private Integer holderTotal;
+    private Integer mintTotal;
+    private BigInteger transferTotal;
     private Integer dec;
     private String state;
+    private String hashRev;
+    private String opScoreMod;
+    private String opScoreAdd;
+    private String to;
     private String logo;
 
     public Token() {}
@@ -40,8 +46,14 @@ public class Token implements IToken {
         this.mtsAdd = value.getMtsAdd();
         this.minted = value.getMinted();
         this.holderTotal = value.getHolderTotal();
+        this.mintTotal = value.getMintTotal();
+        this.transferTotal = value.getTransferTotal();
         this.dec = value.getDec();
         this.state = value.getState();
+        this.hashRev = value.getHashRev();
+        this.opScoreMod = value.getOpScoreMod();
+        this.opScoreAdd = value.getOpScoreAdd();
+        this.to = value.getTo();
         this.logo = value.getLogo();
     }
 
@@ -54,8 +66,14 @@ public class Token implements IToken {
         BigInteger mtsAdd,
         BigInteger minted,
         Integer holderTotal,
+        Integer mintTotal,
+        BigInteger transferTotal,
         Integer dec,
         String state,
+        String hashRev,
+        String opScoreMod,
+        String opScoreAdd,
+        String to,
         String logo
     ) {
         this.id = id;
@@ -66,8 +84,14 @@ public class Token implements IToken {
         this.mtsAdd = mtsAdd;
         this.minted = minted;
         this.holderTotal = holderTotal;
+        this.mintTotal = mintTotal;
+        this.transferTotal = transferTotal;
         this.dec = dec;
         this.state = state;
+        this.hashRev = hashRev;
+        this.opScoreMod = opScoreMod;
+        this.opScoreAdd = opScoreAdd;
+        this.to = to;
         this.logo = logo;
     }
 
@@ -200,6 +224,38 @@ public class Token implements IToken {
     }
 
     /**
+     * Getter for <code>public.Token.mint_total</code>.
+     */
+    @Override
+    public Integer getMintTotal() {
+        return this.mintTotal;
+    }
+
+    /**
+     * Setter for <code>public.Token.mint_total</code>.
+     */
+    @Override
+    public void setMintTotal(Integer mintTotal) {
+        this.mintTotal = mintTotal;
+    }
+
+    /**
+     * Getter for <code>public.Token.transfer_total</code>.
+     */
+    @Override
+    public BigInteger getTransferTotal() {
+        return this.transferTotal;
+    }
+
+    /**
+     * Setter for <code>public.Token.transfer_total</code>.
+     */
+    @Override
+    public void setTransferTotal(BigInteger transferTotal) {
+        this.transferTotal = transferTotal;
+    }
+
+    /**
      * Getter for <code>public.Token.dec</code>.
      */
     @Override
@@ -229,6 +285,70 @@ public class Token implements IToken {
     @Override
     public void setState(String state) {
         this.state = state;
+    }
+
+    /**
+     * Getter for <code>public.Token.hash_rev</code>.
+     */
+    @Override
+    public String getHashRev() {
+        return this.hashRev;
+    }
+
+    /**
+     * Setter for <code>public.Token.hash_rev</code>.
+     */
+    @Override
+    public void setHashRev(String hashRev) {
+        this.hashRev = hashRev;
+    }
+
+    /**
+     * Getter for <code>public.Token.op_score_mod</code>.
+     */
+    @Override
+    public String getOpScoreMod() {
+        return this.opScoreMod;
+    }
+
+    /**
+     * Setter for <code>public.Token.op_score_mod</code>.
+     */
+    @Override
+    public void setOpScoreMod(String opScoreMod) {
+        this.opScoreMod = opScoreMod;
+    }
+
+    /**
+     * Getter for <code>public.Token.op_score_add</code>.
+     */
+    @Override
+    public String getOpScoreAdd() {
+        return this.opScoreAdd;
+    }
+
+    /**
+     * Setter for <code>public.Token.op_score_add</code>.
+     */
+    @Override
+    public void setOpScoreAdd(String opScoreAdd) {
+        this.opScoreAdd = opScoreAdd;
+    }
+
+    /**
+     * Getter for <code>public.Token.to</code>.
+     */
+    @Override
+    public String getTo() {
+        return this.to;
+    }
+
+    /**
+     * Setter for <code>public.Token.to</code>.
+     */
+    @Override
+    public void setTo(String to) {
+        this.to = to;
     }
 
     /**
@@ -304,6 +424,18 @@ public class Token implements IToken {
         }
         else if (!this.holderTotal.equals(other.holderTotal))
             return false;
+        if (this.mintTotal == null) {
+            if (other.mintTotal != null)
+                return false;
+        }
+        else if (!this.mintTotal.equals(other.mintTotal))
+            return false;
+        if (this.transferTotal == null) {
+            if (other.transferTotal != null)
+                return false;
+        }
+        else if (!this.transferTotal.equals(other.transferTotal))
+            return false;
         if (this.dec == null) {
             if (other.dec != null)
                 return false;
@@ -315,6 +447,30 @@ public class Token implements IToken {
                 return false;
         }
         else if (!this.state.equals(other.state))
+            return false;
+        if (this.hashRev == null) {
+            if (other.hashRev != null)
+                return false;
+        }
+        else if (!this.hashRev.equals(other.hashRev))
+            return false;
+        if (this.opScoreMod == null) {
+            if (other.opScoreMod != null)
+                return false;
+        }
+        else if (!this.opScoreMod.equals(other.opScoreMod))
+            return false;
+        if (this.opScoreAdd == null) {
+            if (other.opScoreAdd != null)
+                return false;
+        }
+        else if (!this.opScoreAdd.equals(other.opScoreAdd))
+            return false;
+        if (this.to == null) {
+            if (other.to != null)
+                return false;
+        }
+        else if (!this.to.equals(other.to))
             return false;
         if (this.logo == null) {
             if (other.logo != null)
@@ -337,8 +493,14 @@ public class Token implements IToken {
         result = prime * result + ((this.mtsAdd == null) ? 0 : this.mtsAdd.hashCode());
         result = prime * result + ((this.minted == null) ? 0 : this.minted.hashCode());
         result = prime * result + ((this.holderTotal == null) ? 0 : this.holderTotal.hashCode());
+        result = prime * result + ((this.mintTotal == null) ? 0 : this.mintTotal.hashCode());
+        result = prime * result + ((this.transferTotal == null) ? 0 : this.transferTotal.hashCode());
         result = prime * result + ((this.dec == null) ? 0 : this.dec.hashCode());
         result = prime * result + ((this.state == null) ? 0 : this.state.hashCode());
+        result = prime * result + ((this.hashRev == null) ? 0 : this.hashRev.hashCode());
+        result = prime * result + ((this.opScoreMod == null) ? 0 : this.opScoreMod.hashCode());
+        result = prime * result + ((this.opScoreAdd == null) ? 0 : this.opScoreAdd.hashCode());
+        result = prime * result + ((this.to == null) ? 0 : this.to.hashCode());
         result = prime * result + ((this.logo == null) ? 0 : this.logo.hashCode());
         return result;
     }
@@ -355,8 +517,14 @@ public class Token implements IToken {
         sb.append(", ").append(mtsAdd);
         sb.append(", ").append(minted);
         sb.append(", ").append(holderTotal);
+        sb.append(", ").append(mintTotal);
+        sb.append(", ").append(transferTotal);
         sb.append(", ").append(dec);
         sb.append(", ").append(state);
+        sb.append(", ").append(hashRev);
+        sb.append(", ").append(opScoreMod);
+        sb.append(", ").append(opScoreAdd);
+        sb.append(", ").append(to);
         sb.append(", ").append(logo);
 
         sb.append(")");
@@ -377,8 +545,14 @@ public class Token implements IToken {
         setMtsAdd(from.getMtsAdd());
         setMinted(from.getMinted());
         setHolderTotal(from.getHolderTotal());
+        setMintTotal(from.getMintTotal());
+        setTransferTotal(from.getTransferTotal());
         setDec(from.getDec());
         setState(from.getState());
+        setHashRev(from.getHashRev());
+        setOpScoreMod(from.getOpScoreMod());
+        setOpScoreAdd(from.getOpScoreAdd());
+        setTo(from.getTo());
         setLogo(from.getLogo());
     }
 

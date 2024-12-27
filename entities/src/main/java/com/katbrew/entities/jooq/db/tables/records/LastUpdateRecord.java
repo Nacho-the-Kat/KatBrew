@@ -38,11 +38,43 @@ public class LastUpdateRecord extends UpdatableRecordImpl<LastUpdateRecord> impl
     }
 
     /**
+     * Setter for <code>public.Last_Update.identifier</code>.
+     */
+    @Override
+    public void setIdentifier(String value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.Last_Update.identifier</code>.
+     */
+    @Override
+    public String getIdentifier() {
+        return (String) get(1);
+    }
+
+    /**
+     * Setter for <code>public.Last_Update.data</code>.
+     */
+    @Override
+    public void setData(String value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.Last_Update.data</code>.
+     */
+    @Override
+    public String getData() {
+        return (String) get(2);
+    }
+
+    /**
      * Setter for <code>public.Last_Update.timestamp</code>.
      */
     @Override
     public void setTimestamp(LocalDateTime value) {
-        set(1, value);
+        set(3, value);
     }
 
     /**
@@ -50,7 +82,7 @@ public class LastUpdateRecord extends UpdatableRecordImpl<LastUpdateRecord> impl
      */
     @Override
     public LocalDateTime getTimestamp() {
-        return (LocalDateTime) get(1);
+        return (LocalDateTime) get(3);
     }
 
     // -------------------------------------------------------------------------
@@ -69,6 +101,8 @@ public class LastUpdateRecord extends UpdatableRecordImpl<LastUpdateRecord> impl
     @Override
     public void from(ILastUpdate from) {
         setId(from.getId());
+        setIdentifier(from.getIdentifier());
+        setData(from.getData());
         setTimestamp(from.getTimestamp());
         resetChangedOnNotNull();
     }
@@ -93,10 +127,12 @@ public class LastUpdateRecord extends UpdatableRecordImpl<LastUpdateRecord> impl
     /**
      * Create a detached, initialised LastUpdateRecord
      */
-    public LastUpdateRecord(Integer id, LocalDateTime timestamp) {
+    public LastUpdateRecord(Integer id, String identifier, String data, LocalDateTime timestamp) {
         super(LastUpdate.LAST_UPDATE);
 
         setId(id);
+        setIdentifier(identifier);
+        setData(data);
         setTimestamp(timestamp);
         resetChangedOnNotNull();
     }
@@ -109,6 +145,8 @@ public class LastUpdateRecord extends UpdatableRecordImpl<LastUpdateRecord> impl
 
         if (value != null) {
             setId(value.getId());
+            setIdentifier(value.getIdentifier());
+            setData(value.getData());
             setTimestamp(value.getTimestamp());
             resetChangedOnNotNull();
         }

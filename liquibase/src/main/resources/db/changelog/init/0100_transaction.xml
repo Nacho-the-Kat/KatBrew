@@ -36,9 +36,6 @@
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="mts_mod"/>
             <column type="int" name="dec" />
-            <column type="datetime" name="timestamp" defaultValue="NOW()">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token" constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
                                  referencedColumnNames="id"/>

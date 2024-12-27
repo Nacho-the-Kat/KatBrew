@@ -8,7 +8,6 @@ import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.interfaces.ITransaction;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -342,22 +341,6 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         return (Integer) get(19);
     }
 
-    /**
-     * Setter for <code>public.Transaction.timestamp</code>.
-     */
-    @Override
-    public void setTimestamp(LocalDateTime value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>public.Transaction.timestamp</code>.
-     */
-    @Override
-    public LocalDateTime getTimestamp() {
-        return (LocalDateTime) get(20);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -393,7 +376,6 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         setMtsAdd(from.getMtsAdd());
         setMtsMod(from.getMtsMod());
         setDec(from.getDec());
-        setTimestamp(from.getTimestamp());
         resetChangedOnNotNull();
     }
 
@@ -417,7 +399,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(BigInteger id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger mtsMod, Integer dec, LocalDateTime timestamp) {
+    public TransactionRecord(BigInteger id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger mtsMod, Integer dec) {
         super(Transaction.TRANSACTION);
 
         setId(id);
@@ -440,7 +422,6 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         setMtsAdd(mtsAdd);
         setMtsMod(mtsMod);
         setDec(dec);
-        setTimestamp(timestamp);
         resetChangedOnNotNull();
     }
 
@@ -471,7 +452,6 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
             setMtsAdd(value.getMtsAdd());
             setMtsMod(value.getMtsMod());
             setDec(value.getDec());
-            setTimestamp(value.getTimestamp());
             resetChangedOnNotNull();
         }
     }

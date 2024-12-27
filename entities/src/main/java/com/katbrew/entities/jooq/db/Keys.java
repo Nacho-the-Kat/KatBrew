@@ -45,6 +45,7 @@ public class Keys {
     public static final UniqueKey<BalanceRecord> PK_BALANCE = Internal.createUniqueKey(Balance.BALANCE, DSL.name("pk_balance"), new TableField[] { Balance.BALANCE.ID }, true);
     public static final UniqueKey<HolderRecord> HOLDER_ADDRESS_KEY = Internal.createUniqueKey(Holder.HOLDER, DSL.name("Holder_address_key"), new TableField[] { Holder.HOLDER.ADDRESS }, true);
     public static final UniqueKey<HolderRecord> PK_HOLDER = Internal.createUniqueKey(Holder.HOLDER, DSL.name("pk_holder"), new TableField[] { Holder.HOLDER.ID }, true);
+    public static final UniqueKey<LastUpdateRecord> LAST_UPDATE_IDENTIFIER_KEY = Internal.createUniqueKey(LastUpdate.LAST_UPDATE, DSL.name("Last_Update_identifier_key"), new TableField[] { LastUpdate.LAST_UPDATE.IDENTIFIER }, true);
     public static final UniqueKey<LastUpdateRecord> PK_LAST_UPDATE = Internal.createUniqueKey(LastUpdate.LAST_UPDATE, DSL.name("pk_last_update"), new TableField[] { LastUpdate.LAST_UPDATE.ID }, true);
     public static final UniqueKey<PriceDataRecord> PK_PRICE_DATA = Internal.createUniqueKey(PriceData.PRICE_DATA, DSL.name("PK_Price_Data"), new TableField[] { PriceData.PRICE_DATA.ID }, true);
     public static final UniqueKey<TokenRecord> PK_TOKEN = Internal.createUniqueKey(Token.TOKEN, DSL.name("pk_token"), new TableField[] { Token.TOKEN.ID }, true);

@@ -9,7 +9,9 @@ import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.records.LastUpdateRecord;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -55,6 +57,16 @@ public class LastUpdate extends TableImpl<LastUpdateRecord> {
      * The column <code>public.Last_Update.id</code>.
      */
     public final TableField<LastUpdateRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.Last_Update.identifier</code>.
+     */
+    public final TableField<LastUpdateRecord, String> IDENTIFIER = createField(DSL.name("identifier"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.Last_Update.data</code>.
+     */
+    public final TableField<LastUpdateRecord, String> DATA = createField(DSL.name("data"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Last_Update.timestamp</code>.
@@ -103,6 +115,11 @@ public class LastUpdate extends TableImpl<LastUpdateRecord> {
     @Override
     public UniqueKey<LastUpdateRecord> getPrimaryKey() {
         return Keys.PK_LAST_UPDATE;
+    }
+
+    @Override
+    public List<UniqueKey<LastUpdateRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.LAST_UPDATE_IDENTIFIER_KEY);
     }
 
     @Override

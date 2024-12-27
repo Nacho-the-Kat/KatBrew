@@ -8,7 +8,6 @@ import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.records.TransactionRecord;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -354,20 +353,5 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
      */
     public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByDec(Integer... values) {
         return fetch(Transaction.TRANSACTION.DEC, values);
-    }
-
-    /**
-     * Fetch records that have <code>timestamp BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfTimestamp(LocalDateTime lowerInclusive, LocalDateTime upperInclusive) {
-        return fetchRange(Transaction.TRANSACTION.TIMESTAMP, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>timestamp IN (values)</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByTimestamp(LocalDateTime... values) {
-        return fetch(Transaction.TRANSACTION.TIMESTAMP, values);
     }
 }

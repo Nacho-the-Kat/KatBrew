@@ -25,8 +25,14 @@
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="minted"/>
             <column type="int" name="holder_total"/>
+            <column type="int" name="mint_total"/>
+            <column type="bigint" name="transfer_total"/>
             <column type="int" name="dec"/>
             <column type="text" name="state"/>
+            <column type="text" name="hash_rev"/>
+            <column type="text" name="op_score_mod"/>
+            <column type="text" name="op_score_add"/>
+            <column type="text" name="to"/>
             <column type="text" name="logo"/>
         </createTable>
 

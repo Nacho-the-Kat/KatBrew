@@ -10,7 +10,6 @@ import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.TransactionRecord;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -159,11 +158,6 @@ public class Transaction extends TableImpl<TransactionRecord> {
      * The column <code>public.Transaction.dec</code>.
      */
     public final TableField<TransactionRecord, Integer> DEC = createField(DSL.name("dec"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.Transaction.timestamp</code>.
-     */
-    public final TableField<TransactionRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "");
 
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

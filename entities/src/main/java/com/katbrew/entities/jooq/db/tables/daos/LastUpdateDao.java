@@ -70,6 +70,50 @@ public class LastUpdateDao extends DAOImpl<LastUpdateRecord, com.katbrew.entitie
     }
 
     /**
+     * Fetch records that have <code>identifier BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.LastUpdate> fetchRangeOfIdentifier(String lowerInclusive, String upperInclusive) {
+        return fetchRange(LastUpdate.LAST_UPDATE.IDENTIFIER, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>identifier IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.LastUpdate> fetchByIdentifier(String... values) {
+        return fetch(LastUpdate.LAST_UPDATE.IDENTIFIER, values);
+    }
+
+    /**
+     * Fetch a unique record that has <code>identifier = value</code>
+     */
+    public com.katbrew.entities.jooq.db.tables.pojos.LastUpdate fetchOneByIdentifier(String value) {
+        return fetchOne(LastUpdate.LAST_UPDATE.IDENTIFIER, value);
+    }
+
+    /**
+     * Fetch a unique record that has <code>identifier = value</code>
+     */
+    public Optional<com.katbrew.entities.jooq.db.tables.pojos.LastUpdate> fetchOptionalByIdentifier(String value) {
+        return fetchOptional(LastUpdate.LAST_UPDATE.IDENTIFIER, value);
+    }
+
+    /**
+     * Fetch records that have <code>data BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.LastUpdate> fetchRangeOfData(String lowerInclusive, String upperInclusive) {
+        return fetchRange(LastUpdate.LAST_UPDATE.DATA, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>data IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.LastUpdate> fetchByData(String... values) {
+        return fetch(LastUpdate.LAST_UPDATE.DATA, values);
+    }
+
+    /**
      * Fetch records that have <code>timestamp BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */

@@ -7,7 +7,6 @@ package com.katbrew.entities.jooq.db.tables.pojos;
 import com.katbrew.entities.jooq.db.tables.interfaces.ITransaction;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 
 
 /**
@@ -38,7 +37,6 @@ public class Transaction implements ITransaction {
     private BigInteger mtsAdd;
     private BigInteger mtsMod;
     private Integer dec;
-    private LocalDateTime timestamp;
 
     public Transaction() {}
 
@@ -63,7 +61,6 @@ public class Transaction implements ITransaction {
         this.mtsAdd = value.getMtsAdd();
         this.mtsMod = value.getMtsMod();
         this.dec = value.getDec();
-        this.timestamp = value.getTimestamp();
     }
 
     public Transaction(
@@ -86,8 +83,7 @@ public class Transaction implements ITransaction {
         BigInteger pre,
         BigInteger mtsAdd,
         BigInteger mtsMod,
-        Integer dec,
-        LocalDateTime timestamp
+        Integer dec
     ) {
         this.id = id;
         this.fkToken = fkToken;
@@ -109,7 +105,6 @@ public class Transaction implements ITransaction {
         this.mtsAdd = mtsAdd;
         this.mtsMod = mtsMod;
         this.dec = dec;
-        this.timestamp = timestamp;
     }
 
     /**
@@ -432,22 +427,6 @@ public class Transaction implements ITransaction {
         this.dec = dec;
     }
 
-    /**
-     * Getter for <code>public.Transaction.timestamp</code>.
-     */
-    @Override
-    public LocalDateTime getTimestamp() {
-        return this.timestamp;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.timestamp</code>.
-     */
-    @Override
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -577,12 +556,6 @@ public class Transaction implements ITransaction {
         }
         else if (!this.dec.equals(other.dec))
             return false;
-        if (this.timestamp == null) {
-            if (other.timestamp != null)
-                return false;
-        }
-        else if (!this.timestamp.equals(other.timestamp))
-            return false;
         return true;
     }
 
@@ -610,7 +583,6 @@ public class Transaction implements ITransaction {
         result = prime * result + ((this.mtsAdd == null) ? 0 : this.mtsAdd.hashCode());
         result = prime * result + ((this.mtsMod == null) ? 0 : this.mtsMod.hashCode());
         result = prime * result + ((this.dec == null) ? 0 : this.dec.hashCode());
-        result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
         return result;
     }
 
@@ -638,7 +610,6 @@ public class Transaction implements ITransaction {
         sb.append(", ").append(mtsAdd);
         sb.append(", ").append(mtsMod);
         sb.append(", ").append(dec);
-        sb.append(", ").append(timestamp);
 
         sb.append(")");
         return sb.toString();
@@ -670,7 +641,6 @@ public class Transaction implements ITransaction {
         setMtsAdd(from.getMtsAdd());
         setMtsMod(from.getMtsMod());
         setDec(from.getDec());
-        setTimestamp(from.getTimestamp());
     }
 
     @Override

@@ -150,11 +150,43 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     }
 
     /**
+     * Setter for <code>public.Token.mint_total</code>.
+     */
+    @Override
+    public void setMintTotal(Integer value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.mint_total</code>.
+     */
+    @Override
+    public Integer getMintTotal() {
+        return (Integer) get(8);
+    }
+
+    /**
+     * Setter for <code>public.Token.transfer_total</code>.
+     */
+    @Override
+    public void setTransferTotal(BigInteger value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.transfer_total</code>.
+     */
+    @Override
+    public BigInteger getTransferTotal() {
+        return (BigInteger) get(9);
+    }
+
+    /**
      * Setter for <code>public.Token.dec</code>.
      */
     @Override
     public void setDec(Integer value) {
-        set(8, value);
+        set(10, value);
     }
 
     /**
@@ -162,7 +194,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public Integer getDec() {
-        return (Integer) get(8);
+        return (Integer) get(10);
     }
 
     /**
@@ -170,7 +202,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public void setState(String value) {
-        set(9, value);
+        set(11, value);
     }
 
     /**
@@ -178,7 +210,71 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public String getState() {
-        return (String) get(9);
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.Token.hash_rev</code>.
+     */
+    @Override
+    public void setHashRev(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.hash_rev</code>.
+     */
+    @Override
+    public String getHashRev() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.Token.op_score_mod</code>.
+     */
+    @Override
+    public void setOpScoreMod(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.op_score_mod</code>.
+     */
+    @Override
+    public String getOpScoreMod() {
+        return (String) get(13);
+    }
+
+    /**
+     * Setter for <code>public.Token.op_score_add</code>.
+     */
+    @Override
+    public void setOpScoreAdd(String value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.op_score_add</code>.
+     */
+    @Override
+    public String getOpScoreAdd() {
+        return (String) get(14);
+    }
+
+    /**
+     * Setter for <code>public.Token.to</code>.
+     */
+    @Override
+    public void setTo(String value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.to</code>.
+     */
+    @Override
+    public String getTo() {
+        return (String) get(15);
     }
 
     /**
@@ -186,7 +282,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public void setLogo(String value) {
-        set(10, value);
+        set(16, value);
     }
 
     /**
@@ -194,7 +290,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      */
     @Override
     public String getLogo() {
-        return (String) get(10);
+        return (String) get(16);
     }
 
     // -------------------------------------------------------------------------
@@ -220,8 +316,14 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setMtsAdd(from.getMtsAdd());
         setMinted(from.getMinted());
         setHolderTotal(from.getHolderTotal());
+        setMintTotal(from.getMintTotal());
+        setTransferTotal(from.getTransferTotal());
         setDec(from.getDec());
         setState(from.getState());
+        setHashRev(from.getHashRev());
+        setOpScoreMod(from.getOpScoreMod());
+        setOpScoreAdd(from.getOpScoreAdd());
+        setTo(from.getTo());
         setLogo(from.getLogo());
         resetChangedOnNotNull();
     }
@@ -246,7 +348,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     /**
      * Create a detached, initialised TokenRecord
      */
-    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer dec, String state, String logo) {
+    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer mintTotal, BigInteger transferTotal, Integer dec, String state, String hashRev, String opScoreMod, String opScoreAdd, String to, String logo) {
         super(Token.TOKEN);
 
         setId(id);
@@ -257,8 +359,14 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setMtsAdd(mtsAdd);
         setMinted(minted);
         setHolderTotal(holderTotal);
+        setMintTotal(mintTotal);
+        setTransferTotal(transferTotal);
         setDec(dec);
         setState(state);
+        setHashRev(hashRev);
+        setOpScoreMod(opScoreMod);
+        setOpScoreAdd(opScoreAdd);
+        setTo(to);
         setLogo(logo);
         resetChangedOnNotNull();
     }
@@ -278,8 +386,14 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
             setMtsAdd(value.getMtsAdd());
             setMinted(value.getMinted());
             setHolderTotal(value.getHolderTotal());
+            setMintTotal(value.getMintTotal());
+            setTransferTotal(value.getTransferTotal());
             setDec(value.getDec());
             setState(value.getState());
+            setHashRev(value.getHashRev());
+            setOpScoreMod(value.getOpScoreMod());
+            setOpScoreAdd(value.getOpScoreAdd());
+            setTo(value.getTo());
             setLogo(value.getLogo());
             resetChangedOnNotNull();
         }

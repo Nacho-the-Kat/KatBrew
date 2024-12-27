@@ -15,6 +15,10 @@
             <column type="INT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_LAST_UPDATE" nullable="false"/>
             </column>
+            <column type="text" name="identifier" >
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column type="text" name="data" />
             <column type="datetime" name="timestamp" defaultValue="NOW()">
                 <constraints nullable="false"/>
             </column>

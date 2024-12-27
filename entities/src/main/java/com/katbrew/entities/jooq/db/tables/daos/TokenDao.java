@@ -190,6 +190,36 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
     }
 
     /**
+     * Fetch records that have <code>mint_total BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfMintTotal(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(Token.TOKEN.MINT_TOTAL, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>mint_total IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByMintTotal(Integer... values) {
+        return fetch(Token.TOKEN.MINT_TOTAL, values);
+    }
+
+    /**
+     * Fetch records that have <code>transfer_total BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfTransferTotal(BigInteger lowerInclusive, BigInteger upperInclusive) {
+        return fetchRange(Token.TOKEN.TRANSFER_TOTAL, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>transfer_total IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByTransferTotal(BigInteger... values) {
+        return fetch(Token.TOKEN.TRANSFER_TOTAL, values);
+    }
+
+    /**
      * Fetch records that have <code>dec BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
@@ -217,6 +247,66 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      */
     public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByState(String... values) {
         return fetch(Token.TOKEN.STATE, values);
+    }
+
+    /**
+     * Fetch records that have <code>hash_rev BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfHashRev(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Token.TOKEN.HASH_REV, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>hash_rev IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByHashRev(String... values) {
+        return fetch(Token.TOKEN.HASH_REV, values);
+    }
+
+    /**
+     * Fetch records that have <code>op_score_mod BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreMod(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Token.TOKEN.OP_SCORE_MOD, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>op_score_mod IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreMod(String... values) {
+        return fetch(Token.TOKEN.OP_SCORE_MOD, values);
+    }
+
+    /**
+     * Fetch records that have <code>op_score_add BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreAdd(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Token.TOKEN.OP_SCORE_ADD, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>op_score_add IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreAdd(String... values) {
+        return fetch(Token.TOKEN.OP_SCORE_ADD, values);
+    }
+
+    /**
+     * Fetch records that have <code>to BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfTo(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Token.TOKEN.TO, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>to IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByTo(String... values) {
+        return fetch(Token.TOKEN.TO, values);
     }
 
     /**
