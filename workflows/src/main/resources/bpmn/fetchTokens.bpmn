@@ -10,7 +10,7 @@
         <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0/1 * * * ?</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_0nrt2fo" name="Fetch tokens" camunda:asyncBefore="true" camunda:class="org.katbrew.tasks.FetchTokens">
+    <bpmn:serviceTask id="Activity_0nrt2fo" name="Fetch tokens" camunda:asyncBefore="true" camunda:delegateExpression="${fetchTokens}">
       <bpmn:incoming>SequenceFlow_07ccc61</bpmn:incoming>
       <bpmn:outgoing>Flow_0rj2xjg</bpmn:outgoing>
     </bpmn:serviceTask>
