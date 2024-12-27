@@ -99,19 +99,4 @@ public class BalanceDao extends DAOImpl<BalanceRecord, com.katbrew.entities.jooq
     public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByBalance(BigInteger... values) {
         return fetch(Balance.BALANCE.BALANCE_, values);
     }
-
-    /**
-     * Fetch records that have <code>tick BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfTick(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Balance.BALANCE.TICK, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>tick IN (values)</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByTick(String... values) {
-        return fetch(Balance.BALANCE.TICK, values);
-    }
 }

@@ -17,20 +17,24 @@ public class Holder implements IHolder {
 
     private Integer id;
     private String address;
+    private Integer fkToken;
 
     public Holder() {}
 
     public Holder(IHolder value) {
         this.id = value.getId();
         this.address = value.getAddress();
+        this.fkToken = value.getFkToken();
     }
 
     public Holder(
         Integer id,
-        String address
+        String address,
+        Integer fkToken
     ) {
         this.id = id;
         this.address = address;
+        this.fkToken = fkToken;
     }
 
     /**
@@ -65,6 +69,22 @@ public class Holder implements IHolder {
         this.address = address;
     }
 
+    /**
+     * Getter for <code>public.Holder.fk_token</code>.
+     */
+    @Override
+    public Integer getFkToken() {
+        return this.fkToken;
+    }
+
+    /**
+     * Setter for <code>public.Holder.fk_token</code>.
+     */
+    @Override
+    public void setFkToken(Integer fkToken) {
+        this.fkToken = fkToken;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -86,6 +106,12 @@ public class Holder implements IHolder {
         }
         else if (!this.address.equals(other.address))
             return false;
+        if (this.fkToken == null) {
+            if (other.fkToken != null)
+                return false;
+        }
+        else if (!this.fkToken.equals(other.fkToken))
+            return false;
         return true;
     }
 
@@ -95,6 +121,7 @@ public class Holder implements IHolder {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.address == null) ? 0 : this.address.hashCode());
+        result = prime * result + ((this.fkToken == null) ? 0 : this.fkToken.hashCode());
         return result;
     }
 
@@ -104,6 +131,7 @@ public class Holder implements IHolder {
 
         sb.append(id);
         sb.append(", ").append(address);
+        sb.append(", ").append(fkToken);
 
         sb.append(")");
         return sb.toString();
@@ -117,6 +145,7 @@ public class Holder implements IHolder {
     public void from(IHolder from) {
         setId(from.getId());
         setAddress(from.getAddress());
+        setFkToken(from.getFkToken());
     }
 
     @Override

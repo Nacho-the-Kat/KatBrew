@@ -74,11 +74,6 @@ public class Balance extends TableImpl<BalanceRecord> {
      */
     public final TableField<BalanceRecord, BigInteger> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
-    /**
-     * The column <code>public.Balance.tick</code>.
-     */
-    public final TableField<BalanceRecord, String> TICK = createField(DSL.name("tick"), SQLDataType.CLOB, this, "");
-
     private Balance(Name alias, Table<BalanceRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

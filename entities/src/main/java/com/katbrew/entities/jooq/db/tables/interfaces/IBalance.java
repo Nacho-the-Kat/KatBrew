@@ -46,16 +46,6 @@ public interface IBalance extends Serializable {
      */
     public BigInteger getBalance();
 
-    /**
-     * Setter for <code>public.Balance.tick</code>.
-     */
-    public void setTick(String value);
-
-    /**
-     * Getter for <code>public.Balance.tick</code>.
-     */
-    public String getTick();
-
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

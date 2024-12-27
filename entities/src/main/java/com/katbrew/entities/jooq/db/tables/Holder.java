@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Balance.BalancePath;
+import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 
 import java.util.Arrays;
@@ -66,6 +67,11 @@ public class Holder extends TableImpl<HolderRecord> {
      * The column <code>public.Holder.address</code>.
      */
     public final TableField<HolderRecord, String> ADDRESS = createField(DSL.name("address"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.Holder.fk_token</code>.
+     */
+    public final TableField<HolderRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Holder(Name alias, Table<HolderRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -147,6 +153,23 @@ public class Holder extends TableImpl<HolderRecord> {
     @Override
     public List<UniqueKey<HolderRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.HOLDER_ADDRESS_KEY);
+    }
+
+    @Override
+    public List<ForeignKey<HolderRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.HOLDER__FK_HOLDER_TOKEN);
+    }
+
+    private transient TokenPath _token;
+
+    /**
+     * Get the implicit join path to the <code>public.Token</code> table.
+     */
+    public TokenPath token() {
+        if (_token == null)
+            _token = new TokenPath(this, Keys.HOLDER__FK_HOLDER_TOKEN, null);
+
+        return _token;
     }
 
     private transient BalancePath _balance;

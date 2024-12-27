@@ -19,7 +19,7 @@
             <column type="text" name="address">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column type="bigint" name="fk_token">
+            <column type="int" name="fk_token">
                 <constraints nullable="false"/>
             </column>
         </createTable>

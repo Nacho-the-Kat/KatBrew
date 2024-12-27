@@ -53,12 +53,12 @@ public class FetchTokenDetails implements JavaDelegate {
                 log.error("no data was loaded");
                 return;
             }
-            Token internal = mapper.convertValue(responseTokenList.getResult().getFirst(), Token.class);
+            Token internal = mapper.convertValue(responseTokenList.getResult().get(0), Token.class);
             internal.setId(token.getId());
             internal.setLogo(token.getLogo());
             tokenService.update(internal);
             //todo
-//            Holder holder = holderService.findBy(Collections.singletonList(Tables.HOLDER.))
+            List<Holder> holder = holderService.findBy(Collections.singletonList(Tables.HOLDER.FK_TOKEN.eq(token.getId())));
         });
     }
 

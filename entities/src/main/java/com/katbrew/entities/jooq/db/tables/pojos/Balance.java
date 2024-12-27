@@ -20,7 +20,6 @@ public class Balance implements IBalance {
     private Integer id;
     private Integer holderId;
     private BigInteger balance;
-    private String tick;
 
     public Balance() {}
 
@@ -28,19 +27,16 @@ public class Balance implements IBalance {
         this.id = value.getId();
         this.holderId = value.getHolderId();
         this.balance = value.getBalance();
-        this.tick = value.getTick();
     }
 
     public Balance(
         Integer id,
         Integer holderId,
-        BigInteger balance,
-        String tick
+        BigInteger balance
     ) {
         this.id = id;
         this.holderId = holderId;
         this.balance = balance;
-        this.tick = tick;
     }
 
     /**
@@ -91,22 +87,6 @@ public class Balance implements IBalance {
         this.balance = balance;
     }
 
-    /**
-     * Getter for <code>public.Balance.tick</code>.
-     */
-    @Override
-    public String getTick() {
-        return this.tick;
-    }
-
-    /**
-     * Setter for <code>public.Balance.tick</code>.
-     */
-    @Override
-    public void setTick(String tick) {
-        this.tick = tick;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -134,12 +114,6 @@ public class Balance implements IBalance {
         }
         else if (!this.balance.equals(other.balance))
             return false;
-        if (this.tick == null) {
-            if (other.tick != null)
-                return false;
-        }
-        else if (!this.tick.equals(other.tick))
-            return false;
         return true;
     }
 
@@ -150,7 +124,6 @@ public class Balance implements IBalance {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.holderId == null) ? 0 : this.holderId.hashCode());
         result = prime * result + ((this.balance == null) ? 0 : this.balance.hashCode());
-        result = prime * result + ((this.tick == null) ? 0 : this.tick.hashCode());
         return result;
     }
 
@@ -161,7 +134,6 @@ public class Balance implements IBalance {
         sb.append(id);
         sb.append(", ").append(holderId);
         sb.append(", ").append(balance);
-        sb.append(", ").append(tick);
 
         sb.append(")");
         return sb.toString();
@@ -176,7 +148,6 @@ public class Balance implements IBalance {
         setId(from.getId());
         setHolderId(from.getHolderId());
         setBalance(from.getBalance());
-        setTick(from.getTick());
     }
 
     @Override

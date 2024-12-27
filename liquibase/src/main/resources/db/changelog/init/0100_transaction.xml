@@ -18,7 +18,9 @@
             <column type="int" name="fk_token">
                 <constraints nullable="false"/>
             </column>
-            <column type="text" name="hashrev"/>
+            <column type="text" name="hash_rev">
+                <constraints unique="true"/>
+            </column>
             <column type="text" name="p"/>
             <column type="text" name="op"/>
             <column type="text" name="amt"/>
@@ -35,9 +37,10 @@
             <column type="bigint" name="pre"/>
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="mts_mod"/>
-            <column type="int" name="dec" />
+            <column type="int" name="dec"/>
         </createTable>
-        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token" constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
+                                 constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
                                  referencedColumnNames="id"/>
 
         <rollback>

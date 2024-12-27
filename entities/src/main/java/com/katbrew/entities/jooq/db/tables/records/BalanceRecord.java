@@ -69,22 +69,6 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
         return (BigInteger) get(2);
     }
 
-    /**
-     * Setter for <code>public.Balance.tick</code>.
-     */
-    @Override
-    public void setTick(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.Balance.tick</code>.
-     */
-    @Override
-    public String getTick() {
-        return (String) get(3);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -103,7 +87,6 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
         setId(from.getId());
         setHolderId(from.getHolderId());
         setBalance(from.getBalance());
-        setTick(from.getTick());
         resetChangedOnNotNull();
     }
 
@@ -127,13 +110,12 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     /**
      * Create a detached, initialised BalanceRecord
      */
-    public BalanceRecord(Integer id, Integer holderId, BigInteger balance, String tick) {
+    public BalanceRecord(Integer id, Integer holderId, BigInteger balance) {
         super(Balance.BALANCE);
 
         setId(id);
         setHolderId(holderId);
         setBalance(balance);
-        setTick(tick);
         resetChangedOnNotNull();
     }
 
@@ -147,7 +129,6 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
             setId(value.getId());
             setHolderId(value.getHolderId());
             setBalance(value.getBalance());
-            setTick(value.getTick());
             resetChangedOnNotNull();
         }
     }

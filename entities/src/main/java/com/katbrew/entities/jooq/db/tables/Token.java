@@ -6,6 +6,7 @@ package com.katbrew.entities.jooq.db.tables;
 
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
+import com.katbrew.entities.jooq.db.tables.Holder.HolderPath;
 import com.katbrew.entities.jooq.db.tables.PriceData.PriceDataPath;
 import com.katbrew.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.TokenRecord;
@@ -225,6 +226,19 @@ public class Token extends TableImpl<TokenRecord> {
     @Override
     public List<UniqueKey<TokenRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.TOKEN_TICK_KEY);
+    }
+
+    private transient HolderPath _holder;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.Holder</code>
+     * table
+     */
+    public HolderPath holder() {
+        if (_holder == null)
+            _holder = new HolderPath(this, null, Keys.HOLDER__FK_HOLDER_TOKEN.getInverseKey());
+
+        return _holder;
     }
 
     private transient PriceDataPath _priceData;
