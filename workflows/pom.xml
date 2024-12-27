@@ -10,5 +10,11 @@
     </parent>
 
     <artifactId>workflows</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.katbrew</groupId>
+            <artifactId>entities</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 </project>
