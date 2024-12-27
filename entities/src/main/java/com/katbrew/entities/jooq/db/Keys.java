@@ -51,6 +51,7 @@ public class Keys {
     public static final UniqueKey<TokenRecord> PK_TOKEN = Internal.createUniqueKey(Token.TOKEN, DSL.name("pk_token"), new TableField[] { Token.TOKEN.ID }, true);
     public static final UniqueKey<TokenRecord> TOKEN_TICK_KEY = Internal.createUniqueKey(Token.TOKEN, DSL.name("Token_tick_key"), new TableField[] { Token.TOKEN.TICK }, true);
     public static final UniqueKey<TransactionRecord> PK_TRANSACTION = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("pk_transaction"), new TableField[] { Transaction.TRANSACTION.ID }, true);
+    public static final UniqueKey<TransactionRecord> TRANSACTION_HASH_REV_KEY = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("Transaction_hash_rev_key"), new TableField[] { Transaction.TRANSACTION.HASH_REV }, true);
     public static final UniqueKey<UsersRecord> PK_USERS = Internal.createUniqueKey(Users.USERS, DSL.name("pk_users"), new TableField[] { Users.USERS.ID }, true);
     public static final UniqueKey<WhitelistRecord> PK_WHITELIST = Internal.createUniqueKey(Whitelist.WHITELIST, DSL.name("pk_whitelist"), new TableField[] { Whitelist.WHITELIST.ID }, true);
     public static final UniqueKey<WhitelistRecord> WHITELIST_ADDRESS_KEY = Internal.createUniqueKey(Whitelist.WHITELIST, DSL.name("Whitelist_address_key"), new TableField[] { Whitelist.WHITELIST.ADDRESS }, true);

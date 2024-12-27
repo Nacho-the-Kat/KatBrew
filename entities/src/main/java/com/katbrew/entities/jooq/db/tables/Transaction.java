@@ -70,9 +70,9 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.Transaction.hashrev</code>.
+     * The column <code>public.Transaction.hash_rev</code>.
      */
-    public final TableField<TransactionRecord, String> HASHREV = createField(DSL.name("hashrev"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, String> HASH_REV = createField(DSL.name("hash_rev"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.p</code>.
@@ -234,6 +234,11 @@ public class Transaction extends TableImpl<TransactionRecord> {
     @Override
     public UniqueKey<TransactionRecord> getPrimaryKey() {
         return Keys.PK_TRANSACTION;
+    }
+
+    @Override
+    public List<UniqueKey<TransactionRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.TRANSACTION_HASH_REV_KEY);
     }
 
     @Override

@@ -86,18 +86,32 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
     }
 
     /**
-     * Fetch records that have <code>hashrev BETWEEN lowerInclusive AND
+     * Fetch records that have <code>hash_rev BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfHashrev(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Transaction.TRANSACTION.HASHREV, lowerInclusive, upperInclusive);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfHashRev(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Transaction.TRANSACTION.HASH_REV, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>hashrev IN (values)</code>
+     * Fetch records that have <code>hash_rev IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByHashrev(String... values) {
-        return fetch(Transaction.TRANSACTION.HASHREV, values);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByHashRev(String... values) {
+        return fetch(Transaction.TRANSACTION.HASH_REV, values);
+    }
+
+    /**
+     * Fetch a unique record that has <code>hash_rev = value</code>
+     */
+    public com.katbrew.entities.jooq.db.tables.pojos.Transaction fetchOneByHashRev(String value) {
+        return fetchOne(Transaction.TRANSACTION.HASH_REV, value);
+    }
+
+    /**
+     * Fetch a unique record that has <code>hash_rev = value</code>
+     */
+    public Optional<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchOptionalByHashRev(String value) {
+        return fetchOptional(Transaction.TRANSACTION.HASH_REV, value);
     }
 
     /**

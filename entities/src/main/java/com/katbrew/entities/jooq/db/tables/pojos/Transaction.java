@@ -19,7 +19,7 @@ public class Transaction implements ITransaction {
 
     private BigInteger id;
     private Integer fkToken;
-    private String hashrev;
+    private String hashRev;
     private String p;
     private String op;
     private String amt;
@@ -43,7 +43,7 @@ public class Transaction implements ITransaction {
     public Transaction(ITransaction value) {
         this.id = value.getId();
         this.fkToken = value.getFkToken();
-        this.hashrev = value.getHashrev();
+        this.hashRev = value.getHashRev();
         this.p = value.getP();
         this.op = value.getOp();
         this.amt = value.getAmt();
@@ -66,7 +66,7 @@ public class Transaction implements ITransaction {
     public Transaction(
         BigInteger id,
         Integer fkToken,
-        String hashrev,
+        String hashRev,
         String p,
         String op,
         String amt,
@@ -87,7 +87,7 @@ public class Transaction implements ITransaction {
     ) {
         this.id = id;
         this.fkToken = fkToken;
-        this.hashrev = hashrev;
+        this.hashRev = hashRev;
         this.p = p;
         this.op = op;
         this.amt = amt;
@@ -140,19 +140,19 @@ public class Transaction implements ITransaction {
     }
 
     /**
-     * Getter for <code>public.Transaction.hashrev</code>.
+     * Getter for <code>public.Transaction.hash_rev</code>.
      */
     @Override
-    public String getHashrev() {
-        return this.hashrev;
+    public String getHashRev() {
+        return this.hashRev;
     }
 
     /**
-     * Setter for <code>public.Transaction.hashrev</code>.
+     * Setter for <code>public.Transaction.hash_rev</code>.
      */
     @Override
-    public void setHashrev(String hashrev) {
-        this.hashrev = hashrev;
+    public void setHashRev(String hashRev) {
+        this.hashRev = hashRev;
     }
 
     /**
@@ -448,11 +448,11 @@ public class Transaction implements ITransaction {
         }
         else if (!this.fkToken.equals(other.fkToken))
             return false;
-        if (this.hashrev == null) {
-            if (other.hashrev != null)
+        if (this.hashRev == null) {
+            if (other.hashRev != null)
                 return false;
         }
-        else if (!this.hashrev.equals(other.hashrev))
+        else if (!this.hashRev.equals(other.hashRev))
             return false;
         if (this.p == null) {
             if (other.p != null)
@@ -565,7 +565,7 @@ public class Transaction implements ITransaction {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.fkToken == null) ? 0 : this.fkToken.hashCode());
-        result = prime * result + ((this.hashrev == null) ? 0 : this.hashrev.hashCode());
+        result = prime * result + ((this.hashRev == null) ? 0 : this.hashRev.hashCode());
         result = prime * result + ((this.p == null) ? 0 : this.p.hashCode());
         result = prime * result + ((this.op == null) ? 0 : this.op.hashCode());
         result = prime * result + ((this.amt == null) ? 0 : this.amt.hashCode());
@@ -592,7 +592,7 @@ public class Transaction implements ITransaction {
 
         sb.append(id);
         sb.append(", ").append(fkToken);
-        sb.append(", ").append(hashrev);
+        sb.append(", ").append(hashRev);
         sb.append(", ").append(p);
         sb.append(", ").append(op);
         sb.append(", ").append(amt);
@@ -623,7 +623,7 @@ public class Transaction implements ITransaction {
     public void from(ITransaction from) {
         setId(from.getId());
         setFkToken(from.getFkToken());
-        setHashrev(from.getHashrev());
+        setHashRev(from.getHashRev());
         setP(from.getP());
         setOp(from.getOp());
         setAmt(from.getAmt());

@@ -54,18 +54,18 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     }
 
     /**
-     * Setter for <code>public.Transaction.hashrev</code>.
+     * Setter for <code>public.Transaction.hash_rev</code>.
      */
     @Override
-    public void setHashrev(String value) {
+    public void setHashRev(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.hashrev</code>.
+     * Getter for <code>public.Transaction.hash_rev</code>.
      */
     @Override
-    public String getHashrev() {
+    public String getHashRev() {
         return (String) get(2);
     }
 
@@ -358,7 +358,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     public void from(ITransaction from) {
         setId(from.getId());
         setFkToken(from.getFkToken());
-        setHashrev(from.getHashrev());
+        setHashRev(from.getHashRev());
         setP(from.getP());
         setOp(from.getOp());
         setAmt(from.getAmt());
@@ -399,12 +399,12 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(BigInteger id, Integer fkToken, String hashrev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger mtsMod, Integer dec) {
+    public TransactionRecord(BigInteger id, Integer fkToken, String hashRev, String p, String op, String amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger mtsMod, Integer dec) {
         super(Transaction.TRANSACTION);
 
         setId(id);
         setFkToken(fkToken);
-        setHashrev(hashrev);
+        setHashRev(hashRev);
         setP(p);
         setOp(op);
         setAmt(amt);
@@ -434,7 +434,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         if (value != null) {
             setId(value.getId());
             setFkToken(value.getFkToken());
-            setHashrev(value.getHashrev());
+            setHashRev(value.getHashRev());
             setP(value.getP());
             setOp(value.getOp());
             setAmt(value.getAmt());

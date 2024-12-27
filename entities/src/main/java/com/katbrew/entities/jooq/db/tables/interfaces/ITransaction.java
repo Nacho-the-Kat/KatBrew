@@ -37,14 +37,14 @@ public interface ITransaction extends Serializable {
     public Integer getFkToken();
 
     /**
-     * Setter for <code>public.Transaction.hashrev</code>.
+     * Setter for <code>public.Transaction.hash_rev</code>.
      */
-    public void setHashrev(String value);
+    public void setHashRev(String value);
 
     /**
-     * Getter for <code>public.Transaction.hashrev</code>.
+     * Getter for <code>public.Transaction.hash_rev</code>.
      */
-    public String getHashrev();
+    public String getHashRev();
 
     /**
      * Setter for <code>public.Transaction.p</code>.
