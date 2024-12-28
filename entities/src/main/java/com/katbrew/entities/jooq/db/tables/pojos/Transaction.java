@@ -22,7 +22,7 @@ public class Transaction implements ITransaction {
     private String hashRev;
     private String p;
     private String op;
-    private String amt;
+    private BigInteger amt;
     private String from;
     private String to;
     private String opScore;
@@ -31,12 +31,8 @@ public class Transaction implements ITransaction {
     private String opAccept;
     private String opError;
     private String checkpoint;
-    private BigInteger max;
-    private BigInteger lim;
-    private BigInteger pre;
     private BigInteger mtsAdd;
     private BigInteger mtsMod;
-    private Integer dec;
 
     public Transaction() {}
 
@@ -55,12 +51,8 @@ public class Transaction implements ITransaction {
         this.opAccept = value.getOpAccept();
         this.opError = value.getOpError();
         this.checkpoint = value.getCheckpoint();
-        this.max = value.getMax();
-        this.lim = value.getLim();
-        this.pre = value.getPre();
         this.mtsAdd = value.getMtsAdd();
         this.mtsMod = value.getMtsMod();
-        this.dec = value.getDec();
     }
 
     public Transaction(
@@ -69,7 +61,7 @@ public class Transaction implements ITransaction {
         String hashRev,
         String p,
         String op,
-        String amt,
+        BigInteger amt,
         String from,
         String to,
         String opScore,
@@ -78,12 +70,8 @@ public class Transaction implements ITransaction {
         String opAccept,
         String opError,
         String checkpoint,
-        BigInteger max,
-        BigInteger lim,
-        BigInteger pre,
         BigInteger mtsAdd,
-        BigInteger mtsMod,
-        Integer dec
+        BigInteger mtsMod
     ) {
         this.id = id;
         this.fkToken = fkToken;
@@ -99,12 +87,8 @@ public class Transaction implements ITransaction {
         this.opAccept = opAccept;
         this.opError = opError;
         this.checkpoint = checkpoint;
-        this.max = max;
-        this.lim = lim;
-        this.pre = pre;
         this.mtsAdd = mtsAdd;
         this.mtsMod = mtsMod;
-        this.dec = dec;
     }
 
     /**
@@ -191,7 +175,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.amt</code>.
      */
     @Override
-    public String getAmt() {
+    public BigInteger getAmt() {
         return this.amt;
     }
 
@@ -199,7 +183,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.amt</code>.
      */
     @Override
-    public void setAmt(String amt) {
+    public void setAmt(BigInteger amt) {
         this.amt = amt;
     }
 
@@ -332,54 +316,6 @@ public class Transaction implements ITransaction {
     }
 
     /**
-     * Getter for <code>public.Transaction.max</code>.
-     */
-    @Override
-    public BigInteger getMax() {
-        return this.max;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.max</code>.
-     */
-    @Override
-    public void setMax(BigInteger max) {
-        this.max = max;
-    }
-
-    /**
-     * Getter for <code>public.Transaction.lim</code>.
-     */
-    @Override
-    public BigInteger getLim() {
-        return this.lim;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.lim</code>.
-     */
-    @Override
-    public void setLim(BigInteger lim) {
-        this.lim = lim;
-    }
-
-    /**
-     * Getter for <code>public.Transaction.pre</code>.
-     */
-    @Override
-    public BigInteger getPre() {
-        return this.pre;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.pre</code>.
-     */
-    @Override
-    public void setPre(BigInteger pre) {
-        this.pre = pre;
-    }
-
-    /**
      * Getter for <code>public.Transaction.mts_add</code>.
      */
     @Override
@@ -409,22 +345,6 @@ public class Transaction implements ITransaction {
     @Override
     public void setMtsMod(BigInteger mtsMod) {
         this.mtsMod = mtsMod;
-    }
-
-    /**
-     * Getter for <code>public.Transaction.dec</code>.
-     */
-    @Override
-    public Integer getDec() {
-        return this.dec;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.dec</code>.
-     */
-    @Override
-    public void setDec(Integer dec) {
-        this.dec = dec;
     }
 
     @Override
@@ -520,24 +440,6 @@ public class Transaction implements ITransaction {
         }
         else if (!this.checkpoint.equals(other.checkpoint))
             return false;
-        if (this.max == null) {
-            if (other.max != null)
-                return false;
-        }
-        else if (!this.max.equals(other.max))
-            return false;
-        if (this.lim == null) {
-            if (other.lim != null)
-                return false;
-        }
-        else if (!this.lim.equals(other.lim))
-            return false;
-        if (this.pre == null) {
-            if (other.pre != null)
-                return false;
-        }
-        else if (!this.pre.equals(other.pre))
-            return false;
         if (this.mtsAdd == null) {
             if (other.mtsAdd != null)
                 return false;
@@ -549,12 +451,6 @@ public class Transaction implements ITransaction {
                 return false;
         }
         else if (!this.mtsMod.equals(other.mtsMod))
-            return false;
-        if (this.dec == null) {
-            if (other.dec != null)
-                return false;
-        }
-        else if (!this.dec.equals(other.dec))
             return false;
         return true;
     }
@@ -577,12 +473,8 @@ public class Transaction implements ITransaction {
         result = prime * result + ((this.opAccept == null) ? 0 : this.opAccept.hashCode());
         result = prime * result + ((this.opError == null) ? 0 : this.opError.hashCode());
         result = prime * result + ((this.checkpoint == null) ? 0 : this.checkpoint.hashCode());
-        result = prime * result + ((this.max == null) ? 0 : this.max.hashCode());
-        result = prime * result + ((this.lim == null) ? 0 : this.lim.hashCode());
-        result = prime * result + ((this.pre == null) ? 0 : this.pre.hashCode());
         result = prime * result + ((this.mtsAdd == null) ? 0 : this.mtsAdd.hashCode());
         result = prime * result + ((this.mtsMod == null) ? 0 : this.mtsMod.hashCode());
-        result = prime * result + ((this.dec == null) ? 0 : this.dec.hashCode());
         return result;
     }
 
@@ -604,12 +496,8 @@ public class Transaction implements ITransaction {
         sb.append(", ").append(opAccept);
         sb.append(", ").append(opError);
         sb.append(", ").append(checkpoint);
-        sb.append(", ").append(max);
-        sb.append(", ").append(lim);
-        sb.append(", ").append(pre);
         sb.append(", ").append(mtsAdd);
         sb.append(", ").append(mtsMod);
-        sb.append(", ").append(dec);
 
         sb.append(")");
         return sb.toString();
@@ -635,12 +523,8 @@ public class Transaction implements ITransaction {
         setOpAccept(from.getOpAccept());
         setOpError(from.getOpError());
         setCheckpoint(from.getCheckpoint());
-        setMax(from.getMax());
-        setLim(from.getLim());
-        setPre(from.getPre());
         setMtsAdd(from.getMtsAdd());
         setMtsMod(from.getMtsMod());
-        setDec(from.getDec());
     }
 
     @Override

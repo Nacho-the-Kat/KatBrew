@@ -69,12 +69,12 @@ public interface ITransaction extends Serializable {
     /**
      * Setter for <code>public.Transaction.amt</code>.
      */
-    public void setAmt(String value);
+    public void setAmt(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.amt</code>.
      */
-    public String getAmt();
+    public BigInteger getAmt();
 
     /**
      * Setter for <code>public.Transaction.from</code>.
@@ -157,36 +157,6 @@ public interface ITransaction extends Serializable {
     public String getCheckpoint();
 
     /**
-     * Setter for <code>public.Transaction.max</code>.
-     */
-    public void setMax(BigInteger value);
-
-    /**
-     * Getter for <code>public.Transaction.max</code>.
-     */
-    public BigInteger getMax();
-
-    /**
-     * Setter for <code>public.Transaction.lim</code>.
-     */
-    public void setLim(BigInteger value);
-
-    /**
-     * Getter for <code>public.Transaction.lim</code>.
-     */
-    public BigInteger getLim();
-
-    /**
-     * Setter for <code>public.Transaction.pre</code>.
-     */
-    public void setPre(BigInteger value);
-
-    /**
-     * Getter for <code>public.Transaction.pre</code>.
-     */
-    public BigInteger getPre();
-
-    /**
      * Setter for <code>public.Transaction.mts_add</code>.
      */
     public void setMtsAdd(BigInteger value);
@@ -205,16 +175,6 @@ public interface ITransaction extends Serializable {
      * Getter for <code>public.Transaction.mts_mod</code>.
      */
     public BigInteger getMtsMod();
-
-    /**
-     * Setter for <code>public.Transaction.dec</code>.
-     */
-    public void setDec(Integer value);
-
-    /**
-     * Getter for <code>public.Transaction.dec</code>.
-     */
-    public Integer getDec();
 
     // -------------------------------------------------------------------------
     // FROM and INTO

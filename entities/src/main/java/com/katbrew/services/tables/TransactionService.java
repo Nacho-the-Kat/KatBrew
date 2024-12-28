@@ -33,4 +33,12 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
         );
         return this.findBy(conditions);
     }
+
+    public Transaction getTransactionByRev(final String rev) {
+        final List<Transaction> list = findBy(List.of(Tables.TRANSACTION.HASH_REV.eq(rev)));
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
 }

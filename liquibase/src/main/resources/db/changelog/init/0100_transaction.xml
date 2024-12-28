@@ -23,7 +23,7 @@
             </column>
             <column type="text" name="p"/>
             <column type="text" name="op"/>
-            <column type="text" name="amt"/>
+            <column type="bigint" name="amt"/>
             <column type="text" name="from"/>
             <column type="text" name="to"/>
             <column type="text" name="op_score"/>
@@ -35,9 +35,9 @@
             <column type="bigint" name="max"/>
             <column type="bigint" name="lim"/>
             <column type="bigint" name="pre"/>
+            <column type="int" name="dec"/>
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="mts_mod"/>
-            <column type="int" name="dec"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
                                  constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"

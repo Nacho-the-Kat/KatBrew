@@ -1,9 +1,12 @@
 package com.katbrew.services.base;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.exceptions.NotValidException;
+import com.katbrew.helper.KatBrewObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.jooq.impl.DSL.max;
 
@@ -42,6 +44,8 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     @Autowired
     private DSLContext dsl;
     private final Class<T> type;
+
+    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     public JooqService() {
         java.lang.reflect.Type[] actualTypeArguments = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments();
@@ -201,13 +205,20 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     }
 
     public T insert(final T entityToInsert) {
+        //todo
         try {
-            final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
-
+            final Record inserted = dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne();
+            T internal;
+            try {
+                internal = inserted.into(type);
+            } catch (Exception e) {
+                //fallback parsing, if the default fails
+                internal = mapper.convertValue(inserted.intoMap(), type);
+            }
             this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), internal);
             return internal;
         } catch (Exception e) {
-            IllegalArgumentException ex = new IllegalArgumentException(e.getMessage().substring(e.getMessage().indexOf(';')));
+            IllegalArgumentException ex = new IllegalArgumentException(e.getMessage());
             ex.setStackTrace(new StackTraceElement[0]);
             throw ex;
         }
