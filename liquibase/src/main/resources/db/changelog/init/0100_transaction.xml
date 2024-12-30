@@ -12,7 +12,7 @@
             </not>
         </preConditions>
         <createTable tableName="Transaction">
-            <column type="bigint" name="id" autoIncrement="true">
+            <column type="BIGINT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
             </column>
             <column type="int" name="fk_token">
@@ -24,18 +24,14 @@
             <column type="text" name="p"/>
             <column type="text" name="op"/>
             <column type="bigint" name="amt"/>
-            <column type="text" name="from"/>
-            <column type="text" name="to"/>
-            <column type="text" name="op_score"/>
+            <column type="text" name="from_address"/>
+            <column type="text" name="to_address"/>
+            <column type="bigint" name="op_score"/>
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>
             <column type="text" name="op_accept"/>
             <column type="text" name="op_error"/>
             <column type="text" name="checkpoint"/>
-            <column type="bigint" name="max"/>
-            <column type="bigint" name="lim"/>
-            <column type="bigint" name="pre"/>
-            <column type="int" name="dec"/>
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="mts_mod"/>
         </createTable>

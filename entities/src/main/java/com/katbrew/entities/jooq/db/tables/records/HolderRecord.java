@@ -7,6 +7,8 @@ package com.katbrew.entities.jooq.db.tables.records;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.interfaces.IHolder;
 
+import java.math.BigInteger;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -23,7 +25,7 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
      * Setter for <code>public.Holder.id</code>.
      */
     @Override
-    public void setId(Integer value) {
+    public void setId(BigInteger value) {
         set(0, value);
     }
 
@@ -31,8 +33,8 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
      * Getter for <code>public.Holder.id</code>.
      */
     @Override
-    public Integer getId() {
-        return (Integer) get(0);
+    public BigInteger getId() {
+        return (BigInteger) get(0);
     }
 
     /**
@@ -72,7 +74,7 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<Integer> key() {
+    public Record1<BigInteger> key() {
         return (Record1) super.key();
     }
 
@@ -108,7 +110,7 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
     /**
      * Create a detached, initialised HolderRecord
      */
-    public HolderRecord(Integer id, String address, Integer fkToken) {
+    public HolderRecord(BigInteger id, String address, Integer fkToken) {
         super(Holder.HOLDER);
 
         setId(id);

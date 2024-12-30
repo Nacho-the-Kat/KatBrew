@@ -5,6 +5,9 @@ package com.katbrew.entities.jooq.db.tables.interfaces;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
+
+import org.jooq.impl.AutoConverter;
 
 
 /**
@@ -16,12 +19,12 @@ public interface IHolder extends Serializable {
     /**
      * Setter for <code>public.Holder.id</code>.
      */
-    public void setId(Integer value);
+    public void setId(BigInteger value);
 
     /**
      * Getter for <code>public.Holder.id</code>.
      */
-    public Integer getId();
+    public BigInteger getId();
 
     /**
      * Setter for <code>public.Holder.address</code>.

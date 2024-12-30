@@ -10,6 +10,7 @@ import com.katbrew.entities.jooq.db.tables.Balance.BalancePath;
 import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
+import org.jooq.impl.AutoConverter;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -61,7 +63,7 @@ public class Holder extends TableImpl<HolderRecord> {
     /**
      * The column <code>public.Holder.id</code>.
      */
-    public final TableField<HolderRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<HolderRecord, BigInteger> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Holder.address</code>.
@@ -141,8 +143,8 @@ public class Holder extends TableImpl<HolderRecord> {
     }
 
     @Override
-    public Identity<HolderRecord, Integer> getIdentity() {
-        return (Identity<HolderRecord, Integer>) super.getIdentity();
+    public Identity<HolderRecord, BigInteger> getIdentity() {
+        return (Identity<HolderRecord, BigInteger>) super.getIdentity();
     }
 
     @Override

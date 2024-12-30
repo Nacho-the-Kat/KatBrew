@@ -90,19 +90,19 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, BigInteger> AMT = createField(DSL.name("amt"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
-     * The column <code>public.Transaction.from</code>.
+     * The column <code>public.Transaction.from_address</code>.
      */
-    public final TableField<TransactionRecord, String> FROM = createField(DSL.name("from"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, String> FROM_ADDRESS = createField(DSL.name("from_address"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.Transaction.to</code>.
+     * The column <code>public.Transaction.to_address</code>.
      */
-    public final TableField<TransactionRecord, String> TO = createField(DSL.name("to"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, String> TO_ADDRESS = createField(DSL.name("to_address"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.op_score</code>.
      */
-    public final TableField<TransactionRecord, String> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, BigInteger> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.fee_rev</code>.

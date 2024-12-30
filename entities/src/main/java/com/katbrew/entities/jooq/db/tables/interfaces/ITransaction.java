@@ -77,34 +77,34 @@ public interface ITransaction extends Serializable {
     public BigInteger getAmt();
 
     /**
-     * Setter for <code>public.Transaction.from</code>.
+     * Setter for <code>public.Transaction.from_address</code>.
      */
-    public void setFrom(String value);
+    public void setFromAddress(String value);
 
     /**
-     * Getter for <code>public.Transaction.from</code>.
+     * Getter for <code>public.Transaction.from_address</code>.
      */
-    public String getFrom();
+    public String getFromAddress();
 
     /**
-     * Setter for <code>public.Transaction.to</code>.
+     * Setter for <code>public.Transaction.to_address</code>.
      */
-    public void setTo(String value);
+    public void setToAddress(String value);
 
     /**
-     * Getter for <code>public.Transaction.to</code>.
+     * Getter for <code>public.Transaction.to_address</code>.
      */
-    public String getTo();
+    public String getToAddress();
 
     /**
      * Setter for <code>public.Transaction.op_score</code>.
      */
-    public void setOpScore(String value);
+    public void setOpScore(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.op_score</code>.
      */
-    public String getOpScore();
+    public BigInteger getOpScore();
 
     /**
      * Setter for <code>public.Transaction.fee_rev</code>.

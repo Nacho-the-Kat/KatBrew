@@ -13,7 +13,7 @@
         </preConditions>
 
         <createTable tableName="Holder">
-            <column type="INT" name="id" autoIncrement="true">
+            <column type="BIGINT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_HOLDER" nullable="false"/>
             </column>
             <column type="text" name="address">

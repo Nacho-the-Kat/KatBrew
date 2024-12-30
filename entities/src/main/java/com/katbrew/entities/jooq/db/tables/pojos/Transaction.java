@@ -23,9 +23,9 @@ public class Transaction implements ITransaction {
     private String p;
     private String op;
     private BigInteger amt;
-    private String from;
-    private String to;
-    private String opScore;
+    private String fromAddress;
+    private String toAddress;
+    private BigInteger opScore;
     private String feeRev;
     private String txAccept;
     private String opAccept;
@@ -43,8 +43,8 @@ public class Transaction implements ITransaction {
         this.p = value.getP();
         this.op = value.getOp();
         this.amt = value.getAmt();
-        this.from = value.getFrom();
-        this.to = value.getTo();
+        this.fromAddress = value.getFromAddress();
+        this.toAddress = value.getToAddress();
         this.opScore = value.getOpScore();
         this.feeRev = value.getFeeRev();
         this.txAccept = value.getTxAccept();
@@ -62,9 +62,9 @@ public class Transaction implements ITransaction {
         String p,
         String op,
         BigInteger amt,
-        String from,
-        String to,
-        String opScore,
+        String fromAddress,
+        String toAddress,
+        BigInteger opScore,
         String feeRev,
         String txAccept,
         String opAccept,
@@ -79,8 +79,8 @@ public class Transaction implements ITransaction {
         this.p = p;
         this.op = op;
         this.amt = amt;
-        this.from = from;
-        this.to = to;
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
         this.opScore = opScore;
         this.feeRev = feeRev;
         this.txAccept = txAccept;
@@ -188,42 +188,42 @@ public class Transaction implements ITransaction {
     }
 
     /**
-     * Getter for <code>public.Transaction.from</code>.
+     * Getter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public String getFrom() {
-        return this.from;
+    public String getFromAddress() {
+        return this.fromAddress;
     }
 
     /**
-     * Setter for <code>public.Transaction.from</code>.
+     * Setter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public void setFrom(String from) {
-        this.from = from;
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
     }
 
     /**
-     * Getter for <code>public.Transaction.to</code>.
+     * Getter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public String getTo() {
-        return this.to;
+    public String getToAddress() {
+        return this.toAddress;
     }
 
     /**
-     * Setter for <code>public.Transaction.to</code>.
+     * Setter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public void setTo(String to) {
-        this.to = to;
+    public void setToAddress(String toAddress) {
+        this.toAddress = toAddress;
     }
 
     /**
      * Getter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public String getOpScore() {
+    public BigInteger getOpScore() {
         return this.opScore;
     }
 
@@ -231,7 +231,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public void setOpScore(String opScore) {
+    public void setOpScore(BigInteger opScore) {
         this.opScore = opScore;
     }
 
@@ -392,17 +392,17 @@ public class Transaction implements ITransaction {
         }
         else if (!this.amt.equals(other.amt))
             return false;
-        if (this.from == null) {
-            if (other.from != null)
+        if (this.fromAddress == null) {
+            if (other.fromAddress != null)
                 return false;
         }
-        else if (!this.from.equals(other.from))
+        else if (!this.fromAddress.equals(other.fromAddress))
             return false;
-        if (this.to == null) {
-            if (other.to != null)
+        if (this.toAddress == null) {
+            if (other.toAddress != null)
                 return false;
         }
-        else if (!this.to.equals(other.to))
+        else if (!this.toAddress.equals(other.toAddress))
             return false;
         if (this.opScore == null) {
             if (other.opScore != null)
@@ -465,8 +465,8 @@ public class Transaction implements ITransaction {
         result = prime * result + ((this.p == null) ? 0 : this.p.hashCode());
         result = prime * result + ((this.op == null) ? 0 : this.op.hashCode());
         result = prime * result + ((this.amt == null) ? 0 : this.amt.hashCode());
-        result = prime * result + ((this.from == null) ? 0 : this.from.hashCode());
-        result = prime * result + ((this.to == null) ? 0 : this.to.hashCode());
+        result = prime * result + ((this.fromAddress == null) ? 0 : this.fromAddress.hashCode());
+        result = prime * result + ((this.toAddress == null) ? 0 : this.toAddress.hashCode());
         result = prime * result + ((this.opScore == null) ? 0 : this.opScore.hashCode());
         result = prime * result + ((this.feeRev == null) ? 0 : this.feeRev.hashCode());
         result = prime * result + ((this.txAccept == null) ? 0 : this.txAccept.hashCode());
@@ -488,8 +488,8 @@ public class Transaction implements ITransaction {
         sb.append(", ").append(p);
         sb.append(", ").append(op);
         sb.append(", ").append(amt);
-        sb.append(", ").append(from);
-        sb.append(", ").append(to);
+        sb.append(", ").append(fromAddress);
+        sb.append(", ").append(toAddress);
         sb.append(", ").append(opScore);
         sb.append(", ").append(feeRev);
         sb.append(", ").append(txAccept);
@@ -515,8 +515,8 @@ public class Transaction implements ITransaction {
         setP(from.getP());
         setOp(from.getOp());
         setAmt(from.getAmt());
-        setFrom(from.getFrom());
-        setTo(from.getTo());
+        setFromAddress(from.getFromAddress());
+        setToAddress(from.getToAddress());
         setOpScore(from.getOpScore());
         setFeeRev(from.getFeeRev());
         setTxAccept(from.getTxAccept());

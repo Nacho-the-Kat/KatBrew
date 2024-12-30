@@ -118,34 +118,34 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     }
 
     /**
-     * Setter for <code>public.Transaction.from</code>.
+     * Setter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public void setFrom(String value) {
+    public void setFromAddress(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.from</code>.
+     * Getter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public String getFrom() {
+    public String getFromAddress() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>public.Transaction.to</code>.
+     * Setter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public void setTo(String value) {
+    public void setToAddress(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>public.Transaction.to</code>.
+     * Getter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public String getTo() {
+    public String getToAddress() {
         return (String) get(7);
     }
 
@@ -153,7 +153,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Setter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public void setOpScore(String value) {
+    public void setOpScore(BigInteger value) {
         set(8, value);
     }
 
@@ -161,8 +161,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.op_score</code>.
      */
     @Override
-    public String getOpScore() {
-        return (String) get(8);
+    public BigInteger getOpScore() {
+        return (BigInteger) get(8);
     }
 
     /**
@@ -298,8 +298,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         setP(from.getP());
         setOp(from.getOp());
         setAmt(from.getAmt());
-        setFrom(from.getFrom());
-        setTo(from.getTo());
+        setFromAddress(from.getFromAddress());
+        setToAddress(from.getToAddress());
         setOpScore(from.getOpScore());
         setFeeRev(from.getFeeRev());
         setTxAccept(from.getTxAccept());
@@ -331,7 +331,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(BigInteger id, Integer fkToken, String hashRev, String p, String op, BigInteger amt, String from, String to, String opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger mtsAdd, BigInteger mtsMod) {
+    public TransactionRecord(BigInteger id, Integer fkToken, String hashRev, String p, String op, BigInteger amt, String fromAddress, String toAddress, BigInteger opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger mtsAdd, BigInteger mtsMod) {
         super(Transaction.TRANSACTION);
 
         setId(id);
@@ -340,8 +340,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
         setP(p);
         setOp(op);
         setAmt(amt);
-        setFrom(from);
-        setTo(to);
+        setFromAddress(fromAddress);
+        setToAddress(toAddress);
         setOpScore(opScore);
         setFeeRev(feeRev);
         setTxAccept(txAccept);
@@ -366,8 +366,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
             setP(value.getP());
             setOp(value.getOp());
             setAmt(value.getAmt());
-            setFrom(value.getFrom());
-            setTo(value.getTo());
+            setFromAddress(value.getFromAddress());
+            setToAddress(value.getToAddress());
             setOpScore(value.getOpScore());
             setFeeRev(value.getFeeRev());
             setTxAccept(value.getTxAccept());

@@ -160,47 +160,47 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
     }
 
     /**
-     * Fetch records that have <code>from BETWEEN lowerInclusive AND
+     * Fetch records that have <code>from_address BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfFrom(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Transaction.TRANSACTION.FROM, lowerInclusive, upperInclusive);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfFromAddress(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Transaction.TRANSACTION.FROM_ADDRESS, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>from IN (values)</code>
+     * Fetch records that have <code>from_address IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByFrom(String... values) {
-        return fetch(Transaction.TRANSACTION.FROM, values);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByFromAddress(String... values) {
+        return fetch(Transaction.TRANSACTION.FROM_ADDRESS, values);
     }
 
     /**
-     * Fetch records that have <code>to BETWEEN lowerInclusive AND
+     * Fetch records that have <code>to_address BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfTo(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Transaction.TRANSACTION.TO, lowerInclusive, upperInclusive);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfToAddress(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Transaction.TRANSACTION.TO_ADDRESS, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>to IN (values)</code>
+     * Fetch records that have <code>to_address IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByTo(String... values) {
-        return fetch(Transaction.TRANSACTION.TO, values);
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByToAddress(String... values) {
+        return fetch(Transaction.TRANSACTION.TO_ADDRESS, values);
     }
 
     /**
      * Fetch records that have <code>op_score BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfOpScore(String lowerInclusive, String upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfOpScore(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Transaction.TRANSACTION.OP_SCORE, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>op_score IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByOpScore(String... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByOpScore(BigInteger... values) {
         return fetch(Transaction.TRANSACTION.OP_SCORE, values);
     }
 

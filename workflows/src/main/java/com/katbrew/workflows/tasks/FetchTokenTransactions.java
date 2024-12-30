@@ -1,5 +1,6 @@
 package com.katbrew.workflows.tasks;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
@@ -43,7 +44,7 @@ public class FetchTokenTransactions implements JavaDelegate {
     public void execute(DelegateExecution execution) {
 //        todo
         WebClient client = WebClient.builder().build();
-        List<Token> tokenList = tokenService.findBy(Collections.singletonList(Tables.TOKEN.ID.ge(1748)));
+        List<Token> tokenList = tokenService.findBy(Collections.singletonList(Tables.TOKEN.ID.ge(1769)));
         log.info("Starting the transaction sync");
         long start = System.nanoTime();
         for (Token token : tokenList) {
@@ -52,13 +53,13 @@ public class FetchTokenTransactions implements JavaDelegate {
             LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTokenTransactions" + token.getTick());
             List<Transaction> transactionList = new ArrayList<>();
             while (cursor != null) {
-                ParsingResponse<List<Transaction>> responseTokenList = null;
+                ParsingResponse<List<TransactionsInternal>> responseTokenList = null;
                 try {
                     responseTokenList = client
                             .get()
                             .uri(tokenUrl + "/krc20/oplist?tick=" + token.getTick() + (cursor.compareTo(new BigInteger("0")) > 0 ? "&next=" + cursor : ""))
                             .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<Transaction>>>() {
+                            .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<TransactionsInternal>>>() {
                             })
                             .block();
 
@@ -71,8 +72,13 @@ public class FetchTokenTransactions implements JavaDelegate {
                     log.error("no data was loaded");
                     return;
                 }
+                responseTokenList.getResult().forEach(single -> {
+                    single.setFromAddress(single.getFrom());
+                    single.setToAddress(single.getTo());
+                });
+                final List<Transaction> transactions = mapper.convertValue(responseTokenList.getResult(), new TypeReference<>() {});
 
-                transactionList.addAll(responseTokenList.getResult());
+                transactionList.addAll(transactions);
                 cursor = responseTokenList.getNext();
 
                 if (firstCursor == null) {
@@ -82,7 +88,7 @@ public class FetchTokenTransactions implements JavaDelegate {
                 if (lastUpdate != null && cursor != null) {
                     BigInteger lastCursor = new BigInteger(lastUpdate.getData());
                     if (cursor.compareTo(lastCursor) <= 0) {
-                        //dont need to fetch the next tokens, we only need the newest
+                        //dont need to fetch the next transactions, we only need the newest
                         cursor = null;
                     }
                 }
@@ -116,19 +122,13 @@ public class FetchTokenTransactions implements JavaDelegate {
             transactionService.update(transactionList.stream().filter(single -> single.getId() != null).toList());
             transactionService.insert(transactionList.stream().filter(single -> single.getId() == null).toList());
             log.info("Done, needed time:" + (System.nanoTime() - start));
-//            todo update and insert
         }
 
     }
 
-//    @Data
-//    private static class ExtendedTransactionData extends Transaction {
-//        String tick;
-//    }
-//
-//    @Data
-//    private static class HolderInternal {
-//        String address;
-//        BigInteger amount;
-//    }
+    @Data
+    private static class TransactionsInternal extends Transaction {
+        String from;
+        String to;
+    }
 }

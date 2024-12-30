@@ -4,9 +4,7 @@ import com.katbrew.entities.jooq.db.tables.pojos.Holder;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.tables.HolderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +20,10 @@ public class HoldersRestController extends AbstractRestController<Holder, Holder
     @GetMapping("/holderCount")
     public List<HolderService.TickHolder> getHolderCount() {
         return holderService.getHolderData();
+    }
+
+    @PostMapping("/create")
+    public Holder createHolder(@RequestBody Holder holder){
+        return holderService.insert(holder);
     }
 }

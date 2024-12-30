@@ -1,12 +1,10 @@
 package com.katbrew.services.base;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.exceptions.NotValidException;
-import com.katbrew.helper.KatBrewObjectMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,10 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.jooq.impl.DSL.max;
 
@@ -45,8 +45,6 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     private DSLContext dsl;
     private final Class<T> type;
 
-    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
-
     public JooqService() {
         java.lang.reflect.Type[] actualTypeArguments = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments();
         this.type = (Class<T>) actualTypeArguments[0];
@@ -65,20 +63,22 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         dao.setConfiguration(dsl.configuration());
     }
 
-    public T findOne(final Integer id) throws IllegalArgumentException {
-
+    public T findOne(final Integer id) {
         final Object entity = dao.findById(id);
+        return findOne(entity);
+    }
 
+    public T findOne(final BigInteger id) {
+        final Object entity = dao.findById(id);
+        return findOne(entity);
+    }
+
+    private T findOne(final Object entity) throws IllegalArgumentException {
         if (type.isInstance(entity)) {
             return type.cast(entity);
         }
 
         throw new IllegalArgumentException("Error while search for an entity with the given id in the given service.");
-
-    }
-
-    public T findOne(final Long id) throws IllegalArgumentException {
-        return findOne(id.intValue());
     }
 
     public T findLast() {
@@ -150,21 +150,27 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .into(type);
     }
 
-    public List<T> findBy(
-            final List<OrderField<?>> orderFields,
-            final int start,
-            final int max
+    public List<T> findBySortedLimitOffset(
+            final Integer limit,
+            final Integer offset,
+            final String sortBy,
+            final String sortOrder
     ) {
-        return dsl.selectFrom(dao.getTable())
-                .orderBy(orderFields)
-                .offset(start)
-                .limit(max)
-                .fetch()
-                .into(type);
+        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
+
+        return findBy(sort, offset, limit);
     }
 
     public List<T> findBy(
             final OrderField<?> orderFields,
+            final int start,
+            final int max
+    ) {
+        return findBy(List.of(orderFields), start, max);
+    }
+
+    public List<T> findBy(
+            final List<OrderField<?>> orderFields,
             final int start,
             final int max
     ) {
@@ -188,33 +194,9 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .into(type);
     }
 
-    public List<T> findBySortedLimitOffset(
-            final Integer limit,
-            final Integer offset,
-            final String sortBy,
-            final String sortOrder
-    ) {
-        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
-
-        return dsl.selectFrom(dao.getTable())
-                .orderBy(sort)
-                .offset(offset)
-                .limit(limit)
-                .fetch()
-                .into(type);
-    }
-
     public T insert(final T entityToInsert) {
-        //todo
         try {
-            final Record inserted = dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne();
-            T internal;
-            try {
-                internal = inserted.into(type);
-            } catch (Exception e) {
-                //fallback parsing, if the default fails
-                internal = mapper.convertValue(inserted.intoMap(), type);
-            }
+            final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
             this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), internal);
             return internal;
         } catch (Exception e) {
@@ -245,7 +227,6 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         return dsl.select(fields).from(dao.getTable()).fetch().into(type);
     }
 
-
     public void delete(final Integer id) {
         final T entityToDelete = findOne(id);
         dao.deleteById(id);
@@ -271,6 +252,16 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     public void patch(Integer id, Map<String, Object> fieldmap) {
         T entity = findOne(id);
+        patchEntity(entity, fieldmap);
+    }
+
+    public void patch(BigInteger id, Map<String, Object> fieldmap) {
+        T entity = findOne(id);
+
+        patchEntity(entity, fieldmap);
+    }
+
+    public void patchEntity(final T entity, final Map<String, Object> fieldmap) {
         if (entity == null) {
             throw new NotValidException("No entry for the id");
         }
@@ -296,7 +287,6 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         UPDATE("/update"),
 
         INSERT("/insert"),
-
 
         DELETE("/delete");
 
