@@ -53,22 +53,6 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
         return (String) get(1);
     }
 
-    /**
-     * Setter for <code>public.Holder.fk_token</code>.
-     */
-    @Override
-    public void setFkToken(Integer value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.Holder.fk_token</code>.
-     */
-    @Override
-    public Integer getFkToken() {
-        return (Integer) get(2);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -86,7 +70,6 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
     public void from(IHolder from) {
         setId(from.getId());
         setAddress(from.getAddress());
-        setFkToken(from.getFkToken());
         resetChangedOnNotNull();
     }
 
@@ -110,12 +93,11 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
     /**
      * Create a detached, initialised HolderRecord
      */
-    public HolderRecord(BigInteger id, String address, Integer fkToken) {
+    public HolderRecord(BigInteger id, String address) {
         super(Holder.HOLDER);
 
         setId(id);
         setAddress(address);
-        setFkToken(fkToken);
         resetChangedOnNotNull();
     }
 
@@ -128,7 +110,6 @@ public class HolderRecord extends UpdatableRecordImpl<HolderRecord> implements I
         if (value != null) {
             setId(value.getId());
             setAddress(value.getAddress());
-            setFkToken(value.getFkToken());
             resetChangedOnNotNull();
         }
     }

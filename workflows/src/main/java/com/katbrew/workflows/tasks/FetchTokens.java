@@ -35,7 +35,7 @@ public class FetchTokens implements JavaDelegate {
         WebClient client = WebClient.builder().build();
         List<Token> tokenList = new ArrayList<>();
         BigInteger cursor = BigInteger.valueOf(0);
-        BigInteger firstCursor = null;
+        BigInteger mtdAddLastEntry = null;
         log.info("Starting the token sync");
         LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchToken");
 
@@ -55,14 +55,14 @@ public class FetchTokens implements JavaDelegate {
             tokenList.addAll(responseTokenList.getResult());
             cursor = responseTokenList.getNext();
 
-            if (firstCursor == null) {
-                firstCursor = cursor;
+            if (mtdAddLastEntry == null && !responseTokenList.getResult().isEmpty()) {
+                mtdAddLastEntry = responseTokenList.getResult().get(responseTokenList.getResult().size() - 1).getMtsAdd();
             }
 
-            if (lastUpdate != null) {
-                BigInteger lastCursor = new BigInteger(lastUpdate.getData());
-                if (cursor.compareTo(lastCursor) <= 0) {
-                    //dont need to fetch the next tokens, we only need the newest
+            if (lastUpdate != null && mtdAddLastEntry != null) {
+                BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
+                if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
+                    //dont need to fetch the next transactions, we only need the newest
                     cursor = null;
                 }
             }
@@ -70,14 +70,16 @@ public class FetchTokens implements JavaDelegate {
 
         if (lastUpdate == null) {
             lastUpdate = new LastUpdate();
-            if (firstCursor != null) {
-                lastUpdate.setData(firstCursor.toString());
+            if (mtdAddLastEntry != null) {
+                lastUpdate.setData(mtdAddLastEntry.toString());
                 lastUpdate.setIdentifier("fetchToken");
                 lastUpdateService.insert(lastUpdate);
             }
         } else {
-            lastUpdate.setData(firstCursor.toString());
-            lastUpdateService.update(lastUpdate);
+            if (mtdAddLastEntry != null) {
+                lastUpdate.setData(mtdAddLastEntry.toString());
+                lastUpdateService.update(lastUpdate);
+            }
         }
 
         List<Token> dbEntries = tokenService.findByTicks(tokenList.stream().map(Token::getTick).toList());
@@ -95,11 +97,8 @@ public class FetchTokens implements JavaDelegate {
         //Sorting by the creation time to get entries in the db as they created
         tokenList.sort(Comparator.comparing(Token::getMtsAdd));
 
-        final List<Token> updateToken = tokenList.stream().filter(single -> single.getId() != null).toList();
-
-        tokenService.insert(tokenList.stream().filter(single -> single.getId() == null).toList());
-        tokenService.update(updateToken);
-
+        tokenService.batchInsert(tokenList.stream().filter(single -> single.getId() == null).toList());
+        tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
     }
 
 }

@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Holder.HolderPath;
+import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.BalanceRecord;
 
 import java.math.BigInteger;
@@ -67,12 +68,17 @@ public class Balance extends TableImpl<BalanceRecord> {
     /**
      * The column <code>public.Balance.holder_id</code>.
      */
-    public final TableField<BalanceRecord, Integer> HOLDER_ID = createField(DSL.name("holder_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BalanceRecord, BigInteger> HOLDER_ID = createField(DSL.name("holder_id"), SQLDataType.BIGINT.nullable(false), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Balance.balance</code>.
      */
     public final TableField<BalanceRecord, BigInteger> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+
+    /**
+     * The column <code>public.Balance.fk_token</code>.
+     */
+    public final TableField<BalanceRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Balance(Name alias, Table<BalanceRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -153,7 +159,7 @@ public class Balance extends TableImpl<BalanceRecord> {
 
     @Override
     public List<ForeignKey<BalanceRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.BALANCE__FK_BALANCE_HOLDER);
+        return Arrays.asList(Keys.BALANCE__FK_BALANCE_HOLDER, Keys.BALANCE__FK_BALANCE_TOKEN);
     }
 
     private transient HolderPath _holder;
@@ -166,6 +172,18 @@ public class Balance extends TableImpl<BalanceRecord> {
             _holder = new HolderPath(this, Keys.BALANCE__FK_BALANCE_HOLDER, null);
 
         return _holder;
+    }
+
+    private transient TokenPath _token;
+
+    /**
+     * Get the implicit join path to the <code>public.Token</code> table.
+     */
+    public TokenPath token() {
+        if (_token == null)
+            _token = new TokenPath(this, Keys.BALANCE__FK_BALANCE_TOKEN, null);
+
+        return _token;
     }
 
     @Override

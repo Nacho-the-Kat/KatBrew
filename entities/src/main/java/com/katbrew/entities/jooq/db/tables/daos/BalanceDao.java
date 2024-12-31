@@ -74,14 +74,14 @@ public class BalanceDao extends DAOImpl<BalanceRecord, com.katbrew.entities.jooq
      * Fetch records that have <code>holder_id BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfHolderId(Integer lowerInclusive, Integer upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfHolderId(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Balance.BALANCE.HOLDER_ID, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>holder_id IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByHolderId(Integer... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByHolderId(BigInteger... values) {
         return fetch(Balance.BALANCE.HOLDER_ID, values);
     }
 
@@ -98,5 +98,20 @@ public class BalanceDao extends DAOImpl<BalanceRecord, com.katbrew.entities.jooq
      */
     public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByBalance(BigInteger... values) {
         return fetch(Balance.BALANCE.BALANCE_, values);
+    }
+
+    /**
+     * Fetch records that have <code>fk_token BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchRangeOfFkToken(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(Balance.BALANCE.FK_TOKEN, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>fk_token IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Balance> fetchByFkToken(Integer... values) {
+        return fetch(Balance.BALANCE.FK_TOKEN, values);
     }
 }

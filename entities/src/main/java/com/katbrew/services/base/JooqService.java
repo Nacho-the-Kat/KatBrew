@@ -2,7 +2,6 @@ package com.katbrew.services.base;
 
 import com.katbrew.exceptions.NotValidException;
 import jakarta.annotation.PostConstruct;
-import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
@@ -206,8 +205,15 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         }
     }
 
-    public List<T> insert(List<T> entitiesToInsert) {
+    public List<T> insert(final List<T> entitiesToInsert) {
         return entitiesToInsert.stream().map(this::insert).toList();
+    }
+
+    //for inserting a large amount of entries like for sync
+    public void batchInsert(final List<T> entitiesToInsert) {
+        dsl.insertInto(dao.getTable()).set(
+                entitiesToInsert.stream().map(single -> dsl.newRecord(dao.getTable(), single)).toList()
+        ).execute();
     }
 
     public void update(final T entityToUpdate) {
@@ -217,6 +223,11 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     public void update(List<T> entitiesToUpdate) {
         entitiesToUpdate.forEach(this::update);
+    }
+
+    //for updating a large amount of entries like for sync
+    public void batchUpdate(List<T> entitiesToUpdate) {
+        dao.update(entitiesToUpdate);
     }
 
     public List<T> findAll() {

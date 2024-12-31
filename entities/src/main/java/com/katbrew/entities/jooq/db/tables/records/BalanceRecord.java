@@ -41,7 +41,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Setter for <code>public.Balance.holder_id</code>.
      */
     @Override
-    public void setHolderId(Integer value) {
+    public void setHolderId(BigInteger value) {
         set(1, value);
     }
 
@@ -49,8 +49,8 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Getter for <code>public.Balance.holder_id</code>.
      */
     @Override
-    public Integer getHolderId() {
-        return (Integer) get(1);
+    public BigInteger getHolderId() {
+        return (BigInteger) get(1);
     }
 
     /**
@@ -67,6 +67,22 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     @Override
     public BigInteger getBalance() {
         return (BigInteger) get(2);
+    }
+
+    /**
+     * Setter for <code>public.Balance.fk_token</code>.
+     */
+    @Override
+    public void setFkToken(Integer value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.Balance.fk_token</code>.
+     */
+    @Override
+    public Integer getFkToken() {
+        return (Integer) get(3);
     }
 
     // -------------------------------------------------------------------------
@@ -87,6 +103,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
         setId(from.getId());
         setHolderId(from.getHolderId());
         setBalance(from.getBalance());
+        setFkToken(from.getFkToken());
         resetChangedOnNotNull();
     }
 
@@ -110,12 +127,13 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     /**
      * Create a detached, initialised BalanceRecord
      */
-    public BalanceRecord(Integer id, Integer holderId, BigInteger balance) {
+    public BalanceRecord(Integer id, BigInteger holderId, BigInteger balance, Integer fkToken) {
         super(Balance.BALANCE);
 
         setId(id);
         setHolderId(holderId);
         setBalance(balance);
+        setFkToken(fkToken);
         resetChangedOnNotNull();
     }
 
@@ -129,6 +147,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
             setId(value.getId());
             setHolderId(value.getHolderId());
             setBalance(value.getBalance());
+            setFkToken(value.getFkToken());
             resetChangedOnNotNull();
         }
     }

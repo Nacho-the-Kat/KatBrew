@@ -61,7 +61,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<BalanceRecord, HolderRecord> BALANCE__FK_BALANCE_HOLDER = Internal.createForeignKey(Balance.BALANCE, DSL.name("fk_balance_holder"), new TableField[] { Balance.BALANCE.HOLDER_ID }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
-    public static final ForeignKey<HolderRecord, TokenRecord> HOLDER__FK_HOLDER_TOKEN = Internal.createForeignKey(Holder.HOLDER, DSL.name("fk_holder_token"), new TableField[] { Holder.HOLDER.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
+    public static final ForeignKey<BalanceRecord, TokenRecord> BALANCE__FK_BALANCE_TOKEN = Internal.createForeignKey(Balance.BALANCE, DSL.name("fk_balance_token"), new TableField[] { Balance.BALANCE.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
     public static final ForeignKey<PriceDataRecord, TokenRecord> PRICE_DATA__FK_PRICE_DATA_TOKEN = Internal.createForeignKey(PriceData.PRICE_DATA, DSL.name("fk_price_data_token"), new TableField[] { PriceData.PRICE_DATA.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
     public static final ForeignKey<TransactionRecord, TokenRecord> TRANSACTION__FK_TRANSACTION_TOKEN = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transaction_token"), new TableField[] { Transaction.TRANSACTION.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
 }

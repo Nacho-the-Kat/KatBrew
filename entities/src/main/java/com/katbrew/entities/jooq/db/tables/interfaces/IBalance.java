@@ -29,12 +29,12 @@ public interface IBalance extends Serializable {
     /**
      * Setter for <code>public.Balance.holder_id</code>.
      */
-    public void setHolderId(Integer value);
+    public void setHolderId(BigInteger value);
 
     /**
      * Getter for <code>public.Balance.holder_id</code>.
      */
-    public Integer getHolderId();
+    public BigInteger getHolderId();
 
     /**
      * Setter for <code>public.Balance.balance</code>.
@@ -45,6 +45,16 @@ public interface IBalance extends Serializable {
      * Getter for <code>public.Balance.balance</code>.
      */
     public BigInteger getBalance();
+
+    /**
+     * Setter for <code>public.Balance.fk_token</code>.
+     */
+    public void setFkToken(Integer value);
+
+    /**
+     * Getter for <code>public.Balance.fk_token</code>.
+     */
+    public Integer getFkToken();
 
     // -------------------------------------------------------------------------
     // FROM and INTO

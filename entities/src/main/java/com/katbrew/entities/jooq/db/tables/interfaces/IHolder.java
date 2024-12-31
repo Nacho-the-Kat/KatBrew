@@ -36,16 +36,6 @@ public interface IHolder extends Serializable {
      */
     public String getAddress();
 
-    /**
-     * Setter for <code>public.Holder.fk_token</code>.
-     */
-    public void setFkToken(Integer value);
-
-    /**
-     * Getter for <code>public.Holder.fk_token</code>.
-     */
-    public Integer getFkToken();
-
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

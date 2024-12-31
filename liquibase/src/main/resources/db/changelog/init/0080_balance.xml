@@ -16,14 +16,18 @@
             <column type="INT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_BALANCE" nullable="false"/>
             </column>
-            <column type="int" name="holder_id">
+            <column type="bigint" name="holder_id">
                 <constraints nullable="false"/>
             </column>
             <column type="bigint" name="balance"/>
+            <column type="int" name="fk_token">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint baseTableName="Balance" baseColumnNames="holder_id" constraintName="FK_BALANCE_HOLDER" referencedTableName="Holder"
                                  referencedColumnNames="id"/>
-
+        <addForeignKeyConstraint baseTableName="Balance" baseColumnNames="fk_token" constraintName="FK_BALANCE_TOKEN" referencedTableName="Token"
+                                 referencedColumnNames="id"/>
         <rollback>
             <dropTable tableName="Balance"/>
         </rollback>

@@ -98,19 +98,4 @@ public class HolderDao extends DAOImpl<HolderRecord, com.katbrew.entities.jooq.d
     public Optional<com.katbrew.entities.jooq.db.tables.pojos.Holder> fetchOptionalByAddress(String value) {
         return fetchOptional(Holder.HOLDER.ADDRESS, value);
     }
-
-    /**
-     * Fetch records that have <code>fk_token BETWEEN lowerInclusive AND
-     * upperInclusive</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Holder> fetchRangeOfFkToken(Integer lowerInclusive, Integer upperInclusive) {
-        return fetchRange(Holder.HOLDER.FK_TOKEN, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>fk_token IN (values)</code>
-     */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Holder> fetchByFkToken(Integer... values) {
-        return fetch(Holder.HOLDER.FK_TOKEN, values);
-    }
 }

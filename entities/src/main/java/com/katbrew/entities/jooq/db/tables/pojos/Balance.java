@@ -18,8 +18,9 @@ public class Balance implements IBalance {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private Integer holderId;
+    private BigInteger holderId;
     private BigInteger balance;
+    private Integer fkToken;
 
     public Balance() {}
 
@@ -27,16 +28,19 @@ public class Balance implements IBalance {
         this.id = value.getId();
         this.holderId = value.getHolderId();
         this.balance = value.getBalance();
+        this.fkToken = value.getFkToken();
     }
 
     public Balance(
         Integer id,
-        Integer holderId,
-        BigInteger balance
+        BigInteger holderId,
+        BigInteger balance,
+        Integer fkToken
     ) {
         this.id = id;
         this.holderId = holderId;
         this.balance = balance;
+        this.fkToken = fkToken;
     }
 
     /**
@@ -59,7 +63,7 @@ public class Balance implements IBalance {
      * Getter for <code>public.Balance.holder_id</code>.
      */
     @Override
-    public Integer getHolderId() {
+    public BigInteger getHolderId() {
         return this.holderId;
     }
 
@@ -67,7 +71,7 @@ public class Balance implements IBalance {
      * Setter for <code>public.Balance.holder_id</code>.
      */
     @Override
-    public void setHolderId(Integer holderId) {
+    public void setHolderId(BigInteger holderId) {
         this.holderId = holderId;
     }
 
@@ -85,6 +89,22 @@ public class Balance implements IBalance {
     @Override
     public void setBalance(BigInteger balance) {
         this.balance = balance;
+    }
+
+    /**
+     * Getter for <code>public.Balance.fk_token</code>.
+     */
+    @Override
+    public Integer getFkToken() {
+        return this.fkToken;
+    }
+
+    /**
+     * Setter for <code>public.Balance.fk_token</code>.
+     */
+    @Override
+    public void setFkToken(Integer fkToken) {
+        this.fkToken = fkToken;
     }
 
     @Override
@@ -114,6 +134,12 @@ public class Balance implements IBalance {
         }
         else if (!this.balance.equals(other.balance))
             return false;
+        if (this.fkToken == null) {
+            if (other.fkToken != null)
+                return false;
+        }
+        else if (!this.fkToken.equals(other.fkToken))
+            return false;
         return true;
     }
 
@@ -124,6 +150,7 @@ public class Balance implements IBalance {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.holderId == null) ? 0 : this.holderId.hashCode());
         result = prime * result + ((this.balance == null) ? 0 : this.balance.hashCode());
+        result = prime * result + ((this.fkToken == null) ? 0 : this.fkToken.hashCode());
         return result;
     }
 
@@ -134,6 +161,7 @@ public class Balance implements IBalance {
         sb.append(id);
         sb.append(", ").append(holderId);
         sb.append(", ").append(balance);
+        sb.append(", ").append(fkToken);
 
         sb.append(")");
         return sb.toString();
@@ -148,6 +176,7 @@ public class Balance implements IBalance {
         setId(from.getId());
         setHolderId(from.getHolderId());
         setBalance(from.getBalance());
+        setFkToken(from.getFkToken());
     }
 
     @Override

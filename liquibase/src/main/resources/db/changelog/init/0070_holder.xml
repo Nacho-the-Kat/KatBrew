@@ -19,12 +19,7 @@
             <column type="text" name="address">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column type="int" name="fk_token">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="Holder" baseColumnNames="fk_token" constraintName="FK_HOLDER_TOKEN" referencedTableName="Token"
-                                 referencedColumnNames="id"/>
         <rollback>
             <dropTable tableName="Holder"/>
         </rollback>

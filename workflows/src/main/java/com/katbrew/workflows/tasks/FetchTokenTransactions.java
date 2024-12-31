@@ -11,7 +11,7 @@ import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.services.tables.TransactionService;
 import com.katbrew.workflows.helper.ParsingResponse;
-import lombok.Data;
+import com.katbrew.workflows.helper.TransactionExternal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -22,7 +22,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -42,74 +45,79 @@ public class FetchTokenTransactions implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-//        todo
+
         WebClient client = WebClient.builder().build();
-        List<Token> tokenList = tokenService.findBy(Collections.singletonList(Tables.TOKEN.ID.ge(1769)));
+        final List<Token> tokenList = List.of(tokenService.findOne(1775));
         log.info("Starting the transaction sync");
         long start = System.nanoTime();
+
         for (Token token : tokenList) {
+            log.info("starting token: " + token.getTick());
             BigInteger cursor = BigInteger.valueOf(0);
-            BigInteger firstCursor = null;
+            BigInteger mtdAddLastEntry = null;
             LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTokenTransactions" + token.getTick());
             List<Transaction> transactionList = new ArrayList<>();
             while (cursor != null) {
-                ParsingResponse<List<TransactionsInternal>> responseTokenList = null;
+                ParsingResponse<List<TransactionExternal>> responseTokenList = null;
                 try {
                     responseTokenList = client
                             .get()
                             .uri(tokenUrl + "/krc20/oplist?tick=" + token.getTick() + (cursor.compareTo(new BigInteger("0")) > 0 ? "&next=" + cursor : ""))
                             .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<TransactionsInternal>>>() {
+                            .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<TransactionExternal>>>() {
                             })
                             .block();
 
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                     log.error("Something wrong with fetching data from " + tokenUrl + "/krc20/oplist?tick=" + token.getTick() + "&next=" + cursor);
                 }
 
-                if (responseTokenList == null) {
-                    log.error("no data was loaded");
-                    return;
-                }
-                responseTokenList.getResult().forEach(single -> {
-                    single.setFromAddress(single.getFrom());
-                    single.setToAddress(single.getTo());
-                });
-                final List<Transaction> transactions = mapper.convertValue(responseTokenList.getResult(), new TypeReference<>() {});
+                if (responseTokenList != null) {
 
-                transactionList.addAll(transactions);
-                cursor = responseTokenList.getNext();
+                    responseTokenList.getResult().forEach(single -> {
+                        single.setFromAddress(single.getFrom());
+                        single.setToAddress(single.getTo());
+                    });
+                    final List<Transaction> transactions = mapper.convertValue(responseTokenList.getResult(), new TypeReference<>() {
+                    });
 
-                if (firstCursor == null) {
-                    firstCursor = cursor;
-                }
+                    transactionList.addAll(transactions);
+                    cursor = responseTokenList.getNext();
 
-                if (lastUpdate != null && cursor != null) {
-                    BigInteger lastCursor = new BigInteger(lastUpdate.getData());
-                    if (cursor.compareTo(lastCursor) <= 0) {
-                        //dont need to fetch the next transactions, we only need the newest
-                        cursor = null;
+                    if (mtdAddLastEntry == null && !transactions.isEmpty()) {
+                        mtdAddLastEntry = transactions.get(transactions.size() - 1).getMtsAdd();
                     }
+
+                    if (lastUpdate != null && mtdAddLastEntry != null) {
+                        BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
+                        if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
+                            //dont need to fetch the next transactions, we only need the newest
+                            cursor = null;
+                        }
+                    }
+                } else {
+                    log.error("no data was loaded");
                 }
             }
 
             if (lastUpdate == null) {
                 lastUpdate = new LastUpdate();
-                if (firstCursor != null) {
-                    lastUpdate.setData(firstCursor.toString());
+                if (mtdAddLastEntry != null) {
+                    lastUpdate.setData(mtdAddLastEntry.toString());
                     lastUpdate.setIdentifier("fetchTokenTransactions" + token.getTick());
                     lastUpdateService.insert(lastUpdate);
                 }
             } else {
-                lastUpdate.setData(firstCursor.toString());
-                lastUpdateService.update(lastUpdate);
+                if (mtdAddLastEntry != null) {
+                    lastUpdate.setData(mtdAddLastEntry.toString());
+                    lastUpdateService.update(lastUpdate);
+                }
             }
 
             List<Transaction> dbEntries = transactionService.findBy(List.of(Tables.TRANSACTION.FK_TOKEN.eq(token.getId())));
 
             transactionList.sort(Comparator.comparing(Transaction::getMtsAdd));
-            transactionList = transactionList.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(Comparator.comparing(Transaction::getHashRev))), ArrayList::new));
 
             transactionList.forEach(transaction -> {
                 final Transaction dbEntry = dbEntries.stream().filter(intern -> intern.getHashRev().equals(transaction.getHashRev())).findFirst().orElse(null);
@@ -119,16 +127,12 @@ public class FetchTokenTransactions implements JavaDelegate {
                 }
             });
 
-            transactionService.update(transactionList.stream().filter(single -> single.getId() != null).toList());
-            transactionService.insert(transactionList.stream().filter(single -> single.getId() == null).toList());
-            log.info("Done, needed time:" + (System.nanoTime() - start));
+            transactionService.batchUpdate(transactionList.stream().filter(single -> single.getId() != null).toList());
+            transactionService.batchInsert(transactionList.stream().filter(single -> single.getId() == null).toList());
+            log.info("Done with " + token.getTick() + ", needed time:" + (System.nanoTime() - start));
         }
 
     }
 
-    @Data
-    private static class TransactionsInternal extends Transaction {
-        String from;
-        String to;
-    }
+
 }
