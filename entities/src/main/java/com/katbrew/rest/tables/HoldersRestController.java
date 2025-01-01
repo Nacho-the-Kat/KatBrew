@@ -1,6 +1,7 @@
 package com.katbrew.rest.tables;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
+import com.katbrew.pojos.TopHolder;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.tables.HolderService;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,11 @@ public class HoldersRestController extends AbstractRestController<Holder, Holder
     @PostMapping("/create")
     public Holder createHolder(@RequestBody Holder holder){
         return holderService.insert(holder);
+    }
+
+    @GetMapping("/topHolders")
+    public List<TopHolder> getTopHolders(){
+//        List<TopHolder>
+        return holderService.getTopHolders();
     }
 }
