@@ -47,7 +47,7 @@ public class FetchTokenTransactions implements JavaDelegate {
     public void execute(DelegateExecution execution) {
 
         WebClient client = WebClient.builder().build();
-        final List<Token> tokenList = List.of(tokenService.findOne(1775));
+        final List<Token> tokenList = tokenService.findAll();
         log.info("Starting the transaction sync");
         long start = System.nanoTime();
 

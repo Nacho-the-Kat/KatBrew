@@ -210,10 +210,10 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     }
 
     //for inserting a large amount of entries like for sync
-    public void batchInsert(final List<T> entitiesToInsert) {
-        dsl.insertInto(dao.getTable()).set(
+    public List<T> batchInsert(final List<T> entitiesToInsert) {
+        return dsl.insertInto(dao.getTable()).set(
                 entitiesToInsert.stream().map(single -> dsl.newRecord(dao.getTable(), single)).toList()
-        ).execute();
+        ).returning().fetch().into(type);
     }
 
     public void update(final T entityToUpdate) {

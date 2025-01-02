@@ -22,8 +22,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigInteger;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -43,8 +46,15 @@ public class FetchTokenDetails implements JavaDelegate {
     public void execute(DelegateExecution execution) {
 
         WebClient client = WebClient.builder().build();
-        List<Token> tokenList = tokenService.findAll();
+        final List<Token> tokenList = tokenService.findAll();
         log.info("Starting the token detail sync");
+        final List<Token> updatedToken = new ArrayList<>();
+
+        final Map<String, Holder> dbHolder = holderService.findAll().stream().collect(Collectors.toMap(Holder::getAddress, single -> single));
+        final Map<String, BigInteger> addressId = dbHolder.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, single -> single.getValue().getId()));
+
+        final HashMap<String, Holder> holderToCreate = new HashMap<>();
+        final HashMap<String, List<Balance>> addressBalances = new HashMap<>();
 
         tokenList.forEach(token -> {
             ParsingResponse<List<ExtendedTokenData>> responseTokenList = client
@@ -61,59 +71,73 @@ public class FetchTokenDetails implements JavaDelegate {
             Token internal = mapper.convertValue(responseTokenList.getResult().get(0), Token.class);
             internal.setId(token.getId());
             internal.setLogo(token.getLogo());
-            tokenService.update(internal);
+            updatedToken.add(internal);
 
-            List<Balance> dbBalances = balanceService.findBy(Collections.singletonList(Tables.BALANCE.FK_TOKEN.eq(token.getId())));
-            List<Holder> dbHolder = holderService.findBy(Collections.singletonList(Tables.HOLDER.ID.in(dbBalances.stream().map(Balance::getHolderId).toList())));
+            final Map<String, Balance> dbBalances = balanceService.findBy(List.of(Tables.BALANCE.FK_TOKEN.eq(token.getId())))
+                    .stream().collect(Collectors.toMap(single -> single.getHolderId() + "-" + single.getFkToken(), single -> single));
 
-            List<HolderInternal> holderInternals = responseTokenList.getResult().get(0).getHolder();
+            final List<HolderInternal> holderInternals = responseTokenList.getResult().get(0).getHolder();
+
             if (holderInternals != null) {
-                responseTokenList.getResult().get(0).getHolder().forEach(singleHolder -> {
-                    Holder intern = dbHolder.stream().filter(internEntry -> internEntry.getAddress().equals(singleHolder.getAddress())).findFirst().orElse(null);
-                    if (intern == null) {
-                        List<Holder> addressHolder = holderService.findBy(Collections.singletonList(Tables.HOLDER.ADDRESS.eq(singleHolder.getAddress())));
-                        if (!addressHolder.isEmpty()) {
-                            intern = addressHolder.get(0);
-                        }
-                    }
+                holderInternals.forEach(singleHolder -> {
+                    final String address = singleHolder.getAddress();
+                    Holder intern = dbHolder.get(address);
                     //completely new holder
                     if (intern == null) {
-                        Holder newHolder = new Holder();
-                        newHolder.setAddress(singleHolder.getAddress());
-                        newHolder = holderService.insert(newHolder);
-                        createNewBalance(newHolder, singleHolder.getAmount(), token);
+                        if (!holderToCreate.containsKey(address)) {
+                            Holder newHolder = new Holder();
+                            newHolder.setAddress(address);
+                            holderToCreate.put(address, newHolder);
+                        }
+                        addressBalances.put(address, List.of(createNewBalance(singleHolder.getAmount(), token)));
                     } else {
-                        final List<Balance> balance = balanceService.findBy(List.of(Tables.BALANCE.HOLDER_ID.eq(intern.getId()), Tables.BALANCE.FK_TOKEN.eq(token.getId())));
-                        if (!balance.isEmpty()) {
+                        final Balance balance = dbBalances.get(addressId.get(address) + "-" + token.getId());
+                        if (!addressBalances.containsKey(address)) {
+                            addressBalances.put(address, new ArrayList<>());
+                        }
+                        if (balance != null) {
                             //we have a balance for the holder, update it
-                            Balance oldOne = balance.get(0);
-                            oldOne.setBalance(singleHolder.getAmount());
-                            balanceService.update(oldOne);
+                            balance.setBalance(singleHolder.getAmount());
+                            addressBalances.get(address).add(balance);
                         } else {
                             //new balance for an old holder
-                            createNewBalance(intern, singleHolder.getAmount(), token);
+                            final Balance b = createNewBalance(singleHolder.getAmount(), token);
+                            b.setHolderId(intern.getId());
+                            addressBalances.get(address).add(b);
                         }
                     }
                 });
-                List<Balance> updatedBalances = balanceService.findBy(Collections.singletonList(Tables.BALANCE.FK_TOKEN.eq(token.getId())));
-                List<BigInteger> holders = holderService.findBy(List.of(Tables.HOLDER.ADDRESS.in(responseTokenList.getResult().get(0).getHolder().stream().map(HolderInternal::getAddress).toList())))
-                        .stream().map(Holder::getId).toList();
-                updatedBalances.forEach(singleBalance -> {
-                    if (!holders.contains(singleBalance.getHolderId())) {
-                        //holder id of the balance entry is not in the response, delete it
-                        balanceService.delete(singleBalance);
-                    }
-                });
+//                List<Balance> updatedBalances = balanceService.findBy(Collections.singletonList(Tables.BALANCE.FK_TOKEN.eq(token.getId())));
+//                List<BigInteger> holders = holderService.findBy(List.of(Tables.HOLDER.ADDRESS.in(responseTokenList.getResult().get(0).getHolder().stream().map(HolderInternal::getAddress).toList())))
+//                        .stream().map(Holder::getId).toList();
+//                updatedBalances.forEach(singleBalance -> {
+//                    if (!holders.contains(singleBalance.getHolderId())) {
+//                        //holder id of the balance entry is not in the response, delete it
+//                        balanceService.delete(singleBalance);
+//                    }
+//                });
             }
         });
+        tokenService.batchUpdate(updatedToken);
+        holderService.batchInsert(holderToCreate.values().stream().toList()).forEach(single -> {
+            dbHolder.put(single.getAddress(), single);
+            addressId.put(single.getAddress(), single.getId());
+        });
+        addressBalances.forEach((key, value) -> value.forEach(singleB -> {
+            singleB.setHolderId(addressId.get(key));
+        }));
+        List<Balance> toUpdate = addressBalances.values().stream().flatMap(single -> single.stream().filter(singleB -> singleB.getId() != null)).toList();
+        List<Balance> newBalances = balanceService.insert(addressBalances.values().stream().flatMap(single -> single.stream().filter(singleB -> singleB.getId() == null)).toList());
+
+        //todo andere löschen
+        balanceService.update(toUpdate);
     }
 
-    private void createNewBalance(final Holder holder, final BigInteger amount, final Token token) {
+    private Balance createNewBalance(final BigInteger amount, final Token token) {
         final Balance balance = new Balance();
         balance.setBalance(amount);
-        balance.setHolderId(holder.getId());
         balance.setFkToken(token.getId());
-        balanceService.insert(balance);
+        return balance;
     }
 
     @EqualsAndHashCode(callSuper = true)

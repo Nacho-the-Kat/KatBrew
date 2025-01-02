@@ -25,6 +25,14 @@ public class HolderService extends JooqService<Holder, HolderDao> {
     private final ObjectMapper objectMapper = KatBrewObjectMapper.createObjectMapper();
     private final DSLContext context;
 
+    public Holder findByAddress(final String address){
+        final List<Holder> holder = this.findBy(Collections.singletonList(Tables.HOLDER.ADDRESS.eq(address)));
+        if (holder.isEmpty()){
+            return null;
+        }
+        return holder.get(0);
+    }
+
     public List<TickHolder> getHolderData() {
         return objectMapper.convertValue(
                 tokenService.findAll(List.of(Tables.TOKEN.TICK, Tables.TOKEN.HOLDER_TOTAL)),
