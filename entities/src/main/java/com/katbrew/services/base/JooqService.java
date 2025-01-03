@@ -159,7 +159,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             final String sortBy,
             final String sortOrder
     ) {
-        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
+        final SortField<?> sort = getFieldWithSort(sortBy, sortOrder);
 
         return findBy(sort, offset, limit);
     }
@@ -189,7 +189,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             final String sortBy,
             final String sortOrder
     ) {
-        final Field<?> sort = getFieldWithSort(sortBy, sortOrder);
+        final SortField<?> sort = getFieldWithSort(sortBy, sortOrder);
 
         return dsl.selectFrom(dao.getTable())
                 .orderBy(sort)
@@ -353,15 +353,14 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         }
     }
 
-    private Field<?> getFieldWithSort(final String col, final String sortDirection) {
+    private SortField<?> getFieldWithSort(final String col, final String sortDirection) {
         final Field<?> sort = getField(col);
 
         if (sortDirection.equals("asc")) {
-            sort.asc();
+            return sort.asc();
         } else {
-            sort.desc();
+            return sort.desc();
         }
-        return sort;
     }
 
     private Field<?> getField(final String col) {

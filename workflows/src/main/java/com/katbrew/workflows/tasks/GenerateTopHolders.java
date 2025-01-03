@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.TopHolder;
 import com.katbrew.helper.KatBrewObjectMapper;
-import com.katbrew.pojos.TopHolderBalance;
-import com.katbrew.pojos.TopHolderGenerated;
 import com.katbrew.services.tables.TopHolderService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -17,6 +16,8 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,8 @@ public class GenerateTopHolders implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
+
+        log.info("Starting the top holder generating: " + LocalDateTime.now());
         final Map<String, TopHolder> dbHolder = topHolderService.findAll().stream().collect(Collectors.toMap(TopHolder::getAddress, single -> single));
 
         final com.katbrew.entities.jooq.db.tables.Holder holder = Tables.HOLDER;
@@ -59,7 +62,7 @@ public class GenerateTopHolders implements JavaDelegate {
                 topHolder.setBalances(new ArrayList<>());
                 map.put(single.get(holder.ADDRESS), topHolder);
             }
-            final TopHolderBalance topHolderBalance = new TopHolderBalance();
+            final TopHolderGenerated.TopHolderBalance topHolderBalance = new TopHolderGenerated.TopHolderBalance();
             topHolderBalance.setTick(single.get(token.TICK));
             topHolderBalance.setAmount(single.get(balance.BALANCE_));
             topHolder.getBalances().add(topHolderBalance);
@@ -85,7 +88,22 @@ public class GenerateTopHolders implements JavaDelegate {
         }).toList();
         topHolderService.batchInsert(right.stream().filter(single -> single.getId() == null).toList());
         topHolderService.batchUpdate(right.stream().filter(single -> single.getId() != null).toList());
+
+        log.info("Finished the top holder generating: " + LocalDateTime.now());
     }
 
+    @Data
+    public static class TopHolderGenerated {
+        BigInteger id;
+        String address;
+        List<TopHolderBalance> balances;
+        Integer tokenCount;
+
+        @Data
+        public static class TopHolderBalance {
+            String tick;
+            BigInteger amount;
+        }
+    }
 
 }

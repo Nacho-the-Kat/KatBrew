@@ -13,6 +13,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class FetchTokens implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
 
-        log.info("Starting the token sync");
+        log.info("Starting the token sync: " + LocalDateTime.now());
 
         final ParsingResponse<List<Token>> responseTokenList = client
                 .get()
@@ -65,6 +66,8 @@ public class FetchTokens implements JavaDelegate {
 
         tokenService.batchInsertVoid(tokenList.stream().filter(single -> single.getId() == null).toList());
         tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
+
+        log.info("Finished the token sync: " + LocalDateTime.now());
     }
 
 }

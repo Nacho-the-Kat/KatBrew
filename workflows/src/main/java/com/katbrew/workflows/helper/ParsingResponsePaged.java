@@ -16,5 +16,6 @@ public class ParsingResponsePaged<T> extends ParsingResponse<T> {
         Integer pageSize;
         Integer totalPages;
         BigInteger totalRecords;
+        Boolean hasMore = false;
     }
 }
