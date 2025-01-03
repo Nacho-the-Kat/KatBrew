@@ -19,6 +19,7 @@
             <column type="text" name="link">
                 <constraints nullable="false"/>
             </column>
+            <column type="int" name="order"/>
             <column type="boolean" name="active"/>
             <column type="datetime" name="show_until"/>
         </createTable>

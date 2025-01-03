@@ -62,6 +62,11 @@ public class Advertisements extends TableImpl<AdvertisementsRecord> {
     public final TableField<AdvertisementsRecord, String> LINK = createField(DSL.name("link"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
+     * The column <code>public.Advertisements.order</code>.
+     */
+    public final TableField<AdvertisementsRecord, Integer> ORDER = createField(DSL.name("order"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.Advertisements.active</code>.
      */
     public final TableField<AdvertisementsRecord, Boolean> ACTIVE = createField(DSL.name("active"), SQLDataType.BOOLEAN, this, "");

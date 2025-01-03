@@ -54,11 +54,27 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
     }
 
     /**
+     * Setter for <code>public.Advertisements.order</code>.
+     */
+    @Override
+    public void setOrder(Integer value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.Advertisements.order</code>.
+     */
+    @Override
+    public Integer getOrder() {
+        return (Integer) get(2);
+    }
+
+    /**
      * Setter for <code>public.Advertisements.active</code>.
      */
     @Override
     public void setActive(Boolean value) {
-        set(2, value);
+        set(3, value);
     }
 
     /**
@@ -66,7 +82,7 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
      */
     @Override
     public Boolean getActive() {
-        return (Boolean) get(2);
+        return (Boolean) get(3);
     }
 
     /**
@@ -74,7 +90,7 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
      */
     @Override
     public void setShowUntil(LocalDateTime value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
@@ -82,7 +98,7 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
      */
     @Override
     public LocalDateTime getShowUntil() {
-        return (LocalDateTime) get(3);
+        return (LocalDateTime) get(4);
     }
 
     // -------------------------------------------------------------------------
@@ -102,6 +118,7 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
     public void from(IAdvertisements from) {
         setId(from.getId());
         setLink(from.getLink());
+        setOrder(from.getOrder());
         setActive(from.getActive());
         setShowUntil(from.getShowUntil());
         resetChangedOnNotNull();
@@ -127,11 +144,12 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
     /**
      * Create a detached, initialised AdvertisementsRecord
      */
-    public AdvertisementsRecord(Integer id, String link, Boolean active, LocalDateTime showUntil) {
+    public AdvertisementsRecord(Integer id, String link, Integer order, Boolean active, LocalDateTime showUntil) {
         super(Advertisements.ADVERTISEMENTS);
 
         setId(id);
         setLink(link);
+        setOrder(order);
         setActive(active);
         setShowUntil(showUntil);
         resetChangedOnNotNull();
@@ -146,6 +164,7 @@ public class AdvertisementsRecord extends UpdatableRecordImpl<AdvertisementsReco
         if (value != null) {
             setId(value.getId());
             setLink(value.getLink());
+            setOrder(value.getOrder());
             setActive(value.getActive());
             setShowUntil(value.getShowUntil());
             resetChangedOnNotNull();

@@ -85,6 +85,21 @@ public class AdvertisementsDao extends DAOImpl<AdvertisementsRecord, com.katbrew
     }
 
     /**
+     * Fetch records that have <code>order BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Advertisements> fetchRangeOfOrder(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(Advertisements.ADVERTISEMENTS.ORDER, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>order IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Advertisements> fetchByOrder(Integer... values) {
+        return fetch(Advertisements.ADVERTISEMENTS.ORDER, values);
+    }
+
+    /**
      * Fetch records that have <code>active BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */

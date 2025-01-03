@@ -35,6 +35,16 @@ public interface IAdvertisements extends Serializable {
     public String getLink();
 
     /**
+     * Setter for <code>public.Advertisements.order</code>.
+     */
+    public void setOrder(Integer value);
+
+    /**
+     * Getter for <code>public.Advertisements.order</code>.
+     */
+    public Integer getOrder();
+
+    /**
      * Setter for <code>public.Advertisements.active</code>.
      */
     public void setActive(Boolean value);

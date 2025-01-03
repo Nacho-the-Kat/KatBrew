@@ -19,6 +19,7 @@ public class Advertisements implements IAdvertisements {
 
     private Integer id;
     private String link;
+    private Integer order;
     private Boolean active;
     private LocalDateTime showUntil;
 
@@ -27,6 +28,7 @@ public class Advertisements implements IAdvertisements {
     public Advertisements(IAdvertisements value) {
         this.id = value.getId();
         this.link = value.getLink();
+        this.order = value.getOrder();
         this.active = value.getActive();
         this.showUntil = value.getShowUntil();
     }
@@ -34,11 +36,13 @@ public class Advertisements implements IAdvertisements {
     public Advertisements(
         Integer id,
         String link,
+        Integer order,
         Boolean active,
         LocalDateTime showUntil
     ) {
         this.id = id;
         this.link = link;
+        this.order = order;
         this.active = active;
         this.showUntil = showUntil;
     }
@@ -73,6 +77,22 @@ public class Advertisements implements IAdvertisements {
     @Override
     public void setLink(String link) {
         this.link = link;
+    }
+
+    /**
+     * Getter for <code>public.Advertisements.order</code>.
+     */
+    @Override
+    public Integer getOrder() {
+        return this.order;
+    }
+
+    /**
+     * Setter for <code>public.Advertisements.order</code>.
+     */
+    @Override
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     /**
@@ -128,6 +148,12 @@ public class Advertisements implements IAdvertisements {
         }
         else if (!this.link.equals(other.link))
             return false;
+        if (this.order == null) {
+            if (other.order != null)
+                return false;
+        }
+        else if (!this.order.equals(other.order))
+            return false;
         if (this.active == null) {
             if (other.active != null)
                 return false;
@@ -149,6 +175,7 @@ public class Advertisements implements IAdvertisements {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.link == null) ? 0 : this.link.hashCode());
+        result = prime * result + ((this.order == null) ? 0 : this.order.hashCode());
         result = prime * result + ((this.active == null) ? 0 : this.active.hashCode());
         result = prime * result + ((this.showUntil == null) ? 0 : this.showUntil.hashCode());
         return result;
@@ -160,6 +187,7 @@ public class Advertisements implements IAdvertisements {
 
         sb.append(id);
         sb.append(", ").append(link);
+        sb.append(", ").append(order);
         sb.append(", ").append(active);
         sb.append(", ").append(showUntil);
 
@@ -175,6 +203,7 @@ public class Advertisements implements IAdvertisements {
     public void from(IAdvertisements from) {
         setId(from.getId());
         setLink(from.getLink());
+        setOrder(from.getOrder());
         setActive(from.getActive());
         setShowUntil(from.getShowUntil());
     }
