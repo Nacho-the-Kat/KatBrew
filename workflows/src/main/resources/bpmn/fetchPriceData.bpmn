@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0j9numb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="Process_1q1rwmk" name="Fetch Price Data" isExecutable="true" camunda:historyTimeToLive="2">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0ai6og5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ai6og5" sourceRef="StartEvent_1" targetRef="Activity_0h289ir" />
+    <bpmn:endEvent id="Event_0zsbxbk">
+      <bpmn:incoming>Flow_06pmd2f</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_06pmd2f" sourceRef="Activity_0h289ir" targetRef="Event_0zsbxbk" />
+    <bpmn:serviceTask id="Activity_0h289ir" name="Fetch Price Data" camunda:delegateExpression="${fetchPriceData}">
+      <bpmn:incoming>Flow_0ai6og5</bpmn:incoming>
+      <bpmn:outgoing>Flow_06pmd2f</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1q1rwmk">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0zsbxbk_di" bpmnElement="Event_0zsbxbk">
+        <dc:Bounds x="522" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ollre1_di" bpmnElement="Activity_0h289ir">
+        <dc:Bounds x="320" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ai6og5_di" bpmnElement="Flow_0ai6og5">
+        <di:waypoint x="218" y="120" />
+        <di:waypoint x="320" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06pmd2f_di" bpmnElement="Flow_06pmd2f">
+        <di:waypoint x="420" y="120" />
+        <di:waypoint x="522" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -67,120 +67,128 @@ public class FetchTokenTransactions implements JavaDelegate {
                 List.of(Tables.LAST_UPDATE.IDENTIFIER.startsWith("fetchTokenTransactions"))
         ).stream().collect(Collectors.toConcurrentMap(LastUpdate::getIdentifier, single -> single));
 
-        Lists.partition(tokenList, batchSize).forEach(internalList -> {
-            final ConcurrentHashMap<String, Transaction> transactionList = new ConcurrentHashMap<>();
-            internalList.forEach(token -> {
-                completionService.submit(() -> {
-                    Integer cursor = 0;
-                    BigInteger mtdAddLastEntry = null;
-                    LastUpdate lastUpdate = lastUpdates.get("fetchTokenTransactions" + token.getTick());
-                    while (cursor != null) {
-                        ParsingResponsePaged<List<TransactionExternal>> responseTokenList = null;
-                        try {
-                            responseTokenList = client
-                                    .get()
-                                    .uri(tokenUrl + "/token/operations?tick="
-                                            + token.getTick() + (cursor != 0 ? "&page=" + cursor : "")
-                                            //if we fetched initially, no need for pageSize over 200
-                                            + (lastUpdate != null ? "&pageSize=" + 200 : ""))
-                                    .retrieve()
-                                    .bodyToMono(new ParameterizedTypeReference<ParsingResponsePaged<List<TransactionExternal>>>() {
-                                    })
-                                    .block();
+        try {
+            Lists.partition(tokenList, batchSize).forEach(internalList -> {
+                final ConcurrentHashMap<String, Transaction> transactionList = new ConcurrentHashMap<>();
+                internalList.forEach(token -> {
+                    completionService.submit(() -> {
+                        Integer cursor = 0;
+                        BigInteger mtdAddLastEntry = null;
+                        LastUpdate lastUpdate = lastUpdates.get("fetchTokenTransactions" + token.getTick());
+                        while (cursor != null) {
+                            String uri = tokenUrl + "/token/operations?tick=" + token.getTick();
+                            if (cursor != 0) {
+                                uri += "&page=" + cursor;
+                            }
+                            if (lastUpdate != null) {
+                                //if we fetched initially, no need for pageSize over 200
+                                uri += "&pageSize=" + 200;
+                            }
+                            ParsingResponsePaged<List<TransactionExternal>> responseTokenList = null;
+                            try {
+                                responseTokenList = client
+                                        .get()
+                                        .uri(uri)
+                                        .retrieve()
+                                        .bodyToMono(new ParameterizedTypeReference<ParsingResponsePaged<List<TransactionExternal>>>() {
+                                        })
+                                        .block();
 
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                            log.error("Something wrong with fetching data from " + tokenUrl + "/token/operations?tick=" + token.getTick() + "&next=" + cursor);
-                            cursor = null;
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                                log.error("Something wrong with fetching data from " + uri);
+                                cursor = null;
+                            }
+
+                            if (responseTokenList != null) {
+
+                                responseTokenList.getResult().forEach(single -> {
+                                    single.setFromAddress(single.getFrom());
+                                    single.setToAddress(single.getTo());
+                                    single.setFkToken(token.getId());
+                                });
+                                final List<Transaction> transactions = mapper.convertValue(responseTokenList.getResult(), new TypeReference<>() {
+                                });
+
+                                transactions.forEach(single -> transactionList.put(single.getHashRev(), single));
+
+                                if (!responseTokenList.getPagination().getHasMore() || responseTokenList.getResult().isEmpty()) {
+                                    cursor = null;
+                                } else {
+                                    cursor += 1;
+                                }
+
+                                if (mtdAddLastEntry == null && !transactions.isEmpty()) {
+                                    mtdAddLastEntry = transactions.get(0).getMtsAdd();
+                                }
+
+                                if (lastUpdate != null && mtdAddLastEntry != null) {
+                                    BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
+                                    if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
+                                        //dont need to fetch the next transactions, we only need the newest
+                                        cursor = null;
+                                    }
+                                }
+                            } else {
+                                log.error("no data was loaded");
+                            }
                         }
 
-                        if (responseTokenList != null) {
-
-                            responseTokenList.getResult().forEach(single -> {
-                                single.setFromAddress(single.getFrom());
-                                single.setToAddress(single.getTo());
-                                single.setFkToken(token.getId());
-                            });
-                            final List<Transaction> transactions = mapper.convertValue(responseTokenList.getResult(), new TypeReference<>() {
-                            });
-
-                            transactions.forEach(single -> transactionList.put(single.getHashRev(), single));
-
-                            if (!responseTokenList.getPagination().getHasMore() || responseTokenList.getResult().isEmpty()) {
-                                cursor = null;
-                            } else {
-                                cursor += 1;
-                            }
-
-                            if (mtdAddLastEntry == null && !transactions.isEmpty()) {
-                                mtdAddLastEntry = transactions.get(0).getMtsAdd();
-                            }
-
-                            if (lastUpdate != null && mtdAddLastEntry != null) {
-                                BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
-                                if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
-                                    //dont need to fetch the next transactions, we only need the newest
-                                    cursor = null;
-                                }
+                        if (lastUpdate == null) {
+                            lastUpdate = new LastUpdate();
+                            if (mtdAddLastEntry != null) {
+                                lastUpdate.setData(mtdAddLastEntry.toString());
+                                lastUpdate.setIdentifier("fetchTokenTransactions" + token.getTick());
+                                lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
                             }
                         } else {
-                            log.error("no data was loaded");
+                            if (mtdAddLastEntry != null) {
+                                lastUpdate.setData(mtdAddLastEntry.toString());
+                                lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
+                            }
                         }
-                    }
-
-                    if (lastUpdate == null) {
-                        lastUpdate = new LastUpdate();
-                        if (mtdAddLastEntry != null) {
-                            lastUpdate.setData(mtdAddLastEntry.toString());
-                            lastUpdate.setIdentifier("fetchTokenTransactions" + token.getTick());
-                            lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
-                        }
-                    } else {
-                        if (mtdAddLastEntry != null) {
-                            lastUpdate.setData(mtdAddLastEntry.toString());
-                            lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
-                        }
-                    }
-                    return null;
+                        return null;
+                    });
                 });
-            });
-            try {
-                //make sure, all tasks are finished
-                for (int i = 0; i < internalList.size(); i++) {
-                    Future<Void> future = completionService.take();
-                    future.get();
+                try {
+                    //make sure, all tasks are finished
+                    for (int i = 0; i < internalList.size(); i++) {
+                        Future<Void> future = completionService.take();
+                        future.get();
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-            final Map<String, Transaction> dbEntries = transactionService.findBy(
-                    List.of(Tables.TRANSACTION.FK_TOKEN.in(internalList.stream().map(Token::getId).toList()))
-            ).stream().collect(Collectors.toMap(Transaction::getHashRev, single -> single));
+                final Map<String, Transaction> dbEntries = transactionService.findBy(
+                        List.of(Tables.TRANSACTION.FK_TOKEN.in(internalList.stream().map(Token::getId).toList()))
+                ).stream().collect(Collectors.toMap(Transaction::getHashRev, single -> single));
 
-            final List<Transaction> transactions = new ArrayList<>(transactionList.values());
-            transactions.sort(Comparator.comparing(Transaction::getMtsAdd));
+                final List<Transaction> transactions = new ArrayList<>(transactionList.values());
+                transactions.sort(Comparator.comparing(Transaction::getMtsAdd));
 
-            final List<Transaction> toUpdate = new ArrayList<>();
-            final List<Transaction> toInsert = new ArrayList<>();
+                final List<Transaction> toUpdate = new ArrayList<>();
+                final List<Transaction> toInsert = new ArrayList<>();
 
-            transactions.forEach(transaction -> {
-                final Transaction dbEntry = dbEntries.get(transaction.getHashRev());
-                if (dbEntry != null) {
-                    transaction.setId(dbEntry.getId());
-                    toUpdate.add(transaction);
-                } else {
-                    toInsert.add(transaction);
-                }
+                transactions.forEach(transaction -> {
+                    final Transaction dbEntry = dbEntries.get(transaction.getHashRev());
+                    if (dbEntry != null) {
+                        transaction.setId(dbEntry.getId());
+                        toUpdate.add(transaction);
+                    } else {
+                        toInsert.add(transaction);
+                    }
+                });
+                List<LastUpdate> lastUpdateList = new ArrayList<>(lastUpdates.values());
+                lastUpdateService.batchUpdate(lastUpdateList.stream().filter(single -> single.getId() != null).toList());
+                List<LastUpdate> inserted = lastUpdateService.batchInsert(lastUpdateList.stream().filter(single -> single.getId() == null).toList());
+                inserted.forEach(single -> lastUpdates.put(single.getIdentifier(), single));
+                transactionService.batchUpdate(toUpdate);
+                transactionService.batchInsertVoid(toInsert);
+                log.info("Finished a batch:" + LocalDateTime.now());
             });
-            List<LastUpdate> lastUpdateList = new ArrayList<>(lastUpdates.values());
-            lastUpdateService.batchUpdate(lastUpdateList.stream().filter(single -> single.getId() != null).toList());
-            List<LastUpdate> inserted = lastUpdateService.batchInsert(lastUpdateList.stream().filter(single -> single.getId() == null).toList());
-            inserted.forEach(single -> lastUpdates.put(single.getIdentifier(), single));
-            transactionService.batchUpdate(toUpdate);
-            transactionService.batchInsertVoid(toInsert);
-            log.info("Finished a batch:" + LocalDateTime.now());
-        });
-
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
         executor.shutdown();
         if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
             executor.shutdownNow();
