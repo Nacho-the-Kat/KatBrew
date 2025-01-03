@@ -4,6 +4,7 @@
 package com.katbrew.entities.jooq.db;
 
 
+import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
@@ -35,6 +36,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.Advertisements</code>.
+     */
+    public final Advertisements ADVERTISEMENTS = Advertisements.ADVERTISEMENTS;
 
     /**
      * The table <code>public.Announcements</code>.
@@ -102,6 +108,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            Advertisements.ADVERTISEMENTS,
             Announcements.ANNOUNCEMENTS,
             Balance.BALANCE,
             Holder.HOLDER,

@@ -4,6 +4,7 @@
 package com.katbrew.entities.jooq.db;
 
 
+import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
@@ -14,6 +15,7 @@ import com.katbrew.entities.jooq.db.tables.TopHolder;
 import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.Users;
 import com.katbrew.entities.jooq.db.tables.Whitelist;
+import com.katbrew.entities.jooq.db.tables.records.AdvertisementsRecord;
 import com.katbrew.entities.jooq.db.tables.records.AnnouncementsRecord;
 import com.katbrew.entities.jooq.db.tables.records.BalanceRecord;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
@@ -43,6 +45,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AdvertisementsRecord> PK_ADVERTISEMENTS = Internal.createUniqueKey(Advertisements.ADVERTISEMENTS, DSL.name("pk_advertisements"), new TableField[] { Advertisements.ADVERTISEMENTS.ID }, true);
     public static final UniqueKey<AnnouncementsRecord> PK_ANNOUNCEMENTS = Internal.createUniqueKey(Announcements.ANNOUNCEMENTS, DSL.name("pk_announcements"), new TableField[] { Announcements.ANNOUNCEMENTS.ID }, true);
     public static final UniqueKey<BalanceRecord> PK_BALANCE = Internal.createUniqueKey(Balance.BALANCE, DSL.name("pk_balance"), new TableField[] { Balance.BALANCE.ID }, true);
     public static final UniqueKey<HolderRecord> HOLDER_ADDRESS_KEY = Internal.createUniqueKey(Holder.HOLDER, DSL.name("Holder_address_key"), new TableField[] { Holder.HOLDER.ADDRESS }, true);

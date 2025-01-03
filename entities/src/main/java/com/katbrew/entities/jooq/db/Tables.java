@@ -4,6 +4,7 @@
 package com.katbrew.entities.jooq.db;
 
 
+import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
@@ -21,6 +22,11 @@ import com.katbrew.entities.jooq.db.tables.Whitelist;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.Advertisements</code>.
+     */
+    public static final Advertisements ADVERTISEMENTS = Advertisements.ADVERTISEMENTS;
 
     /**
      * The table <code>public.Announcements</code>.
