@@ -17,7 +17,7 @@ public class Balance implements IBalance {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private BigInteger id;
     private BigInteger holderId;
     private BigInteger balance;
     private Integer fkToken;
@@ -32,7 +32,7 @@ public class Balance implements IBalance {
     }
 
     public Balance(
-        Integer id,
+        BigInteger id,
         BigInteger holderId,
         BigInteger balance,
         Integer fkToken
@@ -47,7 +47,7 @@ public class Balance implements IBalance {
      * Getter for <code>public.Balance.id</code>.
      */
     @Override
-    public Integer getId() {
+    public BigInteger getId() {
         return this.id;
     }
 
@@ -55,7 +55,7 @@ public class Balance implements IBalance {
      * Setter for <code>public.Balance.id</code>.
      */
     @Override
-    public void setId(Integer id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

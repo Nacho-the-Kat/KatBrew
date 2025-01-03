@@ -86,11 +86,27 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
     }
 
     /**
+     * Setter for <code>public.Announcements.link</code>.
+     */
+    @Override
+    public void setLink(String value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.Announcements.link</code>.
+     */
+    @Override
+    public String getLink() {
+        return (String) get(4);
+    }
+
+    /**
      * Setter for <code>public.Announcements.timestamp</code>.
      */
     @Override
     public void setTimestamp(LocalDateTime value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
@@ -98,7 +114,7 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
      */
     @Override
     public LocalDateTime getTimestamp() {
-        return (LocalDateTime) get(4);
+        return (LocalDateTime) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -120,6 +136,7 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
         setTitle(from.getTitle());
         setText(from.getText());
         setImageUrl(from.getImageUrl());
+        setLink(from.getLink());
         setTimestamp(from.getTimestamp());
         resetChangedOnNotNull();
     }
@@ -144,13 +161,14 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
     /**
      * Create a detached, initialised AnnouncementsRecord
      */
-    public AnnouncementsRecord(Integer id, String title, String text, String imageUrl, LocalDateTime timestamp) {
+    public AnnouncementsRecord(Integer id, String title, String text, String imageUrl, String link, LocalDateTime timestamp) {
         super(Announcements.ANNOUNCEMENTS);
 
         setId(id);
         setTitle(title);
         setText(text);
         setImageUrl(imageUrl);
+        setLink(link);
         setTimestamp(timestamp);
         resetChangedOnNotNull();
     }
@@ -166,6 +184,7 @@ public class AnnouncementsRecord extends UpdatableRecordImpl<AnnouncementsRecord
             setTitle(value.getTitle());
             setText(value.getText());
             setImageUrl(value.getImageUrl());
+            setLink(value.getLink());
             setTimestamp(value.getTimestamp());
             resetChangedOnNotNull();
         }

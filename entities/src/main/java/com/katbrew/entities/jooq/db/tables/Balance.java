@@ -63,7 +63,7 @@ public class Balance extends TableImpl<BalanceRecord> {
     /**
      * The column <code>public.Balance.id</code>.
      */
-    public final TableField<BalanceRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<BalanceRecord, BigInteger> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Balance.holder_id</code>.
@@ -73,7 +73,7 @@ public class Balance extends TableImpl<BalanceRecord> {
     /**
      * The column <code>public.Balance.balance</code>.
      */
-    public final TableField<BalanceRecord, BigInteger> BALANCE_ = createField(DSL.name("balance"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<BalanceRecord, BigInteger> BALANCE_ = createField(DSL.name("balance"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Balance.fk_token</code>.
@@ -148,8 +148,8 @@ public class Balance extends TableImpl<BalanceRecord> {
     }
 
     @Override
-    public Identity<BalanceRecord, Integer> getIdentity() {
-        return (Identity<BalanceRecord, Integer>) super.getIdentity();
+    public Identity<BalanceRecord, BigInteger> getIdentity() {
+        return (Identity<BalanceRecord, BigInteger>) super.getIdentity();
     }
 
     @Override

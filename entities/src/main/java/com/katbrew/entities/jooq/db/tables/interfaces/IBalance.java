@@ -19,12 +19,12 @@ public interface IBalance extends Serializable {
     /**
      * Setter for <code>public.Balance.id</code>.
      */
-    public void setId(Integer value);
+    public void setId(BigInteger value);
 
     /**
      * Getter for <code>public.Balance.id</code>.
      */
-    public Integer getId();
+    public BigInteger getId();
 
     /**
      * Setter for <code>public.Balance.holder_id</code>.

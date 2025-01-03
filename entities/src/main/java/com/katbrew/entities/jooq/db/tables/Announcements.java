@@ -72,6 +72,11 @@ public class Announcements extends TableImpl<AnnouncementsRecord> {
     public final TableField<AnnouncementsRecord, String> IMAGE_URL = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.Announcements.link</code>.
+     */
+    public final TableField<AnnouncementsRecord, String> LINK = createField(DSL.name("link"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.Announcements.timestamp</code>.
      */
     public final TableField<AnnouncementsRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "");

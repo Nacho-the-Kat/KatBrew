@@ -8,27 +8,23 @@
     <changeSet id="1" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <not>
-                <tableExists tableName="Announcements"/>
+                <tableExists tableName="Top_Holder"/>
             </not>
         </preConditions>
 
-        <createTable tableName="Announcements">
-            <column type="INT" name="id" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="PK_ANNOUNCEMENTS" nullable="false"/>
+        <createTable tableName="Top_Holder">
+            <column type="BIGINT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_TOP_HOLDER" nullable="false"/>
             </column>
-            <column type="text" name="title">
+            <column type="text" name="address">
                 <constraints nullable="false"/>
             </column>
-            <column type="text" name="text"/>
-            <column type="text" name="image_url"/>
-            <column type="text" name="link"/>
-            <column type="datetime" name="timestamp" defaultValue="NOW()">
-                <constraints nullable="false"/>
-            </column>
+            <column type="int" name="token_count"/>
+            <column type="text" name="balances"/>
         </createTable>
 
         <rollback>
-            <dropTable tableName="Announcements"/>
+            <dropTable tableName="Top_Holder"/>
         </rollback>
     </changeSet>
 

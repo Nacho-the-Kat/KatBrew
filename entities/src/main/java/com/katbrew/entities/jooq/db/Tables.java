@@ -10,6 +10,7 @@ import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
+import com.katbrew.entities.jooq.db.tables.TopHolder;
 import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.Users;
 import com.katbrew.entities.jooq.db.tables.Whitelist;
@@ -50,6 +51,11 @@ public class Tables {
      * The table <code>public.Token</code>.
      */
     public static final Token TOKEN = Token.TOKEN;
+
+    /**
+     * The table <code>public.Top_Holder</code>.
+     */
+    public static final TopHolder TOP_HOLDER = TopHolder.TOP_HOLDER;
 
     /**
      * The table <code>public.Transaction</code>.

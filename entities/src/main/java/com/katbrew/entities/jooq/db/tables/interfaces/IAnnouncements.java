@@ -55,6 +55,16 @@ public interface IAnnouncements extends Serializable {
     public String getImageUrl();
 
     /**
+     * Setter for <code>public.Announcements.link</code>.
+     */
+    public void setLink(String value);
+
+    /**
+     * Getter for <code>public.Announcements.link</code>.
+     */
+    public String getLink();
+
+    /**
      * Setter for <code>public.Announcements.timestamp</code>.
      */
     public void setTimestamp(LocalDateTime value);

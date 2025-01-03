@@ -19,14 +19,14 @@
             <column type="text" name="tick">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column type="bigint" name="max"/>
-            <column type="bigint" name="lim"/>
-            <column type="bigint" name="pre"/>
-            <column type="bigint" name="mts_add"/>
-            <column type="bigint" name="minted"/>
+            <column type="text" name="max"/>
+            <column type="text" name="lim"/>
+            <column type="text" name="pre"/>
+            <column type="text" name="mts_add"/>
+            <column type="text" name="minted"/>
             <column type="int" name="holder_total"/>
             <column type="int" name="mint_total"/>
-            <column type="bigint" name="transfer_total"/>
+            <column type="text" name="transfer_total"/>
             <column type="int" name="dec"/>
             <column type="text" name="state"/>
             <column type="text" name="hash_rev"/>

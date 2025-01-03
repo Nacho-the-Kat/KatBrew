@@ -74,27 +74,27 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.max</code>.
      */
-    public final TableField<TokenRecord, BigInteger> MAX = createField(DSL.name("max"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> MAX = createField(DSL.name("max"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.lim</code>.
      */
-    public final TableField<TokenRecord, BigInteger> LIM = createField(DSL.name("lim"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> LIM = createField(DSL.name("lim"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.pre</code>.
      */
-    public final TableField<TokenRecord, BigInteger> PRE = createField(DSL.name("pre"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> PRE = createField(DSL.name("pre"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.mts_add</code>.
      */
-    public final TableField<TokenRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.minted</code>.
      */
-    public final TableField<TokenRecord, BigInteger> MINTED = createField(DSL.name("minted"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> MINTED = createField(DSL.name("minted"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.holder_total</code>.
@@ -109,7 +109,7 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.transfer_total</code>.
      */
-    public final TableField<TokenRecord, BigInteger> TRANSFER_TOTAL = createField(DSL.name("transfer_total"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> TRANSFER_TOTAL = createField(DSL.name("transfer_total"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.dec</code>.

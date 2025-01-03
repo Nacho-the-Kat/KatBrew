@@ -12,6 +12,7 @@ import java.util.List;
 public class TopHolder {
     String address;
     List<Balances> balances;
+    Integer tokenCount;
 
     @Data
     @AllArgsConstructor

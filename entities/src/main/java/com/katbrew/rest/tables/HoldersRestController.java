@@ -1,8 +1,9 @@
 package com.katbrew.rest.tables;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
-import com.katbrew.pojos.TopHolder;
+import com.katbrew.entities.jooq.db.tables.pojos.TopHolder;
 import com.katbrew.rest.base.AbstractRestController;
+import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.HolderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +20,17 @@ public class HoldersRestController extends AbstractRestController<Holder, Holder
     private final HolderService holderService;
 
     @GetMapping("/holderCount")
-    public List<HolderService.TickHolder> getHolderCount() {
-        return holderService.getHolderData();
+    public ApiResponse<List<HolderService.TickHolder>> getHolderCount() {
+        return new ApiResponse<>(holderService.getHolderData());
     }
 
     @PostMapping("/create")
-    public Holder createHolder(@RequestBody Holder holder){
+    public Holder createHolder(@RequestBody Holder holder) {
         return holderService.insert(holder);
     }
 
     @GetMapping("/topHolders")
-    public List<TopHolder> getTopHolders(){
-//        List<TopHolder>
-        return holderService.getTopHolders();
+    public ApiResponse<List> getTopHolders() {
+        return new ApiResponse<>(holderService.getTopHolders());
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
@@ -29,27 +28,28 @@ public class FileUploadController {
 
     private final AnnouncementsService announcementsService;
 
-
     @PostMapping("/announcements")
     public void uploadAnnouncements(@ModelAttribute UploadAnnouncements upload) {
         try {
-            final MultipartFile image = upload.getImage();
-            String[] nameSplit = image.getOriginalFilename().split("\\.");
-            if (nameSplit.length > 2) {
-                throw new NotValidException("to much dots in filename");
-            }
             final Announcements announcements = new Announcements();
             announcements.setText(upload.getText());
             announcements.setTitle(upload.getTitle());
             announcements.setTimestamp(LocalDateTime.now());
-
             final Announcements newOne = announcementsService.insert(announcements);
-            newOne.setImageUrl("/announcements/" + newOne.getId() + "." + nameSplit[1]);
 
-            image.transferTo(Paths.get(root, newOne.getImageUrl()));
-            announcementsService.update(newOne);
+            final MultipartFile image = upload.getImage();
+            if (image != null && !image.isEmpty()) {
+                String[] nameSplit = image.getOriginalFilename().split("\\.");
+                if (nameSplit.length > 2) {
+                    throw new NotValidException("to much dots in filename");
+                }
+
+                newOne.setImageUrl("/announcements/" + newOne.getId() + "." + nameSplit[1]);
+                image.transferTo(Paths.get(root, newOne.getImageUrl()));
+                announcementsService.update(newOne);
+            }
         } catch (IOException e) {
-            throw new NotValidException("Fehler beim Hochladen der Datei");
+            throw new NotValidException("Error on uploading the file");
         }
     }
 }

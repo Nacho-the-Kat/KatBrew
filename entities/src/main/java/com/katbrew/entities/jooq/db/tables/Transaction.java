@@ -87,7 +87,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.amt</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> AMT = createField(DSL.name("amt"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> AMT = createField(DSL.name("amt"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.from_address</code>.
@@ -102,7 +102,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.op_score</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.fee_rev</code>.
@@ -132,12 +132,12 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.mts_add</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.mts_mod</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> MTS_MOD = createField(DSL.name("mts_mod"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> MTS_MOD = createField(DSL.name("mts_mod"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

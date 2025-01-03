@@ -10,6 +10,7 @@ import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
+import com.katbrew.entities.jooq.db.tables.TopHolder;
 import com.katbrew.entities.jooq.db.tables.Transaction;
 import com.katbrew.entities.jooq.db.tables.Users;
 import com.katbrew.entities.jooq.db.tables.Whitelist;
@@ -66,6 +67,11 @@ public class Public extends SchemaImpl {
     public final Token TOKEN = Token.TOKEN;
 
     /**
+     * The table <code>public.Top_Holder</code>.
+     */
+    public final TopHolder TOP_HOLDER = TopHolder.TOP_HOLDER;
+
+    /**
      * The table <code>public.Transaction</code>.
      */
     public final Transaction TRANSACTION = Transaction.TRANSACTION;
@@ -102,6 +108,7 @@ public class Public extends SchemaImpl {
             LastUpdate.LAST_UPDATE,
             PriceData.PRICE_DATA,
             Token.TOKEN,
+            TopHolder.TOP_HOLDER,
             Transaction.TRANSACTION,
             Users.USERS,
             Whitelist.WHITELIST

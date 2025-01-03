@@ -23,17 +23,17 @@
             </column>
             <column type="text" name="p"/>
             <column type="text" name="op"/>
-            <column type="bigint" name="amt"/>
+            <column type="text" name="amt"/>
             <column type="text" name="from_address"/>
             <column type="text" name="to_address"/>
-            <column type="bigint" name="op_score"/>
+            <column type="text" name="op_score"/>
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>
             <column type="text" name="op_accept"/>
             <column type="text" name="op_error"/>
             <column type="text" name="checkpoint"/>
-            <column type="bigint" name="mts_add"/>
-            <column type="bigint" name="mts_mod"/>
+            <column type="text" name="mts_add"/>
+            <column type="text" name="mts_mod"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
                                  constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"

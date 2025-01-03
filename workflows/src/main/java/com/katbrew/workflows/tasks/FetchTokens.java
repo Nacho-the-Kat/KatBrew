@@ -1,8 +1,7 @@
 package com.katbrew.workflows.tasks;
 
-import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
-import com.katbrew.services.tables.LastUpdateService;
+import com.katbrew.helper.KatBrewWebClient;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.workflows.helper.ParsingResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +13,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -28,64 +27,31 @@ public class FetchTokens implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
-    private final LastUpdateService lastUpdateService;
+    private final WebClient client = KatBrewWebClient.createWebClient();
 
     @Override
     public void execute(DelegateExecution execution) {
-        WebClient client = WebClient.builder().build();
-        List<Token> tokenList = new ArrayList<>();
-        BigInteger cursor = BigInteger.valueOf(0);
-        BigInteger mtdAddLastEntry = null;
+
         log.info("Starting the token sync");
-        LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchToken");
 
-        while (cursor != null) {
-            ParsingResponse<List<Token>> responseTokenList = client
-                    .get()
-                    .uri(tokenUrl + "/krc20/tokenlist" + (cursor.compareTo(new BigInteger("0")) > 0 ? "?next=" + cursor : ""))
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<Token>>>() {
-                    })
-                    .block();
-            if (responseTokenList == null) {
-                log.error("no data was loaded");
-                return;
-            }
-
-            tokenList.addAll(responseTokenList.getResult());
-            cursor = responseTokenList.getNext();
-
-            if (mtdAddLastEntry == null && !responseTokenList.getResult().isEmpty()) {
-                mtdAddLastEntry = responseTokenList.getResult().get(responseTokenList.getResult().size() - 1).getMtsAdd();
-            }
-
-            if (lastUpdate != null && mtdAddLastEntry != null) {
-                BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
-                if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
-                    //dont need to fetch the next transactions, we only need the newest
-                    cursor = null;
-                }
-            }
+        final ParsingResponse<List<Token>> responseTokenList = client
+                .get()
+                .uri(tokenUrl + "/tokens")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<Token>>>() {
+                })
+                .block();
+        if (responseTokenList == null) {
+            log.error("no data was loaded");
+            return;
         }
 
-        if (lastUpdate == null) {
-            lastUpdate = new LastUpdate();
-            if (mtdAddLastEntry != null) {
-                lastUpdate.setData(mtdAddLastEntry.toString());
-                lastUpdate.setIdentifier("fetchToken");
-                lastUpdateService.insert(lastUpdate);
-            }
-        } else {
-            if (mtdAddLastEntry != null) {
-                lastUpdate.setData(mtdAddLastEntry.toString());
-                lastUpdateService.update(lastUpdate);
-            }
-        }
+        final List<Token> tokenList = responseTokenList.getResult();
 
-        List<Token> dbEntries = tokenService.findByTicks(tokenList.stream().map(Token::getTick).toList());
+        final Map<String, Token> dbEntries = tokenService.findAll().stream().collect(Collectors.toMap(Token::getTick, single -> single));
 
         tokenList.forEach(single -> {
-            Token token = dbEntries.stream().filter(intern -> intern.getTick().equals(single.getTick())).findFirst().orElse(null);
+            final Token token = dbEntries.get(single.getTick());
             if (token != null) {
                 single.setId(token.getId());
                 single.setHolderTotal(token.getHolderTotal());
@@ -97,7 +63,7 @@ public class FetchTokens implements JavaDelegate {
         //Sorting by the creation time to get entries in the db as they created
         tokenList.sort(Comparator.comparing(Token::getMtsAdd));
 
-        tokenService.batchInsert(tokenList.stream().filter(single -> single.getId() == null).toList());
+        tokenService.batchInsertVoid(tokenList.stream().filter(single -> single.getId() == null).toList());
         tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
     }
 

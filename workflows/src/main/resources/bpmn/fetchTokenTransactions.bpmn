@@ -6,6 +6,9 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_07ccc61" sourceRef="Event_06hxpuk" targetRef="Activity_0jjf4h6" />
     <bpmn:serviceTask id="Activity_0jjf4h6" name="Fetch token Transactions" camunda:asyncBefore="true" camunda:delegateExpression="${fetchTokenTransactions}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>0</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_07ccc61</bpmn:incoming>
       <bpmn:outgoing>Flow_18gtcio</bpmn:outgoing>
     </bpmn:serviceTask>

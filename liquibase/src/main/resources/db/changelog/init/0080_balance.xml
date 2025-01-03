@@ -13,13 +13,13 @@
         </preConditions>
 
         <createTable tableName="Balance">
-            <column type="INT" name="id" autoIncrement="true">
+            <column type="BIGINT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_BALANCE" nullable="false"/>
             </column>
             <column type="bigint" name="holder_id">
                 <constraints nullable="false"/>
             </column>
-            <column type="bigint" name="balance"/>
+            <column type="text" name="balance"/>
             <column type="int" name="fk_token">
                 <constraints nullable="false"/>
             </column>

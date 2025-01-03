@@ -25,7 +25,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Setter for <code>public.Balance.id</code>.
      */
     @Override
-    public void setId(Integer value) {
+    public void setId(BigInteger value) {
         set(0, value);
     }
 
@@ -33,8 +33,8 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
      * Getter for <code>public.Balance.id</code>.
      */
     @Override
-    public Integer getId() {
-        return (Integer) get(0);
+    public BigInteger getId() {
+        return (BigInteger) get(0);
     }
 
     /**
@@ -90,7 +90,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<Integer> key() {
+    public Record1<BigInteger> key() {
         return (Record1) super.key();
     }
 
@@ -127,7 +127,7 @@ public class BalanceRecord extends UpdatableRecordImpl<BalanceRecord> implements
     /**
      * Create a detached, initialised BalanceRecord
      */
-    public BalanceRecord(Integer id, BigInteger holderId, BigInteger balance, Integer fkToken) {
+    public BalanceRecord(BigInteger id, BigInteger holderId, BigInteger balance, Integer fkToken) {
         super(Balance.BALANCE);
 
         setId(id);

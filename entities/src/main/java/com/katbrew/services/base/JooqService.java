@@ -1,11 +1,14 @@
 package com.katbrew.services.base;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.exceptions.NotValidException;
+import com.katbrew.helper.KatBrewObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
 import org.jooq.impl.DAOImpl;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     private DAOImpl dao;
+    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     @Autowired
     private DSLContext dsl;
@@ -216,6 +220,13 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         ).returning().fetch().into(type);
     }
 
+    //for inserting a large amount of entries like for sync
+    public void batchInsertVoid(final List<T> entitiesToInsert) {
+        dsl.insertInto(dao.getTable()).set(
+                entitiesToInsert.stream().map(single -> dsl.newRecord(dao.getTable(), single)).toList()
+        ).execute();
+    }
+
     public void update(final T entityToUpdate) {
         dao.update(entityToUpdate);
         this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
@@ -227,7 +238,13 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     //for updating a large amount of entries like for sync
     public void batchUpdate(List<T> entitiesToUpdate) {
-        dao.update(entitiesToUpdate);
+        Field field =dao.getTable().field(DSL.field("id"));
+        if (field == null){
+            throw new NotValidException("No id field");
+        }
+        dsl.batch(
+                entitiesToUpdate.stream().map(single -> dsl.update(dao.getTable()).set(dsl.newRecord(dao.getTable(), single)).where(field.eq(getFieldValue(single, "id")))).toList()
+        ).execute();
     }
 
     public List<T> findAll() {
@@ -261,6 +278,16 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         this.delete(id.intValue());
     }
 
+    public void batchDelete(List<T> entitiesToDelete) {
+        Field field =dao.getTable().field(DSL.field("id"));
+        if (field == null){
+            throw new NotValidException("No id field");
+        }
+        dsl.batch(
+                entitiesToDelete.stream().map(single -> dsl.delete(dao.getTable()).where(field.eq(getFieldValue(single, "id")))).toList()
+        ).execute();
+    }
+
     public void patch(Integer id, Map<String, Object> fieldmap) {
         T entity = findOne(id);
         patchEntity(entity, fieldmap);
@@ -286,6 +313,24 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             }
         });
         this.update(entity);
+    }
+
+    public Serializable getFieldValue(final T entity, final String field) {
+        if (entity == null) {
+            throw new NotValidException("No entry for the id");
+        }
+        java.lang.reflect.Field fieldInternal = ReflectionUtils.findField(entity.getClass(), field);
+        if (field != null) {
+            Method method = ReflectionUtils.findMethod(entity.getClass(), "get" + StringUtils.capitalize(field));
+            if (method != null) {
+                try {
+                    return (Serializable) mapper.convertValue(method.invoke(entity), fieldInternal.getType());
+                }catch (Exception e){
+                    throw new NotValidException("Error getting field data");
+                }
+            }
+        }
+        throw new NotValidException("Error finding field");
     }
 
     public String getMulticastUrl(final MULTICAST_TYPE multicastType) {

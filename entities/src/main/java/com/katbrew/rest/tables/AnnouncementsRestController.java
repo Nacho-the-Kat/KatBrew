@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.katbrew.rest.base.StaticVariables.API_URL_PREFIX;
 
-
 @RestController
 @RequestMapping(API_URL_PREFIX + "/announcements")
 @RequiredArgsConstructor

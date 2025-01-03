@@ -115,6 +115,21 @@ public class AnnouncementsDao extends DAOImpl<AnnouncementsRecord, com.katbrew.e
     }
 
     /**
+     * Fetch records that have <code>link BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Announcements> fetchRangeOfLink(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Announcements.ANNOUNCEMENTS.LINK, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>link IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Announcements> fetchByLink(String... values) {
+        return fetch(Announcements.ANNOUNCEMENTS.LINK, values);
+    }
+
+    /**
      * Fetch records that have <code>timestamp BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */

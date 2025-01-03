@@ -5,14 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.daos.HolderDao;
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
+import com.katbrew.entities.jooq.db.tables.pojos.TopHolder;
 import com.katbrew.helper.KatBrewObjectMapper;
-import com.katbrew.pojos.TopHolder;
+import com.katbrew.pojos.TopHolderBalance;
+import com.katbrew.pojos.TopHolderGenerated;
 import com.katbrew.services.base.JooqService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.JSON;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.tools.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,7 +26,8 @@ import java.util.*;
 public class HolderService extends JooqService<Holder, HolderDao> {
 
     private final TokenService tokenService;
-    private final ObjectMapper objectMapper = KatBrewObjectMapper.createObjectMapper();
+    private final TopHolderService topHolderService;
+    public final ObjectMapper objectMapper = KatBrewObjectMapper.createObjectMapper();
     private final DSLContext context;
 
     public Holder findByAddress(final String address){
@@ -41,38 +46,19 @@ public class HolderService extends JooqService<Holder, HolderDao> {
         );
     }
 
-    public List<TopHolder> getTopHolders() {
-        final com.katbrew.entities.jooq.db.tables.Holder holder = Tables.HOLDER;
-        final com.katbrew.entities.jooq.db.tables.Token token = Tables.TOKEN;
-        final com.katbrew.entities.jooq.db.tables.Balance balance = Tables.BALANCE;
-        final Result<Record> dbEntries = context.select()
-                .from(holder)
-                .join(balance).on(holder.ID.eq(balance.HOLDER_ID))
-                .join(token).on(balance.FK_TOKEN.eq(token.ID))
-                .fetch();
-        final HashMap<String, TopHolder> map = new HashMap<>();
-        dbEntries.forEach(single -> {
-            TopHolder topHolder;
-            if (map.containsKey(single.get(holder.ADDRESS))) {
-                topHolder = map.get(single.get(holder.ADDRESS));
-            } else {
-                topHolder = new TopHolder(
-                        single.get(holder.ADDRESS),
-                        new ArrayList<>()
-                );
-                map.put(single.get(holder.ADDRESS), topHolder);
-            }
-            topHolder.getBalances().add(new TopHolder.Balances(
-                    single.get(token.TICK),
-                    single.get(balance.BALANCE_)
-            ));
-
-        });
-        final List<TopHolder> topHolders = new ArrayList<>(map.values());
-        topHolders.sort(Comparator.comparingInt(single -> single.getBalances().size()));
-        Collections.reverse(topHolders);
-        return topHolders;
-
+    public List getTopHolders() {
+        List<TopHolder> intern = topHolderService.findAll();
+        intern.sort(Comparator.comparingInt(TopHolder::getTokenCount));
+        Collections.reverse(intern);
+        return intern.stream().map(single-> {
+            TopHolderGenerated generated = new TopHolderGenerated();
+            generated.setId(single.getId());
+            generated.setAddress(single.getAddress());
+            generated.setTokenCount(single.getTokenCount());
+            generated.setBalances(objectMapper.convertValue(single.getBalances(), new TypeReference<List<TopHolderBalance>>() {
+            }));
+            return generated;
+        }).toList();
     }
 
     @Data
