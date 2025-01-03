@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0j9numb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
   <bpmn:process id="Process_1q1rwmk" name="Fetch Price Data" isExecutable="true" camunda:historyTimeToLive="2">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:asyncBefore="true">
       <bpmn:outgoing>Flow_0ai6og5</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0ai6og5" sourceRef="StartEvent_1" targetRef="Activity_0h289ir" />
-    <bpmn:endEvent id="Event_0zsbxbk">
+    <bpmn:endEvent id="Event_0zsbxbk" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_06pmd2f</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_06pmd2f" sourceRef="Activity_0h289ir" targetRef="Event_0zsbxbk" />
-    <bpmn:serviceTask id="Activity_0h289ir" name="Fetch Price Data" camunda:delegateExpression="${fetchPriceData}">
+    <bpmn:serviceTask id="Activity_0h289ir" name="Fetch Price Data" camunda:asyncBefore="true" camunda:delegateExpression="${fetchPriceData}">
       <bpmn:incoming>Flow_0ai6og5</bpmn:incoming>
       <bpmn:outgoing>Flow_06pmd2f</bpmn:outgoing>
     </bpmn:serviceTask>
