@@ -42,8 +42,8 @@ public class HolderService extends JooqService<Holder, HolderDao> {
     }
 
     //Parsing in the frontend
-    public List<TopHolder> getTopHolders() {
-        return topHolderService.findBySortedLimitOffset(10000, 0, "tokenCount", "desc");
+    public List<TopHolderService.TopHolderResponse> getTopHolders() {
+        return topHolderService.getTopHolders();
     }
 
     @Data

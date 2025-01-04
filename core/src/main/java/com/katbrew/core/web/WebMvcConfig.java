@@ -27,9 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://bugfixes-and-improvements-v8.katscan.pages.dev", "http://localhost:3000", "https://katscan.xyz")
+                .allowedOrigins("https://*.katscan.pages.dev","https://katscan.xyz", "http://localhost:3000")
                 .allowedOriginPatterns("*.katscan.pages.dev")
-                .allowedMethods("GET", "HEAD", "OPTIONS")
+                .allowedMethods("GET","POST", "HEAD", "OPTIONS")
                 .allowedHeaders("*");
     }
 }

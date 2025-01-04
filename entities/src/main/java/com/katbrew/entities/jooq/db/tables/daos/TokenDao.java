@@ -268,14 +268,14 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>op_score_mod BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreMod(String lowerInclusive, String upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreMod(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.OP_SCORE_MOD, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>op_score_mod IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreMod(String... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreMod(BigInteger... values) {
         return fetch(Token.TOKEN.OP_SCORE_MOD, values);
     }
 
@@ -283,14 +283,14 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
      * Fetch records that have <code>op_score_add BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreAdd(String lowerInclusive, String upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfOpScoreAdd(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Token.TOKEN.OP_SCORE_ADD, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>op_score_add IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreAdd(String... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByOpScoreAdd(BigInteger... values) {
         return fetch(Token.TOKEN.OP_SCORE_ADD, values);
     }
 

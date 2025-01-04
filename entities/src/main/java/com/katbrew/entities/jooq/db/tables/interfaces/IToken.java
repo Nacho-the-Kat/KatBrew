@@ -149,22 +149,22 @@ public interface IToken extends Serializable {
     /**
      * Setter for <code>public.Token.op_score_mod</code>.
      */
-    public void setOpScoreMod(String value);
+    public void setOpScoreMod(BigInteger value);
 
     /**
      * Getter for <code>public.Token.op_score_mod</code>.
      */
-    public String getOpScoreMod();
+    public BigInteger getOpScoreMod();
 
     /**
      * Setter for <code>public.Token.op_score_add</code>.
      */
-    public void setOpScoreAdd(String value);
+    public void setOpScoreAdd(BigInteger value);
 
     /**
      * Getter for <code>public.Token.op_score_add</code>.
      */
-    public String getOpScoreAdd();
+    public BigInteger getOpScoreAdd();
 
     /**
      * Setter for <code>public.Token.to</code>.

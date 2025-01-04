@@ -233,7 +233,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Setter for <code>public.Token.op_score_mod</code>.
      */
     @Override
-    public void setOpScoreMod(String value) {
+    public void setOpScoreMod(BigInteger value) {
         set(13, value);
     }
 
@@ -241,15 +241,15 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.op_score_mod</code>.
      */
     @Override
-    public String getOpScoreMod() {
-        return (String) get(13);
+    public BigInteger getOpScoreMod() {
+        return (BigInteger) get(13);
     }
 
     /**
      * Setter for <code>public.Token.op_score_add</code>.
      */
     @Override
-    public void setOpScoreAdd(String value) {
+    public void setOpScoreAdd(BigInteger value) {
         set(14, value);
     }
 
@@ -257,8 +257,8 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
      * Getter for <code>public.Token.op_score_add</code>.
      */
     @Override
-    public String getOpScoreAdd() {
-        return (String) get(14);
+    public BigInteger getOpScoreAdd() {
+        return (BigInteger) get(14);
     }
 
     /**
@@ -348,7 +348,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     /**
      * Create a detached, initialised TokenRecord
      */
-    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer mintTotal, BigInteger transferTotal, Integer dec, String state, String hashRev, String opScoreMod, String opScoreAdd, String to, String logo) {
+    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer mintTotal, BigInteger transferTotal, Integer dec, String state, String hashRev, BigInteger opScoreMod, BigInteger opScoreAdd, String to, String logo) {
         super(Token.TOKEN);
 
         setId(id);

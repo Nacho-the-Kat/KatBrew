@@ -1,16 +1,11 @@
 package com.katbrew.rest.tables;
-
-//import com.katbrew.entities.jooq.db.tables.pojos.Pricedata;
-
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.TokenService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,6 +37,17 @@ public class TokensRestController extends AbstractRestController<Token, TokenSer
             @RequestParam(defaultValue = "desc") final String sortOrder
     ) {
         return new ApiResponse<>(tokenService.getTokenList(limit, cursor, sortBy, sortOrder));
+    }
+
+    @GetMapping("/detail/{tick}")
+    public ApiResponse<Token> getTokenDetails(
+            @PathVariable final String tick
+    ) throws NotFoundException {
+        final Token token = tokenService.findByTick(tick);
+        if (token == null){
+            throw new NotFoundException("token not exist");
+        }
+        return new ApiResponse<>(token);
     }
 
 }

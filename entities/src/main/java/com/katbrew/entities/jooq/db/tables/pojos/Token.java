@@ -30,8 +30,8 @@ public class Token implements IToken {
     private Integer dec;
     private String state;
     private String hashRev;
-    private String opScoreMod;
-    private String opScoreAdd;
+    private BigInteger opScoreMod;
+    private BigInteger opScoreAdd;
     private String to;
     private String logo;
 
@@ -71,8 +71,8 @@ public class Token implements IToken {
         Integer dec,
         String state,
         String hashRev,
-        String opScoreMod,
-        String opScoreAdd,
+        BigInteger opScoreMod,
+        BigInteger opScoreAdd,
         String to,
         String logo
     ) {
@@ -307,7 +307,7 @@ public class Token implements IToken {
      * Getter for <code>public.Token.op_score_mod</code>.
      */
     @Override
-    public String getOpScoreMod() {
+    public BigInteger getOpScoreMod() {
         return this.opScoreMod;
     }
 
@@ -315,7 +315,7 @@ public class Token implements IToken {
      * Setter for <code>public.Token.op_score_mod</code>.
      */
     @Override
-    public void setOpScoreMod(String opScoreMod) {
+    public void setOpScoreMod(BigInteger opScoreMod) {
         this.opScoreMod = opScoreMod;
     }
 
@@ -323,7 +323,7 @@ public class Token implements IToken {
      * Getter for <code>public.Token.op_score_add</code>.
      */
     @Override
-    public String getOpScoreAdd() {
+    public BigInteger getOpScoreAdd() {
         return this.opScoreAdd;
     }
 
@@ -331,7 +331,7 @@ public class Token implements IToken {
      * Setter for <code>public.Token.op_score_add</code>.
      */
     @Override
-    public void setOpScoreAdd(String opScoreAdd) {
+    public void setOpScoreAdd(BigInteger opScoreAdd) {
         this.opScoreAdd = opScoreAdd;
     }
 

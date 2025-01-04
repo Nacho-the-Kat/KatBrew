@@ -41,6 +41,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authenticationManager(customUsernamePasswordAuthenticationManager)

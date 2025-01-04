@@ -28,7 +28,7 @@ public class GenerateTopHolders implements JavaDelegate {
 
     private final TopHolderService topHolderService;
     private final DSLContext context;
-    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
+    public final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -88,7 +88,7 @@ public class GenerateTopHolders implements JavaDelegate {
         }).toList();
         topHolderService.batchInsert(right.stream().filter(single -> single.getId() == null).toList());
         topHolderService.batchUpdate(right.stream().filter(single -> single.getId() != null).toList());
-
+        topHolderService.cacheNewHolder();
         log.info("Finished the top holder generating: " + LocalDateTime.now());
     }
 

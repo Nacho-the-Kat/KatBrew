@@ -129,12 +129,12 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.op_score_mod</code>.
      */
-    public final TableField<TokenRecord, String> OP_SCORE_MOD = createField(DSL.name("op_score_mod"), SQLDataType.CLOB, this, "");
+    public final TableField<TokenRecord, BigInteger> OP_SCORE_MOD = createField(DSL.name("op_score_mod"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.op_score_add</code>.
      */
-    public final TableField<TokenRecord, String> OP_SCORE_ADD = createField(DSL.name("op_score_add"), SQLDataType.CLOB, this, "");
+    public final TableField<TokenRecord, BigInteger> OP_SCORE_ADD = createField(DSL.name("op_score_add"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.to</code>.
