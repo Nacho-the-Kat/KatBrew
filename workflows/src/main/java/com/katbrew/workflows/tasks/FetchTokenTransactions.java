@@ -48,20 +48,13 @@ public class FetchTokenTransactions implements JavaDelegate {
     private final WebClient client = KatBrewWebClient.createWebClient();
 
     @Override
-    public void execute(DelegateExecution execution) throws InterruptedException {
-        final LastUpdate isRunning = lastUpdateService.findByIdentifier("tokenTransactions");
-        if (isRunning != null) {
-            return;
-        }
-        final LastUpdate update = new LastUpdate();
-        update.setIdentifier("tokenTransactions");
-        final LastUpdate newLastUpdate = lastUpdateService.insert(update);
+    public void execute(DelegateExecution execution) {
 
         final List<Token> tokenList = tokenService.findAll();
         log.info("Starting the transaction sync:" + LocalDateTime.now());
 
         final ExecutorService executor = Executors.newFixedThreadPool(batchSize);
-        ExecutorCompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+        final ExecutorCompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
 
         final ConcurrentMap<String, LastUpdate> lastUpdates = lastUpdateService.findBy(
                 List.of(Tables.LAST_UPDATE.IDENTIFIER.startsWith("fetchTokenTransactions"))
@@ -184,16 +177,19 @@ public class FetchTokenTransactions implements JavaDelegate {
                 inserted.forEach(single -> lastUpdates.put(single.getIdentifier(), single));
                 transactionService.batchUpdate(toUpdate);
                 transactionService.batchInsertVoid(toInsert);
-                log.info("Finished a batch:" + LocalDateTime.now());
+                log.info("Finished a transaction batch:" + LocalDateTime.now());
             });
         } catch (Exception e) {
             log.info(e.getMessage());
         }
         executor.shutdown();
-        if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-            executor.shutdownNow();
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        lastUpdateService.delete(newLastUpdate);
         log.info("Finished the transaction sync:" + LocalDateTime.now());
     }
 }

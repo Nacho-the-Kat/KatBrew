@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.Balance;
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
-import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.helper.KatBrewWebClient;
 import com.katbrew.services.tables.BalanceService;
@@ -46,17 +45,8 @@ public class FetchTokenBalances implements JavaDelegate {
     private final WebClient client = KatBrewWebClient.createWebClient();
     private final static Integer batchSize = 100;
 
-    //todo switch after full sync to timed every hour -> 0 0 * * * ?
     @Override
     public void execute(DelegateExecution execution) {
-        final LastUpdate lastUpdate = lastUpdateService.findByIdentifier("tokenHolder");
-        if (lastUpdate != null) {
-            return;
-        }
-        final LastUpdate update = new LastUpdate();
-        update.setIdentifier("tokenHolder");
-
-        final LastUpdate newLastUpdate = lastUpdateService.insert(update);
         final List<Token> tokenList = tokenService.findAll();
         log.info("Starting the token detail sync:" + LocalDateTime.now());
 
@@ -147,6 +137,7 @@ public class FetchTokenBalances implements JavaDelegate {
                 ));
                 balanceService.batchDelete(toDelete);
                 toDelete.forEach(balance -> dbBalances.remove(balance.getHolderId() + "-" + balance.getFkToken()));
+                log.info("Finished a balances batch:" + LocalDateTime.now());
             });
             executor.shutdown();
             if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
@@ -155,7 +146,6 @@ public class FetchTokenBalances implements JavaDelegate {
         } catch (Exception e) {
             log.info("Threads not threading anymore");
         }
-        lastUpdateService.delete(newLastUpdate);
         log.info("Updateing balances done: " + LocalDateTime.now());
     }
 

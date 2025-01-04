@@ -33,12 +33,10 @@ public class FetchPriceData implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        WebClient client = WebClient.builder().build();
         log.info("Starting the price data update:" + LocalDateTime.now());
         final Map<String, Token> tokens = tokenService.findAll().stream().collect(Collectors.toMap(Token::getTick, single -> single));
         final Map<Integer, String> tokenIdTick = tokens.values().stream().collect(Collectors.toMap(Token::getId, Token::getTick));
         final Map<String, PriceData> priceDatas = priceDataService.findAll().stream().collect(Collectors.toMap(single -> tokens.get(tokenIdTick.get(single.getFkToken())).getTick(), single -> single));
-
 
         Map<String, Map> response = client
                 .get()
