@@ -150,7 +150,8 @@ public class FetchTokenTransactions implements JavaDelegate {
                         future.get();
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
+                    log.info(e.getMessage());
+                    log.info("its because an api call fails");
                 }
                 final Map<String, Transaction> dbEntries = transactionService.findBy(
                         List.of(Tables.TRANSACTION.FK_TOKEN.in(internalList.stream().map(Token::getId).toList()))
@@ -182,13 +183,13 @@ public class FetchTokenTransactions implements JavaDelegate {
         } catch (Exception e) {
             log.info(e.getMessage());
         }
-        executor.shutdown();
         try {
+            executor.shutdown();
             if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            log.info(e.getMessage());
         }
         log.info("Finished the transaction sync:" + LocalDateTime.now());
     }
