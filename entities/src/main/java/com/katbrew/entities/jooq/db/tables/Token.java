@@ -89,7 +89,7 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.mts_add</code>.
      */
-    public final TableField<TokenRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> MTS_ADD = createField(DSL.name("mts_add"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.minted</code>.

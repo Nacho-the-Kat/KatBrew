@@ -22,7 +22,7 @@
             <column type="text" name="max"/>
             <column type="text" name="lim"/>
             <column type="text" name="pre"/>
-            <column type="text" name="mts_add"/>
+            <column type="bigint" name="mts_add"/>
             <column type="text" name="minted"/>
             <column type="int" name="holder_total"/>
             <column type="int" name="mint_total"/>

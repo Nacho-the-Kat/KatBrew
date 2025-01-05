@@ -32,8 +32,8 @@
             <column type="text" name="op_accept"/>
             <column type="text" name="op_error"/>
             <column type="text" name="checkpoint"/>
-            <column type="text" name="mts_add"/>
-            <column type="text" name="mts_mod"/>
+            <column type="bigint" name="mts_add"/>
+            <column type="bigint" name="mts_mod"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
                                  constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"

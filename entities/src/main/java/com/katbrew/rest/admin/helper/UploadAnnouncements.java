@@ -1,4 +1,4 @@
-package com.katbrew.helper;
+package com.katbrew.rest.admin.helper;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
