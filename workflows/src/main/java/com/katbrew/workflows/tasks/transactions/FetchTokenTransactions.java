@@ -1,5 +1,6 @@
-package com.katbrew.workflows.tasks;
+package com.katbrew.workflows.tasks.transactions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -36,41 +37,42 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FetchTokenTransactions implements JavaDelegate {
-    ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
+    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     @Value("${data.fetchTokenBaseUrl}")
     private String tokenUrl;
-    private final static Integer batchSize = 50;
+    private final static Integer batchSize = 100;
 
-    private final TokenService tokenService;
     private final LastUpdateService lastUpdateService;
     private final TransactionService transactionService;
+    private final TokenService tokenService;
     private final WebClient client = KatBrewWebClient.createWebClient();
 
     @Override
-    public void execute(DelegateExecution execution) {
+    public void execute(DelegateExecution execution) throws JsonProcessingException {
 
-        final List<Token> tokenList = tokenService.findAll();
-        log.info("Starting the transaction sync:" + LocalDateTime.now());
+        log.info("Starting a transaction sync batch:" + LocalDateTime.now());
 
+        final List<Token> tokens = tokenService.findAll();
         final ExecutorService executor = Executors.newFixedThreadPool(batchSize);
         final ExecutorCompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
 
         final ConcurrentMap<String, LastUpdate> lastUpdates = lastUpdateService.findBy(
-                List.of(Tables.LAST_UPDATE.IDENTIFIER.startsWith("fetchTokenTransactions"))
+                List.of(
+                        Tables.LAST_UPDATE.IDENTIFIER.in(tokens.stream().map(single -> "fetchTokenTransactions" + single.getTick()).toList())
+                )
         ).stream().collect(Collectors.toConcurrentMap(LastUpdate::getIdentifier, single -> single));
 
         try {
-            Lists.partition(tokenList, batchSize).forEach(internalList -> {
+            Lists.partition(tokens, batchSize).forEach(internalList -> {
                 final ConcurrentHashMap<String, Transaction> transactionList = new ConcurrentHashMap<>();
                 internalList.forEach(token -> completionService.submit(() -> {
-                    Integer cursor = 0;
-                    BigInteger mtdAddLastEntry = null;
+                    Integer cursor = 1;
                     LastUpdate lastUpdate = lastUpdates.get("fetchTokenTransactions" + token.getTick());
                     int errorCount = 0;
                     while (cursor != null) {
                         String uri = tokenUrl + "/token/operations?tick=" + token.getTick();
-                        if (cursor != 0) {
+                        if (cursor > 1) {
                             uri += "&page=" + cursor;
                         }
                         if (lastUpdate != null) {
@@ -91,7 +93,7 @@ public class FetchTokenTransactions implements JavaDelegate {
                             System.out.println(e.getMessage());
                             log.error("Something wrong with fetching data from " + uri);
                             if (errorCount < 3) {
-                                cursor = 0;
+                                cursor = 1;
                             } else {
                                 cursor = null;
                             }
@@ -116,12 +118,9 @@ public class FetchTokenTransactions implements JavaDelegate {
                                 cursor += 1;
                             }
 
-                            if (mtdAddLastEntry == null && !transactions.isEmpty()) {
-                                mtdAddLastEntry = transactions.get(0).getMtsAdd();
-                            }
-
-                            if (lastUpdate != null && mtdAddLastEntry != null) {
-                                BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
+                            if (lastUpdate != null && !transactions.isEmpty()) {
+                                final BigInteger mtdAddLastEntry = transactions.get(0).getMtsAdd();
+                                final BigInteger lastMtdAddLastEntry = new BigInteger(lastUpdate.getData());
                                 if (mtdAddLastEntry.compareTo(lastMtdAddLastEntry) <= 0) {
                                     //dont need to fetch the next transactions, we only need the newest
                                     cursor = null;
@@ -129,20 +128,6 @@ public class FetchTokenTransactions implements JavaDelegate {
                             }
                         } else {
                             log.error("no data was loaded");
-                        }
-                    }
-
-                    if (lastUpdate == null) {
-                        lastUpdate = new LastUpdate();
-                        if (mtdAddLastEntry != null) {
-                            lastUpdate.setData(mtdAddLastEntry.toString());
-                            lastUpdate.setIdentifier("fetchTokenTransactions" + token.getTick());
-                            lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
-                        }
-                    } else {
-                        if (mtdAddLastEntry != null) {
-                            lastUpdate.setData(mtdAddLastEntry.toString());
-                            lastUpdates.put(lastUpdate.getIdentifier(), lastUpdate);
                         }
                     }
                     return null;
@@ -179,10 +164,6 @@ public class FetchTokenTransactions implements JavaDelegate {
                     }
                 });
 
-                List<LastUpdate> lastUpdateList = new ArrayList<>(lastUpdates.values());
-                lastUpdateService.batchUpdate(lastUpdateList.stream().filter(single -> single.getId() != null).toList());
-                List<LastUpdate> inserted = lastUpdateService.batchInsert(lastUpdateList.stream().filter(single -> single.getId() == null).toList());
-                inserted.forEach(single -> lastUpdates.put(single.getIdentifier(), single));
                 transactionService.batchUpdate(toUpdate);
                 transactionService.batchInsertVoid(toInsert);
                 log.info("Finished a transaction batch:" + LocalDateTime.now());
@@ -198,6 +179,5 @@ public class FetchTokenTransactions implements JavaDelegate {
         } catch (InterruptedException e) {
             log.info(e.getMessage());
         }
-        log.info("Finished the transaction sync:" + LocalDateTime.now());
     }
 }
