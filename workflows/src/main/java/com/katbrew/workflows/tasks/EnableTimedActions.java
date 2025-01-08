@@ -21,7 +21,7 @@ public class EnableTimedActions implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        final List<LastUpdate> lastUpdateList = lastUpdateService.findBy(List.of(Tables.LAST_UPDATE.IDENTIFIER.in(GenerateInitialData.initData)));
+        final List<LastUpdate> lastUpdateList = lastUpdateService.findBy(List.of(Tables.LAST_UPDATE.IDENTIFIER.in(List.of("tokenFetch", "tokenPriceData", "tokenBalances"))));
         lastUpdateService.batchUpdate(lastUpdateList.stream().peek(single -> single.setData(null)).toList());
         log.info("Finished the initial Data generating: " + LocalDateTime.now());
     }

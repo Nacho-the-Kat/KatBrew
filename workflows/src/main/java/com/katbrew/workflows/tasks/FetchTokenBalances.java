@@ -5,12 +5,12 @@ import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.Balance;
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
-import com.katbrew.helper.KatBrewWebClient;
+import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.services.tables.BalanceService;
 import com.katbrew.services.tables.HolderService;
-import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.workflows.helper.ParsingResponse;
+import com.katbrew.workflows.helper.TransactionExternal;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -39,10 +38,8 @@ public class FetchTokenBalances implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
-    private final LastUpdateService lastUpdateService;
     private final HolderService holderService;
     private final BalanceService balanceService;
-    private final WebClient client = KatBrewWebClient.createWebClient();
     private final static Integer batchSize = 100;
 
     @Override
@@ -56,6 +53,9 @@ public class FetchTokenBalances implements JavaDelegate {
 
         final ExecutorService executor = Executors.newFixedThreadPool(batchSize);
         ExecutorCompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+        final ParameterizedTypeReference<ParsingResponse<List<HolderInternal>>> reference = new ParameterizedTypeReference<>() {
+        };
+        final KatBrewHelper<ParsingResponse<List<HolderInternal>>, TransactionExternal> helper = new KatBrewHelper<>();
 
         try {
             Lists.partition(tokenList, batchSize).forEach(internalList -> {
@@ -63,15 +63,14 @@ public class FetchTokenBalances implements JavaDelegate {
                 final ConcurrentHashMap<String, List<Balance>> addressBalances = new ConcurrentHashMap<>();
                 internalList.forEach(token -> {
                     completionService.submit(() -> {
-                        final ParsingResponse<List<HolderInternal>> responseTokenList = client
-                                .get()
-                                .uri(tokenUrl + "/token/balances?tick=" + token.getTick())
-                                .retrieve()
-                                .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<HolderInternal>>>() {
-                                })
-                                .block();
+
+                        final ParsingResponse<List<HolderInternal>> responseTokenList = helper
+                                .fetch(
+                                        tokenUrl + "/token/balances?tick=" + token.getTick(),
+                                        reference
+                                );
                         if (responseTokenList == null) {
-                            log.error("no data was loaded");
+                            log.error("no balances was loaded for " + token.getTick());
                             return null;
                         }
 
@@ -110,14 +109,15 @@ public class FetchTokenBalances implements JavaDelegate {
                         return null;
                     });
                 });
-                try {
-                    //make sure, all tasks are finished
-                    for (int i = 0; i < internalList.size(); i++) {
+
+                //make sure, all tasks are finished
+                for (int i = 0; i < internalList.size(); i++) {
+                    try {
                         Future<Void> future = completionService.take();
                         future.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
                 }
 
                 holderService.batchInsert(holderToCreate.values().stream().toList()).forEach(single -> {

@@ -1,7 +1,7 @@
 package com.katbrew.workflows.tasks;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
-import com.katbrew.helper.KatBrewWebClient;
+import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.workflows.helper.ParsingResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -28,22 +27,21 @@ public class FetchTokens implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
-    private final WebClient client = KatBrewWebClient.createWebClient();
+    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>();
 
     @Override
-    public void execute(DelegateExecution execution) {
+    public void execute(DelegateExecution execution) throws InterruptedException {
 
         log.info("Starting the token sync: " + LocalDateTime.now());
 
         final ParsingResponse<List<Token>> responseTokenList = client
-                .get()
-                .uri(tokenUrl + "/tokens")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ParsingResponse<List<Token>>>() {
-                })
-                .block();
+                .fetch(
+                        tokenUrl + "/tokens",
+                        new ParameterizedTypeReference<>() {
+                        }
+                );
         if (responseTokenList == null) {
-            log.error("no data was loaded");
+            log.error("no token data was loaded");
             return;
         }
 
