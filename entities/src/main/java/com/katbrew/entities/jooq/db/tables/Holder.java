@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Balance.BalancePath;
+import com.katbrew.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 
 import java.math.BigInteger;
@@ -162,6 +163,32 @@ public class Holder extends TableImpl<HolderRecord> {
             _balance = new BalancePath(this, null, Keys.BALANCE__FK_BALANCE_HOLDER.getInverseKey());
 
         return _balance;
+    }
+
+    private transient TransactionPath _fkTransactionHolderFrom;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.Transaction</code>
+     * table, via the <code>fk_transaction_holder_from</code> key
+     */
+    public TransactionPath fkTransactionHolderFrom() {
+        if (_fkTransactionHolderFrom == null)
+            _fkTransactionHolderFrom = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_FROM.getInverseKey());
+
+        return _fkTransactionHolderFrom;
+    }
+
+    private transient TransactionPath _fkTransactionHolderTo;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.Transaction</code>
+     * table, via the <code>fk_transaction_holder_to</code> key
+     */
+    public TransactionPath fkTransactionHolderTo() {
+        if (_fkTransactionHolderTo == null)
+            _fkTransactionHolderTo = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_TO.getInverseKey());
+
+        return _fkTransactionHolderTo;
     }
 
     @Override

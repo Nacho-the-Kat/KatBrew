@@ -4,17 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
+import com.katbrew.entities.jooq.db.tables.pojos.Holder;
 import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.helper.KatBrewObjectMapper;
+import com.katbrew.services.tables.HolderService;
 import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.services.tables.TransactionService;
 import com.katbrew.workflows.helper.ParsingResponse;
 import com.katbrew.workflows.helper.ParsingResponsePaged;
-import com.katbrew.workflows.helper.TransactionExternal;
+import com.katbrew.pojos.TransactionExternal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -40,12 +42,13 @@ public class FetchTokenTransactions implements JavaDelegate {
 
     @Value("${data.fetchTokenBaseUrl}")
     private String tokenUrl;
-    private final static Integer processLimit = 10;
+    private final static Integer processLimit = 20;
     private final static int limit = 50000;
     private final GenerateLastUpdateTransactionsService generateLastUpdateTransactionsService;
     private final LastUpdateService lastUpdateService;
     private final TransactionService transactionService;
     private final TokenService tokenService;
+    private final HolderService holderService;
     public final DSLContext dsl;
     public final com.katbrew.entities.jooq.db.tables.Transaction transactionTable = Tables.TRANSACTION;
 
@@ -59,7 +62,8 @@ public class FetchTokenTransactions implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws JsonProcessingException {
         log.info("Starting the transaction sync:" + LocalDateTime.now());
-        Executors.newSingleThreadExecutor().submit(() -> {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
             final List<Token> tokens = tokenService.findAll();
 
             final ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
@@ -70,6 +74,8 @@ public class FetchTokenTransactions implements JavaDelegate {
                             Tables.LAST_UPDATE.IDENTIFIER.in(tokens.stream().map(single -> "fetchTokenTransactions" + single.getTick()).toList())
                     )
             ).stream().collect(Collectors.toConcurrentMap(LastUpdate::getIdentifier, single -> single));
+
+            final ConcurrentMap<String, BigInteger> holderMap = holderService.getAddressIdMap();
             final ParameterizedTypeReference<ParsingResponsePaged<List<TransactionExternal>>> reference = new ParameterizedTypeReference<>() {
             };
 
@@ -90,23 +96,27 @@ public class FetchTokenTransactions implements JavaDelegate {
                         LastUpdate lastUpdate = lastUpdates.get("fetchTokenTransactions" + token.getTick());
                         String uri = tokenUrl + "/token/operations?tick=" + token.getTick();
 
+                        //todo uncomment after sync
                         if (lastUpdate != null) {
                             //if we fetched initially, no need for pageSize over 200
                             uri += "&pageSize=" + 200;
+                        }else{
+                            log.info("no transactions for " + token.getTick() + " starting full fetch");
                         }
                         final List<TransactionExternal> result = helper.fetchPaginated(
                                 uri,
                                 lastUpdate != null ? lastUpdate.getData() : null,
+                                true,
                                 "&lastScore=",
                                 reference,
                                 FetchTokenTransactions::getCursor,
                                 ParsingResponse::getResult,
                                 limit,
-                                internResult -> prepareData(internResult, token)
+                                internResult -> prepareData(internResult, token, holderMap)
                         );
 
                         if (result != null) {
-                            prepareData(result, token);
+                            prepareData(result, token, holderMap);
                             generateLastUpdateTransactionsService.execute(token);
                         } else {
                             log.error("no data was loaded for " + token.getTick());
@@ -138,16 +148,35 @@ public class FetchTokenTransactions implements JavaDelegate {
             }
             releaseTask();
             log.info("Finished the transaction sync:" + LocalDateTime.now());
+            executorService.shutdown();
         });
     }
 
-    private Void prepareData(
+    public Void prepareData(
             final List<TransactionExternal> result,
-            final Token token
+            final Token token,
+            final ConcurrentMap<String, BigInteger> holderMap
     ) {
+
         result.forEach(single -> {
-            single.setFromAddress(single.getFrom());
-            single.setToAddress(single.getTo());
+            BigInteger from = holderMap.get(single.getFrom());
+            BigInteger to = holderMap.get(single.getTo());
+            if (from == null){
+                final Holder newHolder = new Holder();
+                newHolder.setAddress(single.getFrom());
+                final Holder created = holderService.insert(newHolder);
+                from = created.getId();
+                holderMap.put(created.getAddress(), created.getId());
+            }
+            if (to == null){
+                final Holder newHolder = new Holder();
+                newHolder.setAddress(single.getTo());
+                final Holder created = holderService.insert(newHolder);
+                to = created.getId();
+                holderMap.put(created.getAddress(), created.getId());
+            }
+            single.setFromAddress(from);
+            single.setToAddress(to);
             single.setFkToken(token.getId());
         });
         final List<Transaction> transactions = mapper.convertValue(result, new TypeReference<>() {

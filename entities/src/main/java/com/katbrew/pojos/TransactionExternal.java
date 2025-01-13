@@ -1,4 +1,4 @@
-package com.katbrew.workflows.helper;
+package com.katbrew.pojos;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
 import lombok.Data;

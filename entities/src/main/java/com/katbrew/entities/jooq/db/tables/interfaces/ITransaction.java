@@ -79,22 +79,22 @@ public interface ITransaction extends Serializable {
     /**
      * Setter for <code>public.Transaction.from_address</code>.
      */
-    public void setFromAddress(String value);
+    public void setFromAddress(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.from_address</code>.
      */
-    public String getFromAddress();
+    public BigInteger getFromAddress();
 
     /**
      * Setter for <code>public.Transaction.to_address</code>.
      */
-    public void setToAddress(String value);
+    public void setToAddress(BigInteger value);
 
     /**
      * Getter for <code>public.Transaction.to_address</code>.
      */
-    public String getToAddress();
+    public BigInteger getToAddress();
 
     /**
      * Setter for <code>public.Transaction.op_score</code>.

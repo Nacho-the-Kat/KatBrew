@@ -121,7 +121,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Setter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public void setFromAddress(String value) {
+    public void setFromAddress(BigInteger value) {
         set(6, value);
     }
 
@@ -129,15 +129,15 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public String getFromAddress() {
-        return (String) get(6);
+    public BigInteger getFromAddress() {
+        return (BigInteger) get(6);
     }
 
     /**
      * Setter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public void setToAddress(String value) {
+    public void setToAddress(BigInteger value) {
         set(7, value);
     }
 
@@ -145,8 +145,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
      * Getter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public String getToAddress() {
-        return (String) get(7);
+    public BigInteger getToAddress() {
+        return (BigInteger) get(7);
     }
 
     /**
@@ -331,7 +331,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> im
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(BigInteger id, Integer fkToken, String hashRev, String p, String op, BigInteger amt, String fromAddress, String toAddress, BigInteger opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger mtsAdd, BigInteger mtsMod) {
+    public TransactionRecord(BigInteger id, Integer fkToken, String hashRev, String p, String op, BigInteger amt, BigInteger fromAddress, BigInteger toAddress, BigInteger opScore, String feeRev, String txAccept, String opAccept, String opError, String checkpoint, BigInteger mtsAdd, BigInteger mtsMod) {
         super(Transaction.TRANSACTION);
 
         setId(id);

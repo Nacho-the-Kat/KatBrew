@@ -4,8 +4,10 @@
 package com.katbrew.entities.jooq.db.tables;
 
 
+import com.katbrew.entities.jooq.db.Indexes;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
+import com.katbrew.entities.jooq.db.tables.Holder.HolderPath;
 import com.katbrew.entities.jooq.db.tables.Token.TokenPath;
 import com.katbrew.entities.jooq.db.tables.records.TransactionRecord;
 
@@ -18,6 +20,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -92,17 +95,17 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.from_address</code>.
      */
-    public final TableField<TransactionRecord, String> FROM_ADDRESS = createField(DSL.name("from_address"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, BigInteger> FROM_ADDRESS = createField(DSL.name("from_address"), SQLDataType.BIGINT.nullable(false), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.to_address</code>.
      */
-    public final TableField<TransactionRecord, String> TO_ADDRESS = createField(DSL.name("to_address"), SQLDataType.CLOB, this, "");
+    public final TableField<TransactionRecord, BigInteger> TO_ADDRESS = createField(DSL.name("to_address"), SQLDataType.BIGINT.nullable(false), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.op_score</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> OP_SCORE = createField(DSL.name("op_score"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.fee_rev</code>.
@@ -207,6 +210,11 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX);
+    }
+
+    @Override
     public Identity<TransactionRecord, BigInteger> getIdentity() {
         return (Identity<TransactionRecord, BigInteger>) super.getIdentity();
     }
@@ -223,7 +231,33 @@ public class Transaction extends TableImpl<TransactionRecord> {
 
     @Override
     public List<ForeignKey<TransactionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.TRANSACTION__FK_TRANSACTION_TOKEN);
+        return Arrays.asList(Keys.TRANSACTION__FK_TRANSACTION_HOLDER_FROM, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_TO, Keys.TRANSACTION__FK_TRANSACTION_TOKEN);
+    }
+
+    private transient HolderPath _fkTransactionHolderFrom;
+
+    /**
+     * Get the implicit join path to the <code>public.Holder</code> table, via
+     * the <code>fk_transaction_holder_from</code> key.
+     */
+    public HolderPath fkTransactionHolderFrom() {
+        if (_fkTransactionHolderFrom == null)
+            _fkTransactionHolderFrom = new HolderPath(this, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_FROM, null);
+
+        return _fkTransactionHolderFrom;
+    }
+
+    private transient HolderPath _fkTransactionHolderTo;
+
+    /**
+     * Get the implicit join path to the <code>public.Holder</code> table, via
+     * the <code>fk_transaction_holder_to</code> key.
+     */
+    public HolderPath fkTransactionHolderTo() {
+        if (_fkTransactionHolderTo == null)
+            _fkTransactionHolderTo = new HolderPath(this, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_TO, null);
+
+        return _fkTransactionHolderTo;
     }
 
     private transient TokenPath _token;

@@ -99,17 +99,17 @@ public class Token extends TableImpl<TokenRecord> {
     /**
      * The column <code>public.Token.holder_total</code>.
      */
-    public final TableField<TokenRecord, Integer> HOLDER_TOTAL = createField(DSL.name("holder_total"), SQLDataType.INTEGER, this, "");
+    public final TableField<TokenRecord, Integer> HOLDER_TOTAL = createField(DSL.name("holder_total"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.Token.mint_total</code>.
      */
-    public final TableField<TokenRecord, Integer> MINT_TOTAL = createField(DSL.name("mint_total"), SQLDataType.INTEGER, this, "");
+    public final TableField<TokenRecord, Integer> MINT_TOTAL = createField(DSL.name("mint_total"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.Token.transfer_total</code>.
      */
-    public final TableField<TokenRecord, BigInteger> TRANSFER_TOTAL = createField(DSL.name("transfer_total"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
+    public final TableField<TokenRecord, BigInteger> TRANSFER_TOTAL = createField(DSL.name("transfer_total"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BIGINT)), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Token.dec</code>.

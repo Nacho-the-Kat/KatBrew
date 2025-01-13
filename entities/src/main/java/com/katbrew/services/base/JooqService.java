@@ -223,14 +223,14 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     //for inserting a large amount of entries like for sync
     public void batchInsertVoid(final List<T> entitiesToInsert) {
-        dsl.insertInto(dao.getTable()).set(
-                entitiesToInsert.stream().map(single -> dsl.newRecord(dao.getTable(), single)).toList()
+        dsl.batchInsert(
+                entitiesToInsert.stream().map(single -> (TableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
         ).execute();
     }
     //for inserting a large amount of entries like for sync
     public void batchInsertVoid(final Set<T> entitiesToInsert) {
-        dsl.insertInto(dao.getTable()).set(
-                entitiesToInsert.stream().map(single -> dsl.newRecord(dao.getTable(), single)).toList()
+        dsl.batchInsert(
+                entitiesToInsert.stream().map(single -> (TableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
         ).execute();
     }
 

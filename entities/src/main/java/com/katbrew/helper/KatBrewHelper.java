@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ public class KatBrewHelper<T, R extends Serializable> {
     public List<R> fetchPaginated(
             final String url,
             final String lastCursor,
+            final Boolean compareCursor,
             final String paginationPrefix,
             final ParameterizedTypeReference<T> reference,
             final Function<T, String> getCursor,
@@ -28,7 +30,7 @@ public class KatBrewHelper<T, R extends Serializable> {
     ) {
 
         List<R> allEntries = new ArrayList<>();
-        String nextCursor = lastCursor;
+        String nextCursor = null;
         int errorCounter = 0;
         do {
 
@@ -49,7 +51,16 @@ public class KatBrewHelper<T, R extends Serializable> {
                     if (entries != null) {
                         allEntries.addAll(entries);
                     }
-                    nextCursor = getCursor.apply(response);
+                    final String cursor = getCursor.apply(response);
+                    if (compareCursor && cursor != null && lastCursor != null) {
+                        if (new BigInteger(cursor).compareTo(new BigInteger(lastCursor)) < 0) {
+                            nextCursor = null;
+                        } else {
+                            nextCursor = cursor;
+                        }
+                    } else {
+                        nextCursor = cursor;
+                    }
                 } else {
                     nextCursor = null;
                 }

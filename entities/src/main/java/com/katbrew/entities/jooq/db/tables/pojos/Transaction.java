@@ -23,8 +23,8 @@ public class Transaction implements ITransaction {
     private String p;
     private String op;
     private BigInteger amt;
-    private String fromAddress;
-    private String toAddress;
+    private BigInteger fromAddress;
+    private BigInteger toAddress;
     private BigInteger opScore;
     private String feeRev;
     private String txAccept;
@@ -62,8 +62,8 @@ public class Transaction implements ITransaction {
         String p,
         String op,
         BigInteger amt,
-        String fromAddress,
-        String toAddress,
+        BigInteger fromAddress,
+        BigInteger toAddress,
         BigInteger opScore,
         String feeRev,
         String txAccept,
@@ -191,7 +191,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public String getFromAddress() {
+    public BigInteger getFromAddress() {
         return this.fromAddress;
     }
 
@@ -199,7 +199,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.from_address</code>.
      */
     @Override
-    public void setFromAddress(String fromAddress) {
+    public void setFromAddress(BigInteger fromAddress) {
         this.fromAddress = fromAddress;
     }
 
@@ -207,7 +207,7 @@ public class Transaction implements ITransaction {
      * Getter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public String getToAddress() {
+    public BigInteger getToAddress() {
         return this.toAddress;
     }
 
@@ -215,7 +215,7 @@ public class Transaction implements ITransaction {
      * Setter for <code>public.Transaction.to_address</code>.
      */
     @Override
-    public void setToAddress(String toAddress) {
+    public void setToAddress(BigInteger toAddress) {
         this.toAddress = toAddress;
     }
 

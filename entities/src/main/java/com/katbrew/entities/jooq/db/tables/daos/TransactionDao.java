@@ -163,14 +163,14 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
      * Fetch records that have <code>from_address BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfFromAddress(String lowerInclusive, String upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfFromAddress(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Transaction.TRANSACTION.FROM_ADDRESS, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>from_address IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByFromAddress(String... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByFromAddress(BigInteger... values) {
         return fetch(Transaction.TRANSACTION.FROM_ADDRESS, values);
     }
 
@@ -178,14 +178,14 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
      * Fetch records that have <code>to_address BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfToAddress(String lowerInclusive, String upperInclusive) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfToAddress(BigInteger lowerInclusive, BigInteger upperInclusive) {
         return fetchRange(Transaction.TRANSACTION.TO_ADDRESS, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>to_address IN (values)</code>
      */
-    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByToAddress(String... values) {
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByToAddress(BigInteger... values) {
         return fetch(Transaction.TRANSACTION.TO_ADDRESS, values);
     }
 

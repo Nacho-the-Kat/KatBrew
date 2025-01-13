@@ -5,13 +5,13 @@ import com.katbrew.entities.jooq.db.tables.pojos.Whitelist;
 import com.katbrew.services.tables.HolderService;
 import com.katbrew.services.tables.WhitelistService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.katbrew.rest.base.StaticVariables.ADMIN_URL_PREFIX;
 
@@ -26,5 +26,11 @@ public class HolderAdminRestController extends BaseAdminRestController<Whitelist
     public void bulkUpload(@RequestBody final List<Holder> holders) {
         //filter out duplicates
         holderService.batchInsertVoid(new HashSet<>(holders));
+    }
+
+    @GetMapping("/idMap")
+    public Map<String, BigInteger> getIdMap() {
+        //filter out duplicates
+        return holderService.findAll().stream().collect(Collectors.toMap(Holder::getAddress, Holder::getId));
     }
 }

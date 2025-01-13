@@ -24,9 +24,13 @@
             <column type="text" name="p"/>
             <column type="text" name="op"/>
             <column type="text" name="amt"/>
-            <column type="text" name="from_address"/>
-            <column type="text" name="to_address"/>
-            <column type="text" name="op_score"/>
+            <column type="bigint" name="from_address">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="to_address">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="op_score"/>
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>
             <column type="text" name="op_accept"/>
@@ -38,6 +42,18 @@
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
                                  constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
                                  referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="from_address"
+                                 constraintName="FK_TRANSACTION_HOLDER_FROM" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="to_address"
+                                 constraintName="FK_TRANSACTION_HOLDER_TO" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="Transaction" indexName="transaction_fk_index">
+            <column name="fk_token"/>
+        </createIndex>
 
         <rollback>
             <dropTable tableName="Transaction"/>

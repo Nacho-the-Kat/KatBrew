@@ -10,7 +10,7 @@ import com.katbrew.services.tables.BalanceService;
 import com.katbrew.services.tables.HolderService;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.workflows.helper.ParsingResponse;
-import com.katbrew.workflows.helper.TransactionExternal;
+import com.katbrew.pojos.TransactionExternal;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class FetchTokenBalances implements JavaDelegate {
     private final TokenService tokenService;
     private final HolderService holderService;
     private final BalanceService balanceService;
-    private final static Integer batchSize = 100;
+    private final static Integer batchSize = 10;
 
     @Override
     public void execute(DelegateExecution execution) {

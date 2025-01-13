@@ -24,9 +24,15 @@
             <column type="text" name="pre"/>
             <column type="bigint" name="mts_add"/>
             <column type="text" name="minted"/>
-            <column type="int" name="holder_total"/>
-            <column type="int" name="mint_total"/>
-            <column type="text" name="transfer_total"/>
+            <column type="int" name="holder_total" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column type="int" name="mint_total" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="transfer_total" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
             <column type="int" name="dec"/>
             <column type="text" name="state"/>
             <column type="text" name="hash_rev"/>
@@ -37,7 +43,7 @@
         </createTable>
 
         <rollback>
-            <dropTable tableName="Users"/>
+            <dropTable tableName="Token"/>
         </rollback>
     </changeSet>
 

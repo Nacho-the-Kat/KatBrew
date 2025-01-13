@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.daos.HolderDao;
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
-import com.katbrew.entities.jooq.db.tables.pojos.TopHolder;
 import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.services.base.JooqService;
 import lombok.Data;
@@ -13,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,6 @@ public class HolderService extends JooqService<Holder, HolderDao> {
     private final TokenService tokenService;
     private final TopHolderService topHolderService;
     public final ObjectMapper objectMapper = KatBrewObjectMapper.createObjectMapper();
-    private final DSLContext context;
 
     public Holder findByAddress(final String address) {
         final List<Holder> holder = this.findBy(Collections.singletonList(Tables.HOLDER.ADDRESS.eq(address)));
@@ -44,6 +45,10 @@ public class HolderService extends JooqService<Holder, HolderDao> {
     //Parsing in the frontend
     public List<TopHolderService.TopHolderResponse> getTopHolders() {
         return topHolderService.getTopHolders();
+    }
+
+    public ConcurrentMap<String, BigInteger> getAddressIdMap() {
+        return findAll().stream().collect(Collectors.toConcurrentMap(Holder::getAddress, Holder::getId));
     }
 
     @Data
