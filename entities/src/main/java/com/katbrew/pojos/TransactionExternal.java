@@ -9,4 +9,5 @@ import lombok.EqualsAndHashCode;
 public class TransactionExternal extends Transaction {
     String from;
     String to;
+    String tick;
 }

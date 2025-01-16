@@ -27,7 +27,7 @@ public class FetchTokens implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
-    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>();
+    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>(null);
 
     @Override
     public void execute(DelegateExecution execution) throws InterruptedException {

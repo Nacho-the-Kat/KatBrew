@@ -2,7 +2,6 @@ package com.katbrew.workflows.tasks.transactions;
 
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
-import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
 import com.katbrew.services.tables.LastUpdateService;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +19,13 @@ public class GenerateLastUpdateTransactionsService {
     private final LastUpdateService lastUpdateService;
     private final DSLContext dslContext;
 
-    public void execute(final Token token) {
-        final LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTokenTransactions" + token.getTick());
+    public void execute() {
+        final String identifier = "fetchTransactionsLastCursor";
+        final LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTransactionsLastCursor");
 
-        final String identifier = "fetchTokenTransactions" + token.getTick();
         final List<Transaction> lastTransactionList = dslContext
                 .select(Tables.TRANSACTION.ID, Tables.TRANSACTION.MTS_ADD)
                 .from(Tables.TRANSACTION)
-                .where(Tables.TRANSACTION.FK_TOKEN.eq(token.getId()))
                 .orderBy(Tables.TRANSACTION.MTS_ADD.desc())
                 .limit(1)
                 .fetch()
@@ -45,7 +43,7 @@ public class GenerateLastUpdateTransactionsService {
                 lastUpdateService.update(lastUpdate);
             }
         } else {
-            log.info("No transactions for " + token.getTick());
+            log.info("No transactions found");
         }
     }
 }

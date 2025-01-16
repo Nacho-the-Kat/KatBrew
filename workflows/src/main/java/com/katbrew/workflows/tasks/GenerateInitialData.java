@@ -18,7 +18,7 @@ public class GenerateInitialData implements JavaDelegate {
 
     private final LastUpdateService lastUpdateService;
 
-    public static List<String> initData = List.of("tokenTransactions", "tokenFetch", "tokenPriceData", "tokenBalances");
+    public static List<String> initData = List.of("fetchTransactions", "tokenFetch", "tokenPriceData", "tokenBalances");
 
     @Override
     public void execute(DelegateExecution execution) {

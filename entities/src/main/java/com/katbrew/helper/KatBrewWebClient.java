@@ -8,7 +8,8 @@ public class KatBrewWebClient {
                 .builder()
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(30 * 1024 * 1024))
+                        //100MB
+                        .maxInMemorySize(100 * 1024 * 1024))
                 .build();
     }
 }
