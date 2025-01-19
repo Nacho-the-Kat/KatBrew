@@ -1,7 +1,6 @@
 package com.katbrew.rest.tables;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Holder;
-import com.katbrew.entities.jooq.db.tables.pojos.TopHolder;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.HolderService;
@@ -18,6 +17,11 @@ import static com.katbrew.rest.base.StaticVariables.API_URL_PREFIX;
 @RequiredArgsConstructor
 public class HoldersRestController extends AbstractRestController<Holder, HolderService> {
     private final HolderService holderService;
+
+    @Override
+    public ApiResponse<List<Holder>> findAll() {
+        return new ApiResponse<>(500, "Not allowed on holders");
+    }
 
     @GetMapping("/holderCount")
     public ApiResponse<List<HolderService.TickHolder>> getHolderCount() {

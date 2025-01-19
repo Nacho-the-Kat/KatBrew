@@ -323,4 +323,19 @@ public class TokenDao extends DAOImpl<TokenRecord, com.katbrew.entities.jooq.db.
     public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchByLogo(String... values) {
         return fetch(Token.TOKEN.LOGO, values);
     }
+
+    /**
+     * Fetch records that have <code>socials BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchRangeOfSocials(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Token.TOKEN.SOCIALS, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>socials IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Token> fetchBySocials(String... values) {
+        return fetch(Token.TOKEN.SOCIALS, values);
+    }
 }

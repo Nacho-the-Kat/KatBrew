@@ -186,6 +186,16 @@ public interface IToken extends Serializable {
      */
     public String getLogo();
 
+    /**
+     * Setter for <code>public.Token.socials</code>.
+     */
+    public void setSocials(String value);
+
+    /**
+     * Getter for <code>public.Token.socials</code>.
+     */
+    public String getSocials();
+
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

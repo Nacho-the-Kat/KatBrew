@@ -1,5 +1,7 @@
 package com.katbrew.rest.tables;
+
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
+import com.katbrew.pojos.TokenHolder;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.TokenService;
@@ -19,11 +21,6 @@ public class TokensRestController extends AbstractRestController<Token, TokenSer
 
     private final TokenService tokenService;
 
-    @GetMapping("/tokens")
-    public ApiResponse<List<Token>> getTokens(@RequestParam Integer limit) {
-        return new ApiResponse<>(tokenService.getTokens());
-    }
-
     @GetMapping("/tickers")
     public ApiResponse<List<String>> getTickers() {
         return new ApiResponse<>(tokenService.getTickers());
@@ -31,22 +28,28 @@ public class TokensRestController extends AbstractRestController<Token, TokenSer
 
     @GetMapping("/tokenlist")
     public ApiResponse<List<Token>> getTokenlist(
-            @RequestParam(defaultValue = "100") final Integer limit,
-            @RequestParam(defaultValue = "0", required = false) final Integer cursor,
             @RequestParam(defaultValue = "holderTotal") final String sortBy,
             @RequestParam(defaultValue = "desc") final String sortOrder
     ) {
-        return new ApiResponse<>(tokenService.getTokenList(limit, cursor, sortBy, sortOrder));
+        return new ApiResponse<>(tokenService.getTokenList(sortBy, sortOrder));
     }
 
     @GetMapping("/detail/{tick}")
-    public ApiResponse<Token> getTokenDetails(
+    public ApiResponse<Token> getFullToken(
             @PathVariable final String tick
     ) throws NotFoundException {
         final Token token = tokenService.findByTick(tick);
         if (token == null){
-            throw new NotFoundException("token not exist");
+            throw new NotFoundException("token not found");
         }
+        return new ApiResponse<>(token);
+    }
+    @GetMapping("/holder/{tick}")
+    public ApiResponse<List<TokenHolder>> getTokenHolder(
+            @PathVariable final String tick
+    ) throws NotFoundException {
+        List<TokenHolder> token = tokenService.getHolder(tick);
+
         return new ApiResponse<>(token);
     }
 

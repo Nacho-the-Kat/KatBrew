@@ -1,14 +1,10 @@
 package com.katbrew.services.tables;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.daos.TransactionDao;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
-import com.katbrew.helper.KatBrewObjectMapper;
-import com.katbrew.pojos.TransactionExternal;
 import com.katbrew.services.base.JooqService;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Condition;
@@ -19,8 +15,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +24,6 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
 
     private final TokenService tokenService;
     private final DSLContext context;
-    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
-    com.katbrew.entities.jooq.db.tables.Transaction transactionTable = Tables.TRANSACTION;
 
     public List<Transaction> getTransactions(final String tick, final LocalDateTime start, LocalDateTime end) {
         final Token token = tokenService.findByTick(tick);

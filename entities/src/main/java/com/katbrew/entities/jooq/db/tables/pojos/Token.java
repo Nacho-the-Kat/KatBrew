@@ -34,6 +34,7 @@ public class Token implements IToken {
     private BigInteger opScoreAdd;
     private String to;
     private String logo;
+    private String socials;
 
     public Token() {}
 
@@ -55,6 +56,7 @@ public class Token implements IToken {
         this.opScoreAdd = value.getOpScoreAdd();
         this.to = value.getTo();
         this.logo = value.getLogo();
+        this.socials = value.getSocials();
     }
 
     public Token(
@@ -74,7 +76,8 @@ public class Token implements IToken {
         BigInteger opScoreMod,
         BigInteger opScoreAdd,
         String to,
-        String logo
+        String logo,
+        String socials
     ) {
         this.id = id;
         this.tick = tick;
@@ -93,6 +96,7 @@ public class Token implements IToken {
         this.opScoreAdd = opScoreAdd;
         this.to = to;
         this.logo = logo;
+        this.socials = socials;
     }
 
     /**
@@ -367,6 +371,22 @@ public class Token implements IToken {
         this.logo = logo;
     }
 
+    /**
+     * Getter for <code>public.Token.socials</code>.
+     */
+    @Override
+    public String getSocials() {
+        return this.socials;
+    }
+
+    /**
+     * Setter for <code>public.Token.socials</code>.
+     */
+    @Override
+    public void setSocials(String socials) {
+        this.socials = socials;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -478,6 +498,12 @@ public class Token implements IToken {
         }
         else if (!this.logo.equals(other.logo))
             return false;
+        if (this.socials == null) {
+            if (other.socials != null)
+                return false;
+        }
+        else if (!this.socials.equals(other.socials))
+            return false;
         return true;
     }
 
@@ -502,6 +528,7 @@ public class Token implements IToken {
         result = prime * result + ((this.opScoreAdd == null) ? 0 : this.opScoreAdd.hashCode());
         result = prime * result + ((this.to == null) ? 0 : this.to.hashCode());
         result = prime * result + ((this.logo == null) ? 0 : this.logo.hashCode());
+        result = prime * result + ((this.socials == null) ? 0 : this.socials.hashCode());
         return result;
     }
 
@@ -526,6 +553,7 @@ public class Token implements IToken {
         sb.append(", ").append(opScoreAdd);
         sb.append(", ").append(to);
         sb.append(", ").append(logo);
+        sb.append(", ").append(socials);
 
         sb.append(")");
         return sb.toString();
@@ -554,6 +582,7 @@ public class Token implements IToken {
         setOpScoreAdd(from.getOpScoreAdd());
         setTo(from.getTo());
         setLogo(from.getLogo());
+        setSocials(from.getSocials());
     }
 
     @Override

@@ -197,6 +197,19 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .fetch()
                 .into(type);
     }
+    public List<T> findAllSorted(
+            final String sortBy,
+            final String sortOrder,
+            final List<Field<?>> fields
+    ) {
+        final SortField<?> sort = getFieldWithSort(sortBy, sortOrder);
+
+        return dsl.select(fields)
+                .from(dao.getTable())
+                .orderBy(sort)
+                .fetch()
+                .into(type);
+    }
 
     public T insert(final T entityToInsert) {
         try {

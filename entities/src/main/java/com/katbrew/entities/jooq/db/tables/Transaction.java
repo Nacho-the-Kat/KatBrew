@@ -211,7 +211,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX);
+        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX, Indexes.TRANSACTION_OP_SCORE_IDX);
     }
 
     @Override

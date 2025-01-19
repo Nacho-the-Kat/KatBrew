@@ -44,6 +44,7 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

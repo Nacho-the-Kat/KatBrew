@@ -2,6 +2,7 @@ package com.katbrew.rest.tables;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
 import com.katbrew.rest.base.AbstractRestController;
+import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,12 @@ public class TransactionRestController extends AbstractRestController<Transactio
     private final TransactionService transactionService;
 
     @GetMapping("/mint-totals")
-    public List getMintTotals(@RequestParam(required = false) final LocalDateTime start, @RequestParam(required = false) final LocalDateTime end){
+    public List getMintTotals(@RequestParam(required = false) final LocalDateTime start, @RequestParam(required = false) final LocalDateTime end) {
         return transactionService.getMintsTotal(start, end);
+    }
+
+    @Override
+    public ApiResponse<List<Transaction>> findAll() {
+        return new ApiResponse<>(500, "Not allowed on transactions");
     }
 }

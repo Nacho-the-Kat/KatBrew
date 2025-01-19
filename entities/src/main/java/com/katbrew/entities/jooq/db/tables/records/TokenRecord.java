@@ -293,6 +293,22 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         return (String) get(16);
     }
 
+    /**
+     * Setter for <code>public.Token.socials</code>.
+     */
+    @Override
+    public void setSocials(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.Token.socials</code>.
+     */
+    @Override
+    public String getSocials() {
+        return (String) get(17);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -325,6 +341,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setOpScoreAdd(from.getOpScoreAdd());
         setTo(from.getTo());
         setLogo(from.getLogo());
+        setSocials(from.getSocials());
         resetChangedOnNotNull();
     }
 
@@ -348,7 +365,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
     /**
      * Create a detached, initialised TokenRecord
      */
-    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer mintTotal, BigInteger transferTotal, Integer dec, String state, String hashRev, BigInteger opScoreMod, BigInteger opScoreAdd, String to, String logo) {
+    public TokenRecord(Integer id, String tick, BigInteger max, BigInteger lim, BigInteger pre, BigInteger mtsAdd, BigInteger minted, Integer holderTotal, Integer mintTotal, BigInteger transferTotal, Integer dec, String state, String hashRev, BigInteger opScoreMod, BigInteger opScoreAdd, String to, String logo, String socials) {
         super(Token.TOKEN);
 
         setId(id);
@@ -368,6 +385,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
         setOpScoreAdd(opScoreAdd);
         setTo(to);
         setLogo(logo);
+        setSocials(socials);
         resetChangedOnNotNull();
     }
 
@@ -395,6 +413,7 @@ public class TokenRecord extends UpdatableRecordImpl<TokenRecord> implements ITo
             setOpScoreAdd(value.getOpScoreAdd());
             setTo(value.getTo());
             setLogo(value.getLogo());
+            setSocials(value.getSocials());
             resetChangedOnNotNull();
         }
     }

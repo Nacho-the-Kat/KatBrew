@@ -8,12 +8,18 @@ import com.katbrew.services.tables.AnnouncementsService;
 import com.katbrew.services.tables.TokenService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
@@ -51,6 +57,7 @@ public class FileUploadController {
             throw new NotFoundException("Token tick not found");
         }
         final String filePath = uploadFile(upload, "krc20-logos", token.getTick());
+        generateThumbnail(Paths.get(root, filePath), "krc20-thumbnails", 100);
         token.setLogo(filePath);
         tokenService.update(token);
     }
@@ -67,5 +74,22 @@ public class FileUploadController {
             return filepath;
         }
         return null;
+    }
+
+    private void generateThumbnail(final Path file, final String path, final int thumbnailSize) throws IOException {
+        if (file.toFile().exists()) {
+            final BufferedImage originalImage = ImageIO.read(new File(file.toString()));
+            final BufferedImage thumbnail = new BufferedImage(thumbnailSize, thumbnailSize, 1);
+            final Graphics2D g = thumbnail.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(originalImage, 0, 0, thumbnailSize, thumbnailSize, null);
+            g.dispose();
+
+            final String extension = FilenameUtils.getExtension(file.toString());
+
+            final String outputThumbnailPath = Paths.get(root, path, file.getFileName().toString()).toString();
+            final File outputThumbnailFile = new File(outputThumbnailPath);
+            ImageIO.write(thumbnail, extension, outputThumbnailFile);
+        }
     }
 }

@@ -146,6 +146,11 @@ public class Token extends TableImpl<TokenRecord> {
      */
     public final TableField<TokenRecord, String> LOGO = createField(DSL.name("logo"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.Token.socials</code>.
+     */
+    public final TableField<TokenRecord, String> SOCIALS = createField(DSL.name("socials"), SQLDataType.CLOB, this, "");
+
     private Token(Name alias, Table<TokenRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

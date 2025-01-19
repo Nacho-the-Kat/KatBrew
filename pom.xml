@@ -14,7 +14,6 @@
         <module>liquibase</module>
         <module>core</module>
         <module>entities</module>
-        <module>entities-interfaces</module>
         <module>workflows</module>
     </modules>
 
