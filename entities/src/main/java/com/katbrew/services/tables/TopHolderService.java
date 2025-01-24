@@ -9,15 +9,12 @@ import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.services.base.JooqService;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Service
@@ -25,7 +22,8 @@ public class TopHolderService extends JooqService<TopHolder, TopHolderDao> {
 
     List<TopHolderResponse> topHolders = new ArrayList<>();
     final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
-    final static TypeReference<List<ResponseBalances>> typeReference = new TypeReference<>() {};
+    final static TypeReference<List<ResponseBalances>> typeReference = new TypeReference<>() {
+    };
 
     @PostConstruct
     private void getTopHolder() {
@@ -55,6 +53,7 @@ public class TopHolderService extends JooqService<TopHolder, TopHolderDao> {
         Integer tokenCount;
         List<ResponseBalances> balances;
     }
+
     @Data
     public static class ResponseBalances {
         String tick;

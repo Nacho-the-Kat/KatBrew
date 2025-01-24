@@ -23,5 +23,5 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index TRANSACTION_FK_INDEX = Internal.createIndex(DSL.name("transaction_fk_index"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.FK_TOKEN }, false);
-    public static final Index TRANSACTION_OP_SCORE_IDX = Internal.createIndex(DSL.name("Transaction_op_score_idx"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.OP_SCORE }, false);
+    public static final Index TRANSACTION_INDEX_OP_SCORE = Internal.createIndex(DSL.name("transaction_index_op_score"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.OP_SCORE }, false);
 }

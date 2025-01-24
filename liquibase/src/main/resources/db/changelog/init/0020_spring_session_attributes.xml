@@ -34,7 +34,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2" author="en">
+    <changeSet id="2" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <tableExists tableName="SPRING_SESSION_ATTRIBUTES"/>
         </preConditions>

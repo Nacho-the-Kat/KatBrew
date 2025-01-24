@@ -2,6 +2,7 @@ package com.katbrew.rest.tables;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.pojos.TokenHolder;
+import com.katbrew.pojos.TokenList;
 import com.katbrew.rest.base.AbstractRestController;
 import com.katbrew.services.base.ApiResponse;
 import com.katbrew.services.tables.TokenService;
@@ -27,7 +28,7 @@ public class TokensRestController extends AbstractRestController<Token, TokenSer
     }
 
     @GetMapping("/tokenlist")
-    public ApiResponse<List<Token>> getTokenlist(
+    public ApiResponse<List<TokenList>> getTokenlist(
             @RequestParam(defaultValue = "holderTotal") final String sortBy,
             @RequestParam(defaultValue = "desc") final String sortOrder
     ) {

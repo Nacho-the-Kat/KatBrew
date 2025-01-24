@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
+import org.jooq.Record;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,6 +210,18 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .orderBy(sort)
                 .fetch()
                 .into(type);
+    }
+    public Result<Record> findAllSortedCustomType(
+            final String sortBy,
+            final String sortOrder,
+            final List<Field<?>> fields
+    ) {
+        final SortField<?> sort = getFieldWithSort(sortBy, sortOrder);
+
+        return dsl.select(fields)
+                .from(dao.getTable())
+                .orderBy(sort)
+                .fetch();
     }
 
     public T insert(final T entityToInsert) {

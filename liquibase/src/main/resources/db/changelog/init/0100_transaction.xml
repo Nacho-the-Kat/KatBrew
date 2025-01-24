@@ -15,9 +15,9 @@
             <column type="BIGINT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
             </column>
-            <column type="int" name="fk_token">
-                <constraints nullable="false"/>
-            </column>
+            <column type="int" name="fk_token"/>
+            <!--we need this, if the transaction has a tick not found op_error -->
+            <column type="text" name="transaction_tick"/>
             <column type="text" name="hash_rev">
                 <constraints unique="true"/>
             </column>
@@ -54,7 +54,9 @@
         <createIndex tableName="Transaction" indexName="transaction_fk_index">
             <column name="fk_token"/>
         </createIndex>
-
+        <createIndex tableName="Transaction" indexName="transaction_index_op_score">
+            <column name="op_score"/>
+        </createIndex>
         <rollback>
             <dropTable tableName="Transaction"/>
         </rollback>

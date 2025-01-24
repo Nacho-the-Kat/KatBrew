@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import static com.katbrew.rest.base.StaticVariables.ADMIN_URL_PREFIX;
 
 @RestController
-@RequestMapping(ADMIN_URL_PREFIX + "/tokens")
+@RequestMapping(ADMIN_URL_PREFIX + "/token")
 @RequiredArgsConstructor
-public class TokensAdminRestController extends AbstractRestController<Token, TokenService> {
+public class TokensAdminRestController extends BaseAdminRestController<Token, TokenService> {
     private final TokenService tokenService;
 
     @GetMapping("/idMap")

@@ -6,6 +6,7 @@ import com.katbrew.entities.jooq.db.tables.pojos.Holder;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.pojos.TransactionExternal;
+import com.katbrew.services.helper.TokenCachingService;
 import com.katbrew.services.tables.BalanceService;
 import com.katbrew.services.tables.HolderService;
 import com.katbrew.services.tables.TokenService;
@@ -37,6 +38,7 @@ public class FetchTokenBalances implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
+    private final TokenCachingService tokenCachingService;
     private final HolderService holderService;
     private final BalanceService balanceService;
 
@@ -73,39 +75,39 @@ public class FetchTokenBalances implements JavaDelegate {
                 final String address = singleHolder.getAddress();
                 Holder intern = dbHolder.get(address);
                 singleHolder.getBalances().forEach(singleBalance -> {
-                    Integer tokenId = tokenMap.get(singleBalance.getTick());
-                    if (tokenId == null) {
-                        Token newToken = new Token();
-                        newToken.setTick(singleBalance.getTick());
-                        newToken = tokenService.insert(newToken);
-                        tokenId = newToken.getId();
-                        tokenMap.put(newToken.getTick(), newToken.getId());
-                    }
-                    //completely new holder
-                    if (intern == null) {
-                        if (!holderToCreate.containsKey(address)) {
-                            Holder newHolder = new Holder();
-                            newHolder.setAddress(address);
-                            holderToCreate.put(address, newHolder);
-                        }
-                        addressBalances.put(address, List.of(createNewBalance(singleBalance.getBalance(), tokenId)));
-                    } else {
-                        final Balance balance = dbBalances.get(addressId.get(address) + "-" + tokenId);
-                        if (!addressBalances.containsKey(address)) {
-                            addressBalances.put(address, new ArrayList<>());
-                        }
-                        if (balance != null) {
-                            //we have a balance for the holder, update it
-                            balance.setBalance(singleBalance.getBalance());
-                            addressBalances.get(address).add(balance);
-                        } else {
-                            //new balance for an old holder
-                            final Balance b = createNewBalance(singleBalance.getBalance(), tokenId);
-                            b.setHolderId(intern.getId());
-                            addressBalances.get(address).add(b);
-                        }
-                    }
-                });
+                            Integer tokenId = tokenMap.get(singleBalance.getTick());
+                            if (tokenId == null) {
+                                Token newToken = new Token();
+                                newToken.setTick(singleBalance.getTick());
+                                newToken = tokenService.insert(newToken);
+                                tokenId = newToken.getId();
+                                tokenMap.put(newToken.getTick(), newToken.getId());
+                            }
+                            //completely new holder
+                            if (intern == null) {
+                                if (!holderToCreate.containsKey(address)) {
+                                    Holder newHolder = new Holder();
+                                    newHolder.setAddress(address);
+                                    holderToCreate.put(address, newHolder);
+                                }
+                                addressBalances.put(address, List.of(createNewBalance(singleBalance.getBalance(), tokenId)));
+                            } else {
+                                final Balance balance = dbBalances.get(addressId.get(address) + "-" + tokenId);
+                                if (!addressBalances.containsKey(address)) {
+                                    addressBalances.put(address, new ArrayList<>());
+                                }
+                                if (balance != null) {
+                                    //we have a balance for the holder, update it
+                                    balance.setBalance(singleBalance.getBalance());
+                                    addressBalances.get(address).add(balance);
+                                } else {
+                                    //new balance for an old holder
+                                    final Balance b = createNewBalance(singleBalance.getBalance(), tokenId);
+                                    b.setHolderId(intern.getId());
+                                    addressBalances.get(address).add(b);
+                                }
+                            }
+                        });
             });
         }
 
@@ -121,9 +123,10 @@ public class FetchTokenBalances implements JavaDelegate {
         balanceService.batchUpdate(toUpdate);
         final List<Balance> combined = Stream.concat(toUpdate.stream(), newBalances.stream()).toList();
         final List<Balance> toDelete = balanceService.findBy(List.of(
-                Tables.BALANCE.ID.notIn(combined.stream().map(Balance::getId).toList())
+                Tables.BALANCE.ID.notIn(combined.stream().map(Balance::getId).toList()).or(Tables.BALANCE.BALANCE_.eq(BigInteger.valueOf(0)))
         ));
         balanceService.batchDelete(toDelete);
+        tokenCachingService.invalidateHolder();
         log.info("Updateing balances done: " + LocalDateTime.now());
     }
 

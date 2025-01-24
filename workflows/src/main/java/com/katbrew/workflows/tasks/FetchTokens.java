@@ -2,6 +2,7 @@ package com.katbrew.workflows.tasks;
 
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.helper.KatBrewHelper;
+import com.katbrew.services.helper.TokenCachingService;
 import com.katbrew.services.tables.TokenService;
 import com.katbrew.workflows.helper.ParsingResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class FetchTokens implements JavaDelegate {
     private String tokenUrl;
 
     private final TokenService tokenService;
+    private final TokenCachingService tokenCachingService;
     private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>(null);
 
     @Override
@@ -64,7 +66,7 @@ public class FetchTokens implements JavaDelegate {
 
         tokenService.batchInsertVoid(tokenList.stream().filter(single -> single.getId() == null).toList());
         tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
-
+        tokenCachingService.invalidateTokenList();
         log.info("Finished the token sync: " + LocalDateTime.now());
     }
 

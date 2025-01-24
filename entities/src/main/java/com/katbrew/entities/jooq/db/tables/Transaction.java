@@ -70,7 +70,12 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.fk_token</code>.
      */
-    public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.Transaction.transaction_tick</code>.
+     */
+    public final TableField<TransactionRecord, String> TRANSACTION_TICK = createField(DSL.name("transaction_tick"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.Transaction.hash_rev</code>.
@@ -211,7 +216,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX, Indexes.TRANSACTION_OP_SCORE_IDX);
+        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX, Indexes.TRANSACTION_INDEX_OP_SCORE);
     }
 
     @Override

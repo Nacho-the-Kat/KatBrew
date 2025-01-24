@@ -9,7 +9,6 @@ import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.services.base.JooqService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;

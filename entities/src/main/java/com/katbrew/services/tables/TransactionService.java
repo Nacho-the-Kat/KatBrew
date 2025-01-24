@@ -32,19 +32,11 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
             return new ArrayList<>();
         }
         final List<Condition> conditions = List.of(
-//                Tables.TRANSACTION.TIMESTAMP.ge(start),
-//                Tables.TRANSACTION.TIMESTAMP.le(end),
+                Tables.TRANSACTION.MTS_ADD.ge(BigInteger.valueOf(start.toEpochSecond(ZoneOffset.UTC))),
+                Tables.TRANSACTION.MTS_ADD.le(BigInteger.valueOf(end.toEpochSecond(ZoneOffset.UTC))),
                 Tables.TRANSACTION.FK_TOKEN.eq(token.getId())
         );
         return this.findBy(conditions);
-    }
-
-    public Transaction getTransactionByRev(final String rev) {
-        final List<Transaction> list = findBy(List.of(Tables.TRANSACTION.HASH_REV.eq(rev)));
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
     }
 
     public List getMintsTotal(LocalDateTime start, LocalDateTime end) {

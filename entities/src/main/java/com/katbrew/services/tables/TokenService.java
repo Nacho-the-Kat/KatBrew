@@ -8,11 +8,12 @@ import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.exceptions.NotValidException;
 import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.pojos.TokenHolder;
+import com.katbrew.pojos.TokenList;
 import com.katbrew.services.base.JooqService;
+import com.katbrew.services.helper.TokenCachingService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -20,16 +21,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService extends JooqService<Token, TokenDao> {
+
+    public final TokenCachingService tokenCachingService;
     private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
     private final DSLContext context;
 
     public List<String> getTickers() {
-        return this.findAll().stream().map(Token::getTick).collect(Collectors.toList());
+        if (tokenCachingService.hasTokenTicks()) {
+            return tokenCachingService.getTokenTicks();
+        }
+        final List<String> tokenTicks = this.findAll().stream().map(Token::getTick).toList();
+        tokenCachingService.renewTokenTicks(tokenTicks);
+        return tokenTicks;
     }
 
     public void updateSocials(final String tick, final Map<String, String> socials) throws NotFoundException, JsonProcessingException {
@@ -44,12 +51,24 @@ public class TokenService extends JooqService<Token, TokenDao> {
         }
     }
 
-    @Cacheable("tokenlist")
-    public List<Token> getTokenList(final String sortBy, final String sortOrder) {
+    public List<TokenList> getTokenList(final String sortBy, final String sortOrder) {
         if (sortBy.contains(";") || sortBy.contains(",")) {
             throw new NotValidException();
         }
-        return this.findAllSorted(sortBy, sortOrder, Arrays.stream(Tables.TOKEN.fields()).filter(single -> !single.getName().equals("hash_rev") && !single.getName().equals("to")).toList());
+        if (tokenCachingService.hasTokenList()) {
+            return tokenCachingService.getTokenList();
+        }
+        final List<TokenList> tokens = findAllSortedCustomType(
+                sortBy,
+                sortOrder,
+                Arrays.stream(Tables.TOKEN.fields()).filter(single ->
+                        !single.getName().equals("hash_rev") &&
+                                !single.getName().equals("to") &&
+                                !single.getName().equals("op_score_add") &&
+                                !single.getName().equals("op_score_mod")
+                ).toList()).into(TokenList.class);
+        tokenCachingService.renewTokenList(tokens);
+        return tokens;
     }
 
     public List<TokenHolder> getHolder(final String tick) throws NotFoundException {
@@ -57,10 +76,12 @@ public class TokenService extends JooqService<Token, TokenDao> {
         if (checkToken == null) {
             throw new NotFoundException("token not found");
         }
+        if (tokenCachingService.hasTokenHolder(tick)) {
+            return tokenCachingService.getTokenHolder(tick);
+        }
 
         com.katbrew.entities.jooq.db.tables.Token token = Tables.TOKEN;
-
-        return context.select(Tables.HOLDER.ADDRESS, Tables.BALANCE.BALANCE_)
+        final List<TokenHolder> holder = context.select(Tables.HOLDER.ADDRESS, Tables.BALANCE.BALANCE_)
                 .from(token)
                 .join(Tables.BALANCE).on(Tables.BALANCE.FK_TOKEN.eq(token.ID))
                 .join(Tables.HOLDER).on(Tables.BALANCE.HOLDER_ID.eq(Tables.HOLDER.ID))
@@ -69,6 +90,9 @@ public class TokenService extends JooqService<Token, TokenDao> {
                 .limit(50)
                 .fetch()
                 .into(TokenHolder.class);
+
+        tokenCachingService.renewTokenHolder(tick, holder);
+        return holder;
     }
 
     public Token findByTick(final String tick) {

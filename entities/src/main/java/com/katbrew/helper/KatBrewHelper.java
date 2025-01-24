@@ -85,6 +85,7 @@ public class KatBrewHelper<T, R extends Serializable> {
             } catch (Exception e) {
                 if (errorCounter < 3) {
                     log.warn("error on fetching " + urlIntern);
+                    log.warn(e.getMessage());
                     ++errorCounter;
                 } else {
                     break;
@@ -107,6 +108,7 @@ public class KatBrewHelper<T, R extends Serializable> {
         T response = null;
         while (true) {
             try {
+                log.info("Fetching data from: " + url);
                 response = client
                         .get()
                         .uri(url)

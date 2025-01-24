@@ -86,6 +86,21 @@ public class TransactionDao extends DAOImpl<TransactionRecord, com.katbrew.entit
     }
 
     /**
+     * Fetch records that have <code>transaction_tick BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchRangeOfTransactionTick(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Transaction.TRANSACTION.TRANSACTION_TICK, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>transaction_tick IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.Transaction> fetchByTransactionTick(String... values) {
+        return fetch(Transaction.TRANSACTION.TRANSACTION_TICK, values);
+    }
+
+    /**
      * Fetch records that have <code>hash_rev BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
