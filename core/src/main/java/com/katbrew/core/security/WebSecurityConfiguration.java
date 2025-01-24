@@ -45,6 +45,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/static/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -65,6 +66,7 @@ public class WebSecurityConfiguration {
         configuration.setAllowedOriginPatterns(List.of("https://*.katscan.pages.dev"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
