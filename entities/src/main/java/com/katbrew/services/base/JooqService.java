@@ -6,8 +6,8 @@ import com.katbrew.helper.KatBrewObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
 import org.jooq.Record;
+import org.jooq.*;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,6 +198,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .fetch()
                 .into(type);
     }
+
     public List<T> findAllSorted(
             final String sortBy,
             final String sortOrder,
@@ -211,6 +212,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 .fetch()
                 .into(type);
     }
+
     public Result<Record> findAllSortedCustomType(
             final String sortBy,
             final String sortOrder,
@@ -227,7 +229,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     public T insert(final T entityToInsert) {
         try {
             final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
-            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), internal);
+            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), new SubscriptionWrapper<>(dao.getTable().getName(), "insert", internal));
             return internal;
         } catch (Exception e) {
             IllegalArgumentException ex = new IllegalArgumentException(e.getMessage());
@@ -253,6 +255,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
                 entitiesToInsert.stream().map(single -> (TableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
         ).execute();
     }
+
     //for inserting a large amount of entries like for sync
     public void batchInsertVoid(final Set<T> entitiesToInsert) {
         dsl.batchInsert(
@@ -262,7 +265,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     public void update(final T entityToUpdate) {
         dao.update(entityToUpdate);
-        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), entityToUpdate);
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.UPDATE), new SubscriptionWrapper<>(dao.getTable().getName(), "update", entityToUpdate));
     }
 
     public void update(List<T> entitiesToUpdate) {
@@ -271,8 +274,8 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
 
     //for updating a large amount of entries like for sync
     public void batchUpdate(List<T> entitiesToUpdate) {
-        Field field =dao.getTable().field(DSL.field("id"));
-        if (field == null){
+        Field field = dao.getTable().field(DSL.field("id"));
+        if (field == null) {
             throw new NotValidException("No id field");
         }
         dsl.batch(
@@ -291,20 +294,21 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     public void delete(final Integer id) {
         final T entityToDelete = findOne(id);
         dao.deleteById(id);
-        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
+        deleteSubscription(entityToDelete);
     }
 
     public void delete(List<T> entitiesToDelete) {
         dao.delete(entitiesToDelete);
-        for (final T entityToDelete : entitiesToDelete) {
-            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
-        }
-
+        entitiesToDelete.forEach(this::deleteSubscription);
     }
 
     public void delete(T entityToDelete) {
         dao.delete(entityToDelete);
-        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), entityToDelete);
+        deleteSubscription(entityToDelete);
+    }
+
+    private void deleteSubscription(T entityToDelete) {
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.DELETE), new SubscriptionWrapper<>(dao.getTable().getName(), "delete", entityToDelete));
     }
 
     public void delete(final Long id) {
@@ -312,8 +316,8 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     }
 
     public void batchDelete(List<T> entitiesToDelete) {
-        Field field =dao.getTable().field(DSL.field("id"));
-        if (field == null){
+        Field field = dao.getTable().field(DSL.field("id"));
+        if (field == null) {
             throw new NotValidException("No id field");
         }
         dsl.batch(
@@ -358,7 +362,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             if (method != null) {
                 try {
                     return (Serializable) mapper.convertValue(method.invoke(entity), fieldInternal.getType());
-                }catch (Exception e){
+                } catch (Exception e) {
                     throw new NotValidException("Error getting field data");
                 }
             }
