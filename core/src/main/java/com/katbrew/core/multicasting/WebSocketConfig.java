@@ -15,6 +15,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
+                .setAllowedOrigins(
+                        "https://katscan.xyz",
+                        "http://localhost:3000"
+                )
+                .setAllowedOriginPatterns("https://*.katscan.pages.dev")
                 .withSockJS();
     }
 
