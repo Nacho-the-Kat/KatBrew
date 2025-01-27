@@ -9,7 +9,7 @@
     <bpmn:serviceTask id="Activity_0n5ggpg" name="Check if runable" camunda:asyncBefore="true" camunda:delegateExpression="${checkTaskRunable}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="lastUpdateIdentifier">tokenTransactions</camunda:inputParameter>
+          <camunda:inputParameter name="lastUpdateIdentifier">fetchTransactions</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_07ccc61</bpmn:incoming>
@@ -36,14 +36,14 @@
     <bpmn:serviceTask id="Activity_1eh7o64" name="Lock Task" camunda:asyncBefore="true" camunda:delegateExpression="${lockTask}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="lastUpdateIdentifier">tokenTransactions</camunda:inputParameter>
+          <camunda:inputParameter name="lastUpdateIdentifier">fetchTransactions</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_035vgzu</bpmn:incoming>
       <bpmn:outgoing>Flow_09erudp</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_09erudp" sourceRef="Activity_1eh7o64" targetRef="Activity_15s5sow" />
-    <bpmn:serviceTask id="Activity_15s5sow" name="Start the Fetch Transactions" camunda:asyncBefore="true" camunda:delegateExpression="${fetchTokenTransactions}">
+    <bpmn:serviceTask id="Activity_15s5sow" name="Start the Fetch Transactions" camunda:asyncBefore="true" camunda:delegateExpression="${fetchTransactions}">
       <bpmn:incoming>Flow_09erudp</bpmn:incoming>
       <bpmn:outgoing>Flow_02d94sv</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -57,12 +57,21 @@
   <bpmn:message id="Message_007h9af" name="startTransactionFetch" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_087wiim">
+      <bpmndi:BPMNShape id="EndEvent_1jaf376_di" bpmnElement="EndEvent_1jaf376">
+        <dc:Bounds x="852" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_13pvvuu" bpmnElement="Activity_0n5ggpg">
         <dc:Bounds x="280" y="150" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_05zj1z2" bpmnElement="Gateway_0r9fsg3" isMarkerVisible="true">
         <dc:Bounds x="425" y="165" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19iua0q_di" bpmnElement="Event_06hxpuk">
+        <dc:Bounds x="182" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="215" width="87" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ruz2ub" bpmnElement="Activity_1eh7o64">
         <dc:Bounds x="530" y="150" width="100" height="80" />
@@ -72,19 +81,6 @@
         <dc:Bounds x="690" y="150" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_1jaf376_di" bpmnElement="EndEvent_1jaf376">
-        <dc:Bounds x="852" y="172" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_19iua0q_di" bpmnElement="Event_06hxpuk">
-        <dc:Bounds x="182" y="172" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="157" y="215" width="87" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_19mpxq2_di" bpmnElement="Association_19mpxq2">
-        <di:waypoint x="744" y="150" />
-        <di:waypoint x="748" y="110" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_14nz5sb_di" bpmnElement="TextAnnotation_14nz5sb">
         <dc:Bounds x="700" y="80" width="258" height="30" />
         <bpmndi:BPMNLabel />
@@ -114,6 +110,10 @@
       <bpmndi:BPMNEdge id="Flow_02d94sv_di" bpmnElement="Flow_02d94sv">
         <di:waypoint x="790" y="190" />
         <di:waypoint x="852" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_19mpxq2_di" bpmnElement="Association_19mpxq2">
+        <di:waypoint x="744" y="150" />
+        <di:waypoint x="748" y="110" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
