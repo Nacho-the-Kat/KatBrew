@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>katBrew</artifactId>
-        <groupId>com.nacho</groupId>
+        <groupId>com.katbrew</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>liquibase</artifactId>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="Price_Data"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="Price_Data">
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_Price_Data" nullable="false"/>
+            </column>
+            <column type="int" name="fk_token">
+                <constraints nullable="false"/>
+            </column>
+            <column type="double" name="value_kas"/>
+            <column type="double" name="value_usd"/>
+            <column type="double" name="change_24h" />
+            <column type="datetime" name="timestamp" defaultValue="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Price_Data" baseColumnNames="fk_token" constraintName="FK_PRICE_DATA_TOKEN" referencedTableName="Token"
+                                 referencedColumnNames="id"/>
+
+        <rollback>
+            <dropTable tableName="Price_Data"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

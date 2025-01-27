@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="Transaction"/>
+            </not>
+        </preConditions>
+        <createTable tableName="Transaction">
+            <column type="BIGINT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
+            </column>
+            <column type="int" name="fk_token"/>
+            <!--we need this, if the transaction has a tick not found op_error -->
+            <column type="text" name="transaction_tick"/>
+            <column type="text" name="hash_rev">
+                <constraints unique="true"/>
+            </column>
+            <column type="text" name="p"/>
+            <column type="text" name="op"/>
+            <column type="text" name="amt"/>
+            <column type="bigint" name="from_address">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="to_address">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="op_score"/>
+            <column type="text" name="fee_rev"/>
+            <column type="text" name="tx_accept"/>
+            <column type="text" name="op_accept"/>
+            <column type="text" name="op_error"/>
+            <column type="text" name="checkpoint"/>
+            <column type="bigint" name="mts_add"/>
+            <column type="bigint" name="mts_mod"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="fk_token"
+                                 constraintName="FK_TRANSACTION_TOKEN" referencedTableName="Token"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="from_address"
+                                 constraintName="FK_TRANSACTION_HOLDER_FROM" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="to_address"
+                                 constraintName="FK_TRANSACTION_HOLDER_TO" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="Transaction" indexName="transaction_fk_index">
+            <column name="fk_token"/>
+        </createIndex>
+        <createIndex tableName="Transaction" indexName="transaction_index_op_score">
+            <column name="op_score"/>
+        </createIndex>
+        <rollback>
+            <dropTable tableName="Transaction"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>katBrew</artifactId>
-        <groupId>com.nacho</groupId>
+        <groupId>com.katbrew</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -15,11 +15,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
-        </dependency>
-        <dependency>
-            <groupId>com.nacho</groupId>
-            <artifactId>entities-interfaces</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
@@ -73,7 +68,7 @@
                                 <configuration>
                                     <jdbc>
                                         <driver>org.postgresql.Driver</driver>
-                                        <url>jdbc:postgresql://192.168.0.158:5432/krc20backend?schema=public</url>
+                                        <url>jdbc:postgresql://localhost:5432/krc20backend?schema=public</url>
                                         <user>postgres</user>
                                         <password>root</password>
                                     </jdbc>
@@ -97,10 +92,20 @@
                                                 | spring_session_attributes
                                                 | act_.*
                                             </excludes>
+                                            <forcedTypes>
+                                                <forcedType>
+                                                    <userType>java.math.BigInteger</userType>
+                                                    <types>BIGINT</types>
+                                                </forcedType>
+                                                <forcedType>
+                                                    <userType>java.math.BigInteger</userType>
+                                                    <includeExpression>.*\.MAX|.*\.LIM|.*\.PRE|.*\.MTS_ADD|.*\.MTS_MOD|.*\.MINTED|.*\.TRANSFER_TOTAL|.*\.BALANCE|.*\.AMT|.*\.OP_SCORE|.*\.OP_SCORE_ADD|.*\.OP_SCORE_MOD</includeExpression>
+                                                </forcedType>
+                                            </forcedTypes>
                                         </database>
                                         <target>
                                             <clean>true</clean>
-                                            <packageName>com.nacho.entities.jooq.db</packageName>
+                                            <packageName>com.katbrew.entities.jooq.db</packageName>
                                             <directory>src/main/java/</directory>
                                         </target>
 

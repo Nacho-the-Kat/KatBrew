@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="Whitelist"/>
+            </not>
+        </preConditions>
+        <createTable tableName="Whitelist">
+            <column type="INT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_WHITELIST" nullable="false"/>
+            </column>
+            <column type="text" name="address">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column type="int" name="updated_by"/>
+            <column type="datetime" name="updated_at" defaultValue="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column type="text" name="previousAddress"/>
+            <column type="text" name="signature"/>
+            <column type="boolean" name="active" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+            <column type="text" name="change_type"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="Whitelist"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

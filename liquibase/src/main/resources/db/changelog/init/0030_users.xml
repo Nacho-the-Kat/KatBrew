@@ -16,10 +16,10 @@
             <column type="INT" name="id" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="PK_USERS" nullable="false"/>
             </column>
-            <column type="VARCHAR(255)" name="username">
+            <column type="text" name="username">
                 <constraints nullable="false"/>
             </column>
-            <column type="VARCHAR(255)" name="password">
+            <column type="text" name="password">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -29,4 +29,44 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="2" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM "Users" WHERE username = 'crixus'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="Users">
+            <column name="username" value="crixus"/>
+            <column name="password" value="1530bcb12c2dd05862eb261fa717fecafba0ce40295f8f37b67f3cefcdfa4b146eca21b49e07d70686a0c3b2557c5bc69352e4f973c7f7786c32b1d47ca6cd96"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Users">
+                <where>
+                    username = 'crixus'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM "Users" WHERE username = 'ashton'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="Users">
+            <column name="username" value="ashton"/>
+            <column name="password" value="7c6cfecf3139a1ff9bfa620d1459c18ad601e91236945dd2e053077f74de27c3aba019fc91d4aba7df707321428921aa02a26efb44d72da74039c4f96b47f67a"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Users">
+                <where>
+                    username = 'ashton'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="en">
+    <changeSet id="1" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <not>
                 <tableExists tableName="SPRING_SESSION_ATTRIBUTES"/>
@@ -34,7 +34,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2" author="en">
+    <changeSet id="2" author="CrixusHD">
         <preConditions onError="MARK_RAN">
             <tableExists tableName="SPRING_SESSION_ATTRIBUTES"/>
         </preConditions>

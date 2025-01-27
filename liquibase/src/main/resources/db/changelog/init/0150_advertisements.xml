@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="Advertisements"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="Advertisements">
+            <column type="INT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_ADVERTISEMENTS" nullable="false"/>
+            </column>
+            <column type="text" name="link">
+                <constraints nullable="false"/>
+            </column>
+            <column type="int" name="order"/>
+            <column type="boolean" name="active"/>
+            <column type="datetime" name="show_until"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="Advertisements"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
