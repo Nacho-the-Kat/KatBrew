@@ -21,6 +21,13 @@ public class WhitelistService extends JooqService<Whitelist, WhitelistDao> {
         if (entry.isEmpty()) {
             return ResponseEntity.status(404).body("Address already updated or not on the whitelist");
         }
+
+        final List<Whitelist> newEntry = findBy(List.of(Tables.WHITELIST.ADDRESS.eq(body.get("address").toString())));
+
+        if (!newEntry.isEmpty()) {
+            return ResponseEntity.status(500).body("Address already on the whitelist");
+        }
+        body.put("previousAddress", oldAddress);
         patchEntity(entry.get(0), body);
         return ResponseEntity.ok().build();
     }
