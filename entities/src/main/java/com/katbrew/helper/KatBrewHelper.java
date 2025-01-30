@@ -1,12 +1,11 @@
 package com.katbrew.helper;
 
-import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
-import com.katbrew.services.tables.LastUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -21,14 +20,11 @@ public class KatBrewHelper<T, R extends Serializable> {
 
     private final WebClient client = KatBrewWebClient.createWebClient();
 
-    private final LastUpdateService lastUpdateService;
-
     public List<R> fetchPaginated(
             final String url,
             final String lastCursor,
             final Boolean compareCursor,
             final String paginationPrefix,
-            final String safetySafeIdentifier,
             final ParameterizedTypeReference<T> reference,
             final Function<T, String> getCursor,
             final Function<T, List<R>> getEntries,
@@ -37,10 +33,8 @@ public class KatBrewHelper<T, R extends Serializable> {
     ) {
 
         List<R> allEntries = new ArrayList<>();
-        final LastUpdate safetySafe = safetySafeIdentifier != null
-                ? lastUpdateService.findByIdentifier(safetySafeIdentifier)
-                : null;
-        String nextCursor = safetySafe != null ? safetySafe.getData() : null;
+
+        String nextCursor = lastCursor;
         int errorCounter = 0;
         do {
 
@@ -117,6 +111,9 @@ public class KatBrewHelper<T, R extends Serializable> {
                         .block();
                 break;
             } catch (Exception e) {
+                if (e instanceof WebClientResponseException && ((WebClientResponseException) e).getStatusCode().is4xxClientError()) {
+                    break;
+                }
                 if (errorCounter < 3) {
                     log.warn("error on fetching " + url);
                     ++errorCounter;

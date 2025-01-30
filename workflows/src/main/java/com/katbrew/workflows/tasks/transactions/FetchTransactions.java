@@ -75,7 +75,7 @@ public class FetchTransactions implements JavaDelegate {
             final ParameterizedTypeReference<ParsingResponsePaged<List<TransactionExternal>>> reference = new ParameterizedTypeReference<>() {
             };
 
-            final KatBrewHelper<ParsingResponsePaged<List<TransactionExternal>>, TransactionExternal> helper = new KatBrewHelper<>(lastUpdateService);
+            final KatBrewHelper<ParsingResponsePaged<List<TransactionExternal>>, TransactionExternal> helper = new KatBrewHelper<>();
 
             try {
 
@@ -96,7 +96,6 @@ public class FetchTransactions implements JavaDelegate {
                         lastCursor != null ? lastCursor.getData() : null,
                         true,
                         "&lastScore=",
-                        "fetchTransactionsSafetySave",
                         reference,
                         FetchTransactions::getCursor,
                         ParsingResponse::getResult,

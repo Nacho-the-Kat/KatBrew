@@ -9,6 +9,9 @@ import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
+import com.katbrew.entities.jooq.db.tables.NftCollection;
+import com.katbrew.entities.jooq.db.tables.NftCollectionEntry;
+import com.katbrew.entities.jooq.db.tables.NftCollectionInfo;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.TopHolder;
@@ -63,6 +66,21 @@ public class Public extends SchemaImpl {
     public final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
 
     /**
+     * The table <code>public.nft_collection</code>.
+     */
+    public final NftCollection NFT_COLLECTION = NftCollection.NFT_COLLECTION;
+
+    /**
+     * The table <code>public.nft_collection_entry</code>.
+     */
+    public final NftCollectionEntry NFT_COLLECTION_ENTRY = NftCollectionEntry.NFT_COLLECTION_ENTRY;
+
+    /**
+     * The table <code>public.nft_collection_info</code>.
+     */
+    public final NftCollectionInfo NFT_COLLECTION_INFO = NftCollectionInfo.NFT_COLLECTION_INFO;
+
+    /**
      * The table <code>public.Price_Data</code>.
      */
     public final PriceData PRICE_DATA = PriceData.PRICE_DATA;
@@ -113,6 +131,9 @@ public class Public extends SchemaImpl {
             Balance.BALANCE,
             Holder.HOLDER,
             LastUpdate.LAST_UPDATE,
+            NftCollection.NFT_COLLECTION,
+            NftCollectionEntry.NFT_COLLECTION_ENTRY,
+            NftCollectionInfo.NFT_COLLECTION_INFO,
             PriceData.PRICE_DATA,
             Token.TOKEN,
             TopHolder.TOP_HOLDER,

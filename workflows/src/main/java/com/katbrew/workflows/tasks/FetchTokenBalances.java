@@ -50,7 +50,7 @@ public class FetchTokenBalances implements JavaDelegate {
 
         final ParameterizedTypeReference<ParsingResponse<List<HolderInternal>>> reference = new ParameterizedTypeReference<>() {
         };
-        final KatBrewHelper<ParsingResponse<List<HolderInternal>>, TransactionExternal> helper = new KatBrewHelper<>(null);
+        final KatBrewHelper<ParsingResponse<List<HolderInternal>>, TransactionExternal> helper = new KatBrewHelper<>();
 
         final Map<String, Holder> holderToCreate = new HashMap<>();
         final Map<String, List<Balance>> addressBalances = new HashMap<>();

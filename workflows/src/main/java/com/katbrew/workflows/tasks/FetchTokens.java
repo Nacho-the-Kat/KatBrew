@@ -29,7 +29,7 @@ public class FetchTokens implements JavaDelegate {
 
     private final TokenService tokenService;
     private final TokenCachingService tokenCachingService;
-    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>(null);
+    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>();
 
     @Override
     public void execute(DelegateExecution execution) throws InterruptedException {

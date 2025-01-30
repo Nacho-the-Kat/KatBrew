@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="nft_collection"/>
+            </not>
+        </preConditions>
+        <createTable tableName="nft_collection">
+            <column type="BIGINT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_NFT_COLLECTION" nullable="false"/>
+            </column>
+            <column type="text" name="tick">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column type="text" name="deployer"/>
+            <column type="text" name="buri"/>
+            <column type="text" name="tx_id_rev">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column type="text" name="state"/>
+            <column type="int" name="max"/>
+            <column type="int" name="minted"/>
+            <column type="int" name="premint"/>
+            <column type="bigint" name="daa_mint_start"/>
+            <column type="text" name="mts_add"/>
+            <column type="text" name="op_score_add"/>
+            <column type="text" name="op_score_mod"/>
+            <column type="text" name="royalty_fee"/>
+        </createTable>
+
+        <createIndex tableName="nft_collection" indexName="nft_collection_tick_index">
+            <column name="tick"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="nft_collection"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
