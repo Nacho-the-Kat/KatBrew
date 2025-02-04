@@ -1,9 +1,12 @@
 package com.katbrew.workflows.tasks.nfts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionInfo;
+import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.helper.KatBrewWebClient;
 import com.katbrew.helper.NftHelper;
 import com.katbrew.pojos.NFTCollectionInfoInternal;
@@ -30,6 +33,7 @@ public class FetchNFTSInfo implements JavaDelegate {
     private String fetchBaseUrl;
     private final NFTCollectionInfoService nftCollectionInfoService;
     private final DSLContext dsl;
+    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
     private final WebClient client = KatBrewWebClient.createWebClient();
     private final NftHelper nftHelper = new NftHelper();
 
@@ -37,13 +41,10 @@ public class FetchNFTSInfo implements JavaDelegate {
     public void execute(DelegateExecution execution) throws JsonProcessingException {
         log.info("Starting the nft info sync:" + LocalDateTime.now());
 
-        final List<BigInteger> nftCollectionInfoFK = dsl.select(Tables.NFT_COLLECTION_INFO.FK_COLLECTION)
-                .from(Tables.NFT_COLLECTION_INFO)
-                .fetch()
-                .into(BigInteger.class);
-
+        final List<BigInteger> newCollectionIds = mapper.convertValue(execution.getVariable("newCollectionIds"), new TypeReference<>() {
+        });
         final List<NftCollection> nfts = dsl.selectFrom(Tables.NFT_COLLECTION)
-                .where(Tables.NFT_COLLECTION.ID.notIn(nftCollectionInfoFK))
+                .where(Tables.NFT_COLLECTION.ID.in(newCollectionIds))
                 .fetch()
                 .into(NftCollection.class);
 
