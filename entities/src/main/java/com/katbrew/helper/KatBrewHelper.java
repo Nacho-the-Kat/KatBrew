@@ -19,6 +19,7 @@ import java.util.function.Function;
 public class KatBrewHelper<T, R extends Serializable> {
 
     private final WebClient client = KatBrewWebClient.createWebClient();
+    private final int errorAmount = 10;
 
     public List<R> fetchPaginatedWithoutSave(
             final String url,
@@ -67,9 +68,11 @@ public class KatBrewHelper<T, R extends Serializable> {
                     nextCursor = null;
                 }
             } catch (Exception e) {
-                if (errorCounter < 3) {
+                if (errorCounter < errorAmount) {
+                    long time = (long) (Math.random() * 1000) * (errorCounter + 1);
                     log.warn("error on fetching " + urlIntern);
                     log.warn(e.getMessage());
+                    waitFunction(time);
                     ++errorCounter;
                 } else {
                     break;
@@ -141,9 +144,11 @@ public class KatBrewHelper<T, R extends Serializable> {
                     }
                 }
             } catch (Exception e) {
-                if (errorCounter < 3) {
-                    log.warn("error on fetching " + urlIntern);
+                if (errorCounter < errorAmount) {
+                    long time = (long) (Math.random() * 1000) * (errorCounter + 1);
+                    log.warn("error on fetching " + urlIntern + " waiting seconds: " + time / 1000);
                     log.warn(e.getMessage());
+                    waitFunction(time);
                     ++errorCounter;
                 } else {
                     break;
@@ -177,8 +182,10 @@ public class KatBrewHelper<T, R extends Serializable> {
                 if (e instanceof WebClientResponseException && ((WebClientResponseException) e).getStatusCode().is4xxClientError()) {
                     break;
                 }
-                if (errorCounter < 3) {
-                    log.warn("error on fetching " + url);
+                if (errorCounter < errorAmount) {
+                    long time = (long) (Math.random() * 1000) * (errorCounter + 1);
+                    log.warn("error on fetching " + url + ", waiting seconds: " + time / 1000);
+                    waitFunction(time);
                     ++errorCounter;
                 } else {
                     break;
@@ -187,5 +194,12 @@ public class KatBrewHelper<T, R extends Serializable> {
         }
 
         return response;
+    }
+
+    private void waitFunction(final long time) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < time) {
+            //empty while
+        }
     }
 }
