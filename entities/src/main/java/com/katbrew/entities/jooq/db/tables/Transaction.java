@@ -73,11 +73,6 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.Transaction.transaction_tick</code>.
-     */
-    public final TableField<TransactionRecord, String> TRANSACTION_TICK = createField(DSL.name("transaction_tick"), SQLDataType.CLOB, this, "");
-
-    /**
      * The column <code>public.Transaction.hash_rev</code>.
      */
     public final TableField<TransactionRecord, String> HASH_REV = createField(DSL.name("hash_rev"), SQLDataType.CLOB, this, "");
