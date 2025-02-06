@@ -4,19 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
-import com.katbrew.entities.jooq.db.tables.pojos.Holder;
-import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
-import com.katbrew.entities.jooq.db.tables.pojos.Token;
-import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
+import com.katbrew.entities.jooq.db.tables.pojos.*;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.pojos.TransactionExternal;
-import com.katbrew.services.tables.HolderService;
-import com.katbrew.services.tables.LastUpdateService;
-import com.katbrew.services.tables.TokenService;
-import com.katbrew.services.tables.TransactionService;
+import com.katbrew.services.tables.*;
 import com.katbrew.workflows.helper.ParsingResponse;
-import com.katbrew.workflows.helper.ParsingResponsePaged;
+import com.katbrew.workflows.helper.ParsingResponsePagedNFT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -35,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,18 +43,15 @@ public class FetchTransactions implements JavaDelegate {
     private final static int limit = 15000;
     private final GenerateLastUpdateTransactionsService generateLastUpdateTransactionsService;
     private final LastUpdateService lastUpdateService;
+    private final FetchDataService fetchDataService;
     private final TransactionService transactionService;
     private final TokenService tokenService;
     private final HolderService holderService;
     public final DSLContext dsl;
     public final com.katbrew.entities.jooq.db.tables.Transaction transactionTable = Tables.TRANSACTION;
 
-    private static String getCursor(ParsingResponsePaged<List<TransactionExternal>> entity) {
-        if (entity.getPagination().getHasMore()) {
-            entity.getResult().sort(Comparator.comparing(TransactionExternal::getOpScore).reversed());
-            return entity.getResult().get(entity.getResult().size() - 1).getOpScore().toString();
-        }
-        return null;
+    private static String getCursor(ParsingResponsePagedNFT<List<TransactionExternal>> entity) {
+        return entity.getNext();
     }
 
     @Override
@@ -67,53 +59,75 @@ public class FetchTransactions implements JavaDelegate {
         log.info("Starting the transaction sync:" + LocalDateTime.now());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
-            final Map<String, Integer> tokenMap = tokenService.findAll().stream().collect(Collectors.toMap(Token::getTick, Token::getId));
-
-            final LastUpdate lastCursor = lastUpdateService.findByIdentifier("fetchTransactionsLastCursor");
+            final List<Token> tokens = tokenService.findAll();
 
             final ConcurrentMap<String, BigInteger> holderMap = holderService.getAddressIdMap();
-            final ParameterizedTypeReference<ParsingResponsePaged<List<TransactionExternal>>> reference = new ParameterizedTypeReference<>() {
+
+            final ConcurrentMap<String, FetchData> lastUpdates = fetchDataService.findBy(
+                    List.of(
+                            Tables.FETCH_DATA.IDENTIFIER.in(tokens.stream().map(single -> "fetchTokenTransactions" + single.getTick()).toList())
+                    )
+            ).stream().collect(Collectors.toConcurrentMap(FetchData::getIdentifier, single -> single));
+
+            final ConcurrentMap<String, FetchData> lastUpdatesSafety = fetchDataService.findBy(
+                    List.of(
+                            Tables.FETCH_DATA.IDENTIFIER.in(tokens.stream().map(single -> "fetchTransactionsSafetySave" + single.getTick()).toList())
+                    )
+            ).stream().collect(Collectors.toConcurrentMap(FetchData::getIdentifier, single -> single));
+
+            final ParameterizedTypeReference<ParsingResponsePagedNFT<List<TransactionExternal>>> reference = new ParameterizedTypeReference<>() {
             };
 
-            final KatBrewHelper<ParsingResponsePaged<List<TransactionExternal>>, TransactionExternal> helper = new KatBrewHelper<>();
+            final KatBrewHelper<ParsingResponsePagedNFT<List<TransactionExternal>>, TransactionExternal> helper = new KatBrewHelper<>();
+
+
+            final ExecutorService executor = Executors.newFixedThreadPool(10);
 
             try {
+                for (final Token token : tokens) {
+                    executor.submit(() -> {
+                        try {
+                            String uri = fetchBaseUrl + "/oplist?tick=" + token.getTick();
+                            FetchData safety = lastUpdatesSafety.get("fetchTransactionsSafetySave" + token.getTick());
+                            FetchData lastCursor = safety != null && safety.getData() != null
+                                    ? safety
+                                    : lastUpdates.get("fetchTokenTransactionsLastCursor" + token.getTick());
+                            log.info("Start fetching the Transactions, last cursor: " + (lastCursor != null ? lastCursor.getData() : "not exists"));
 
-                log.info("Start fetching the Transactions, last cursor: " + (lastCursor != null ? lastCursor.getData() : "nicht vorhanden"));
+                            final List<TransactionExternal> result = helper.fetchPaginated(
+                                    uri,
+                                    lastCursor != null ? lastCursor.getData() : null,
+                                    true,
+                                    "&next=",
+                                    reference,
+                                    FetchTransactions::getCursor,
+                                    ParsingResponse::getResult,
+                                    limit,
+                                    internResult -> prepareData(internResult, token, holderMap, true)
+                            );
 
-                String uri = fetchBaseUrl + "/transactions";
+                            if (result != null) {
+                                prepareData(result, token, holderMap, false);
+                            } else {
+                                log.error("no transactions were loaded for tick " + token.getTick());
+                            }
 
-                //todo uncomment after sync
-//                if (lastCursor != null) {
-//                    //if we fetched initially, no need for pageSize over 200
-//                    uri += "&pageSize=" + 200;
-//                } else {
-                uri += "?pageSize=" + 5000;
-//                    log.info("no last cursor found, starting full fetch");
-//                }
-                final List<TransactionExternal> result = helper.fetchPaginated(
-                        uri,
-                        lastCursor != null ? lastCursor.getData() : null,
-                        true,
-                        "&lastScore=",
-                        reference,
-                        FetchTransactions::getCursor,
-                        ParsingResponse::getResult,
-                        limit,
-                        internResult -> prepareData(internResult, tokenMap, holderMap, true)
-                );
-
-                if (result != null) {
-                    prepareData(result, tokenMap, holderMap, false);
-                    generateLastUpdateTransactionsService.execute();
-                } else {
-                    log.error("no transactions were loaded");
+                            log.info("Finished the transaction fetching for tick: " + token.getTick() + " at " + LocalDateTime.now());
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                        }
+                    });
                 }
-
-                log.info("Finished the transaction fetching: " + LocalDateTime.now());
             } catch (Exception e) {
                 log.info(e.getMessage());
             }
+            executor.shutdown();
+            try {
+                executor.awaitTermination(8, TimeUnit.DAYS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            generateLastUpdateTransactionsService.execute();
             releaseTask();
             log.info("Finished the transaction sync:" + LocalDateTime.now());
             executorService.shutdown();
@@ -122,14 +136,12 @@ public class FetchTransactions implements JavaDelegate {
 
     public Void prepareData(
             final List<TransactionExternal> result,
-            final Map<String, Integer> tokenIdMap,
+            final Token token,
             final ConcurrentMap<String, BigInteger> holderMap,
             final Boolean isSafetySave
     ) {
-
         result.forEach(single -> {
             BigInteger from = holderMap.get(single.getFrom());
-            Integer tokenId = tokenIdMap.get(single.getTick());
             if (from == null) {
                 final Holder newHolder = new Holder();
                 newHolder.setAddress(single.getFrom());
@@ -148,19 +160,16 @@ public class FetchTransactions implements JavaDelegate {
             }
             single.setFromAddress(from);
             single.setToAddress(to);
-            single.setFkToken(tokenId);
-            if (tokenId == null) {
-                single.setTransactionTick(single.getTick());
-            }
+            single.setFkToken(token.getId());
         });
         final List<Transaction> transactions = mapper.convertValue(result, new TypeReference<>() {
         });
-        updateAndInsertAll(transactions, isSafetySave);
+        updateAndInsertAll(transactions, token, isSafetySave);
         return null;
     }
 
 
-    private void updateAndInsertAll(final List<Transaction> transactions, final Boolean isSafetySave) {
+    private void updateAndInsertAll(final List<Transaction> transactions, final Token token, final Boolean isSafetySave) {
 
         final Map<String, BigInteger> dbEntries = dsl
                 .select(transactionTable.ID, transactionTable.HASH_REV)
@@ -192,23 +201,26 @@ public class FetchTransactions implements JavaDelegate {
         transactionService.batchUpdate(toUpdate);
         transactionService.batchInsertVoid(toInsert);
 
-        //we update/add the transaction count, no full fetch needed
-        final List<Token> tokens = tokenService.findAll();
-        tokens.forEach(single -> {
-            final int amount = toInsert.stream().filter(singleTransaction -> singleTransaction.getFkToken().equals(single.getId())).toList().size();
-            single.setTransferTotal(
-                    single.getTransferTotal().add(BigInteger.valueOf(amount))
-            );
-        });
-        tokenService.update(tokens);
+        //we update/add the transaction count, no full fetch needed;
+        final int amount = toInsert.size();
+        token.setTransferTotal(
+                token.getTransferTotal().add(BigInteger.valueOf(amount))
+        );
 
-        final LastUpdate lastSafetySave = lastUpdateService.findByIdentifier("fetchTransactionsSafetySave");
+        tokenService.update(token);
+
+        FetchData lastSafetySave = fetchDataService.findByIdentifier("fetchTransactionsSafetySave" + token.getTick());
+        if (lastSafetySave == null) {
+            lastSafetySave = new FetchData();
+            lastSafetySave.setIdentifier("fetchTransactionsSafetySave" + token.getTick());
+            lastSafetySave = fetchDataService.insert(lastSafetySave);
+        }
         if (isSafetySave) {
             lastSafetySave.setData(transactions.get(transactions.size() - 1).getOpScore().toString());
         } else {
             lastSafetySave.setData(null);
         }
-        lastUpdateService.update(lastSafetySave);
+        fetchDataService.update(lastSafetySave);
     }
 
     public void releaseTask() {

@@ -1,10 +1,12 @@
 package com.katbrew.workflows.tasks;
 
+import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.services.helper.TokenCachingService;
+import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.TokenService;
-import com.katbrew.workflows.helper.ParsingResponse;
+import com.katbrew.workflows.helper.ParsingResponsePagedNFT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -29,25 +31,34 @@ public class FetchTokens implements JavaDelegate {
 
     private final TokenService tokenService;
     private final TokenCachingService tokenCachingService;
-    private final KatBrewHelper<ParsingResponse<List<Token>>, Token> client = new KatBrewHelper<>();
+    private final LastUpdateService lastUpdateService;
+    private final KatBrewHelper<ParsingResponsePagedNFT<List<Token>>, Token> client = new KatBrewHelper<>();
+
+    private static String getCursor(ParsingResponsePagedNFT<List<Token>> entity) {
+        return entity.getNext();
+    }
 
     @Override
     public void execute(DelegateExecution execution) throws InterruptedException {
 
         log.info("Starting the token sync: " + LocalDateTime.now());
+        final ParameterizedTypeReference<ParsingResponsePagedNFT<List<Token>>> tokenListReference = new ParameterizedTypeReference<>() {
+        };
+        LastUpdate lastUpdate = lastUpdateService.findByIdentifier("tokenFetchLastCursor");
 
-        final ParsingResponse<List<Token>> responseTokenList = client
-                .fetch(
-                        tokenUrl + "/tokens",
-                        new ParameterizedTypeReference<>() {
-                        }
-                );
-        if (responseTokenList == null) {
+        final List<Token> tokenList = client.fetchPaginatedWithoutSave(
+                tokenUrl + "/tokenlist",
+                lastUpdate != null ? lastUpdate.getData() : null,
+                true,
+                "?next=",
+                tokenListReference,
+                FetchTokens::getCursor,
+                ParsingResponsePagedNFT::getResult
+        );
+        if (tokenList == null) {
             log.error("no token data was loaded");
             return;
         }
-
-        final List<Token> tokenList = responseTokenList.getResult();
 
         final Map<String, Token> dbEntries = tokenService.findAll().stream().collect(Collectors.toMap(Token::getTick, single -> single));
 
@@ -67,6 +78,17 @@ public class FetchTokens implements JavaDelegate {
         tokenService.batchInsertVoid(tokenList.stream().filter(single -> single.getId() == null).toList());
         tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
         tokenCachingService.invalidateTokenList();
+
+        if (lastUpdate == null) {
+            lastUpdate = new LastUpdate();
+            lastUpdate.setIdentifier("tokenFetchLastCursor");
+            lastUpdate.setData(tokenList.get(tokenList.size() - 1).getOpScoreAdd().toString());
+            lastUpdateService.insert(lastUpdate);
+        } else {
+            lastUpdate.setData(tokenList.get(tokenList.size() - 1).getOpScoreAdd().toString());
+            lastUpdateService.update(lastUpdate);
+        }
+
         log.info("Finished the token sync: " + LocalDateTime.now());
     }
 

@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Indexes;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
+import com.katbrew.entities.jooq.db.tables.NftBalance.NftBalancePath;
 import com.katbrew.entities.jooq.db.tables.NftCollection.NftCollectionPath;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionEntryRecord;
 
@@ -196,6 +197,19 @@ public class NftCollectionEntry extends TableImpl<NftCollectionEntryRecord> {
             _nftCollection = new NftCollectionPath(this, Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_COLLECTION, null);
 
         return _nftCollection;
+    }
+
+    private transient NftBalancePath _nftBalance;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.nft_balance</code>
+     * table
+     */
+    public NftBalancePath nftBalance() {
+        if (_nftBalance == null)
+            _nftBalance = new NftBalancePath(this, null, Keys.NFT_BALANCE__FK_NFT_BALANCE_ENTRY.getInverseKey());
+
+        return _nftBalance;
     }
 
     @Override

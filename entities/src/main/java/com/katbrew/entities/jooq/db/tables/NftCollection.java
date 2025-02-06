@@ -9,6 +9,7 @@ import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.NftCollectionEntry.NftCollectionEntryPath;
 import com.katbrew.entities.jooq.db.tables.NftCollectionInfo.NftCollectionInfoPath;
+import com.katbrew.entities.jooq.db.tables.NftTransaction.NftTransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionRecord;
 
 import java.math.BigInteger;
@@ -243,6 +244,19 @@ public class NftCollection extends TableImpl<NftCollectionRecord> {
             _nftCollectionInfo = new NftCollectionInfoPath(this, null, Keys.NFT_COLLECTION_INFO__FK_COLLECTION_INFO_COLLECTION.getInverseKey());
 
         return _nftCollectionInfo;
+    }
+
+    private transient NftTransactionPath _nftTransaction;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.nft_transaction</code> table
+     */
+    public NftTransactionPath nftTransaction() {
+        if (_nftTransaction == null)
+            _nftTransaction = new NftTransactionPath(this, null, Keys.NFT_TRANSACTION__FK_NFT_TRANSACTION_NFT_COLLECTION.getInverseKey());
+
+        return _nftTransaction;
     }
 
     @Override
