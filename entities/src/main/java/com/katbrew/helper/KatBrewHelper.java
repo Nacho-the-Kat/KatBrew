@@ -135,7 +135,7 @@ public class KatBrewHelper<T, R extends Serializable> {
                 if (limit != null && prepareData != null) {
                     //if the data is too big, we insert the batch
                     if (allEntries.size() >= limit) {
-                        log.info("inserting batch that reaches the limit");
+                        log.info("inserting batch that reaches the limit: " + urlIntern);
                         prepareData.apply(allEntries);
                         allEntries.clear();
                     }
@@ -166,7 +166,6 @@ public class KatBrewHelper<T, R extends Serializable> {
         T response = null;
         while (true) {
             try {
-                log.info("Fetching data from: " + url);
                 response = client
                         .get()
                         .uri(url)
