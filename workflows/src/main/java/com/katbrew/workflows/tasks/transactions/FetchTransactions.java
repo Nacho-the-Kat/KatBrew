@@ -147,20 +147,30 @@ public class FetchTransactions implements JavaDelegate {
                 if (from == null) {
                     final Holder newHolder = new Holder();
                     newHolder.setAddress(single.getFrom());
-                    final Holder created = holderService.insert(newHolder);
-                    from = created.getId();
-                    holderMap.put(created.getAddress(), created.getId());
+                    try {
+                        final Holder created = holderService.insert(newHolder);
+                        holderMap.put(created.getAddress(), created.getId());
+                        from = created.getId();
+                    } catch (Exception e) {
+                        log.info("catching address already inserted: id " + holderMap.get(single.getFrom()));
+                        from = holderMap.get(single.getFrom());
+                    }
                 }
                 single.setFromAddress(from);
             }
             if (single.getTo() != null) {
                 BigInteger to = holderMap.get(single.getTo());
                 if (to == null) {
-                    final Holder newHolder = new Holder();
-                    newHolder.setAddress(single.getTo());
-                    final Holder created = holderService.insert(newHolder);
-                    to = created.getId();
-                    holderMap.put(created.getAddress(), created.getId());
+                    try {
+                        final Holder newHolder = new Holder();
+                        newHolder.setAddress(single.getTo());
+                        final Holder created = holderService.insert(newHolder);
+                        holderMap.put(created.getAddress(), created.getId());
+                        to = created.getId();
+                    } catch (Exception e) {
+                        log.info("catching address already inserted: id " + holderMap.get(single.getTo()));
+                        to = holderMap.get(single.getTo());
+                    }
                 }
                 single.setToAddress(to);
             }
