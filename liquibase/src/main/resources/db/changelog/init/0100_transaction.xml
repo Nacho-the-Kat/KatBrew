@@ -22,12 +22,8 @@
             <column type="text" name="p"/>
             <column type="text" name="op"/>
             <column type="text" name="amt"/>
-            <column type="bigint" name="from_address">
-                <constraints nullable="false"/>
-            </column>
-            <column type="bigint" name="to_address">
-                <constraints nullable="false"/>
-            </column>
+            <column type="bigint" name="from_address"/>
+            <column type="bigint" name="to_address"/>
             <column type="bigint" name="op_score"/>
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>

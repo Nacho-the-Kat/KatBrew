@@ -60,6 +60,7 @@ public class FetchTransactions implements JavaDelegate {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             final List<Token> tokens = tokenService.findAll();
+            tokens.sort(Comparator.comparing(Token::getMtsAdd));
 
             final ConcurrentMap<String, BigInteger> holderMap = holderService.getAddressIdMap();
 
@@ -141,25 +142,28 @@ public class FetchTransactions implements JavaDelegate {
             final Boolean isSafetySave
     ) {
         result.forEach(single -> {
-            BigInteger from = holderMap.get(single.getFrom());
-            if (from == null) {
-                final Holder newHolder = new Holder();
-                newHolder.setAddress(single.getFrom());
-                final Holder created = holderService.insert(newHolder);
-                from = created.getId();
-                holderMap.put(created.getAddress(), created.getId());
+            if (single.getFrom() != null) {
+                BigInteger from = holderMap.get(single.getFrom());
+                if (from == null) {
+                    final Holder newHolder = new Holder();
+                    newHolder.setAddress(single.getFrom());
+                    final Holder created = holderService.insert(newHolder);
+                    from = created.getId();
+                    holderMap.put(created.getAddress(), created.getId());
+                }
+                single.setFromAddress(from);
             }
-
-            BigInteger to = holderMap.get(single.getTo());
-            if (to == null) {
-                final Holder newHolder = new Holder();
-                newHolder.setAddress(single.getTo());
-                final Holder created = holderService.insert(newHolder);
-                to = created.getId();
-                holderMap.put(created.getAddress(), created.getId());
+            if (single.getTo() != null) {
+                BigInteger to = holderMap.get(single.getTo());
+                if (to == null) {
+                    final Holder newHolder = new Holder();
+                    newHolder.setAddress(single.getTo());
+                    final Holder created = holderService.insert(newHolder);
+                    to = created.getId();
+                    holderMap.put(created.getAddress(), created.getId());
+                }
+                single.setToAddress(to);
             }
-            single.setFromAddress(from);
-            single.setToAddress(to);
             single.setFkToken(token.getId());
         });
         final List<Transaction> transactions = mapper.convertValue(result, new TypeReference<>() {
