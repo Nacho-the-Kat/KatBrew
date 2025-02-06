@@ -65,7 +65,7 @@ public class FetchTransactions implements JavaDelegate {
 
             final ConcurrentMap<String, FetchData> lastUpdates = fetchDataService.findBy(
                     List.of(
-                            Tables.FETCH_DATA.IDENTIFIER.in(tokens.stream().map(single -> "fetchTokenTransactions" + single.getTick()).toList())
+                            Tables.FETCH_DATA.IDENTIFIER.in(tokens.stream().map(single -> "fetchTokenTransactionsLastCursor" + single.getTick()).toList())
                     )
             ).stream().collect(Collectors.toConcurrentMap(FetchData::getIdentifier, single -> single));
 

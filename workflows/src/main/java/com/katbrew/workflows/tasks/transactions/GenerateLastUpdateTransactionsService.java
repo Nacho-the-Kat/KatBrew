@@ -27,7 +27,7 @@ public class GenerateLastUpdateTransactionsService {
         final List<Token> tokens = tokenService.findAll();
 
         for (final Token token : tokens) {
-            final String identifier = "fetchTransactionsLastCursor" + token.getTick();
+            final String identifier = "fetchTokenTransactionsLastCursor" + token.getTick();
             final FetchData lastUpdate = fetchDataService.findByIdentifier(identifier);
 
             final List<Transaction> lastTransactionList = dslContext
