@@ -9,6 +9,7 @@ import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftTransaction;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.helper.KatBrewObjectMapper;
+import com.katbrew.helper.NftHelper;
 import com.katbrew.pojos.NftTransactionExternal;
 import com.katbrew.services.tables.HolderService;
 import com.katbrew.services.tables.LastUpdateService;
@@ -50,6 +51,7 @@ public class FetchNFTTransactions implements JavaDelegate {
     private final LastUpdateService lastUpdateService;
     private final NFTTransactionService nftTransactionService;
     private final NFTCollectionService nftCollectionService;
+    private final NftHelper nftHelper;
     private final HolderService holderService;
     public final DSLContext dsl;
     public final com.katbrew.entities.jooq.db.tables.NftTransaction transactionTable = Tables.NFT_TRANSACTION;
@@ -113,13 +115,22 @@ public class FetchNFTTransactions implements JavaDelegate {
             final Boolean isSafetySave
     ) {
 
-        List<NftTransaction> transactions = result.stream().map(single -> {
-            final NftTransaction transaction = mapper.convertValue(single, NftTransaction.class);
-            BigInteger deployer = holderMap.get(single.getDeployer());
+        final List<NftTransaction> transactions = result.stream().map(single -> {
+
+            final String deployerAddress = single.getDeployer();
+            single.setDeployer(null);
+            final NftTransaction transaction;
+            try {
+                transaction = nftHelper.convertTransactionToDbEntry(single);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            BigInteger deployer = holderMap.get(deployerAddress);
             BigInteger collectionId = tokenIdMap.get(single.getTick());
             if (deployer == null) {
                 final Holder newHolder = new Holder();
-                newHolder.setAddress(single.getDeployer());
+                newHolder.setAddress(deployerAddress);
                 final Holder created = holderService.insert(newHolder);
                 deployer = created.getId();
                 holderMap.put(created.getAddress(), created.getId());

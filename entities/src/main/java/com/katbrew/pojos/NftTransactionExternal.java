@@ -22,7 +22,7 @@ public class NftTransactionExternal implements Serializable {
     private String feeRev;
 
     @Data
-    public static class OpData {
+    public static class OpData implements Serializable{
         String buri;
         Integer max;
         BigInteger tokenId;

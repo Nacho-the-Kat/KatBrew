@@ -5,9 +5,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionInfo;
+import com.katbrew.entities.jooq.db.tables.pojos.NftTransaction;
 import com.katbrew.pojos.NFTCollectionEntryInternal;
 import com.katbrew.pojos.NFTCollectionInfoInternal;
+import com.katbrew.pojos.NftTransactionExternal;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NftHelper {
     private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
@@ -34,6 +40,16 @@ public class NftHelper {
         return intern;
     }
 
+    public NftTransactionExternal parseTransaction(final NftTransaction info) throws JsonProcessingException {
+        final NftTransaction internal = SerializationUtils.clone(info);
+        final String opData = new String(internal.getOpData());
+        internal.setOpData(null);
+        final NftTransactionExternal intern = mapper.convertValue(internal, NftTransactionExternal.class);
+        intern.setOpData(mapper.readValue(opData, NftTransactionExternal.OpData.class));
+
+        return intern;
+    }
+
     public NftCollectionInfo convertInfoToDbEntry(final NFTCollectionInfoInternal internal) throws JsonProcessingException {
         final NftCollectionInfo intern = new NftCollectionInfo();
         intern.setName(internal.getName());
@@ -51,6 +67,15 @@ public class NftHelper {
         intern.setImage(internal.getImage());
         intern.setAttributes(mapper.writeValueAsString(internal.getAttributes()));
         intern.setEdition(internal.getEdition());
+        return intern;
+    }
+
+    public NftTransaction convertTransactionToDbEntry(final NftTransactionExternal internal) throws JsonProcessingException {
+        final NftTransactionExternal internalCopy = SerializationUtils.clone(internal);
+        final NftTransactionExternal.OpData opData = SerializationUtils.clone(internalCopy.getOpData());
+        internalCopy.setOpData(null);
+        final NftTransaction intern = mapper.convertValue(internalCopy, NftTransaction.class);
+        intern.setOpData(mapper.writeValueAsString(opData));
         return intern;
     }
 }

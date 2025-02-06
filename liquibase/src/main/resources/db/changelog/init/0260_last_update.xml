@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+
+        <insert tableName="Last_Update">
+            <column name="identifier" value="fetchNFTTransactions"/>
+            <column name="data" value="init"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Last_Update">
+                <where>
+                    identifier = 'fetchNFTTransactions'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="CrixusHD">
+
+        <insert tableName="Last_Update">
+            <column name="identifier" value="fetchNFTTransactionsLastCursor"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Last_Update">
+                <where>
+                    identifier = 'fetchNFTTransactionsLastCursor'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
