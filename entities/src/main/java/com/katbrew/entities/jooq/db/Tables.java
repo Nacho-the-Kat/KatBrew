@@ -7,11 +7,14 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
+import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
+import com.katbrew.entities.jooq.db.tables.NftBalance;
 import com.katbrew.entities.jooq.db.tables.NftCollection;
 import com.katbrew.entities.jooq.db.tables.NftCollectionEntry;
 import com.katbrew.entities.jooq.db.tables.NftCollectionInfo;
+import com.katbrew.entities.jooq.db.tables.NftTransaction;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.TopHolder;
@@ -42,6 +45,11 @@ public class Tables {
     public static final Balance BALANCE = Balance.BALANCE;
 
     /**
+     * The table <code>public.fetch_data</code>.
+     */
+    public static final FetchData FETCH_DATA = FetchData.FETCH_DATA;
+
+    /**
      * The table <code>public.Holder</code>.
      */
     public static final Holder HOLDER = Holder.HOLDER;
@@ -50,6 +58,11 @@ public class Tables {
      * The table <code>public.Last_Update</code>.
      */
     public static final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
+
+    /**
+     * The table <code>public.nft_balance</code>.
+     */
+    public static final NftBalance NFT_BALANCE = NftBalance.NFT_BALANCE;
 
     /**
      * The table <code>public.nft_collection</code>.
@@ -65,6 +78,11 @@ public class Tables {
      * The table <code>public.nft_collection_info</code>.
      */
     public static final NftCollectionInfo NFT_COLLECTION_INFO = NftCollectionInfo.NFT_COLLECTION_INFO;
+
+    /**
+     * The table <code>public.nft_transaction</code>.
+     */
+    public static final NftTransaction NFT_TRANSACTION = NftTransaction.NFT_TRANSACTION;
 
     /**
      * The table <code>public.Price_Data</code>.

@@ -20,6 +20,70 @@ public class KatBrewHelper<T, R extends Serializable> {
 
     private final WebClient client = KatBrewWebClient.createWebClient();
 
+    public List<R> fetchPaginatedWithoutSave(
+            final String url,
+            final String lastCursor,
+            final Boolean compareCursor,
+            final String paginationPrefix,
+            final ParameterizedTypeReference<T> reference,
+            final Function<T, String> getCursor,
+            final Function<T, List<R>> getEntries
+    ) {
+
+        List<R> allEntries = new ArrayList<>();
+
+        String nextCursor = lastCursor;
+        int errorCounter = 0;
+        do {
+
+            String urlIntern = url;
+
+            if (nextCursor != null) {
+                urlIntern += paginationPrefix + nextCursor;
+            }
+            try {
+
+                final T response = fetch(
+                        urlIntern,
+                        reference
+                );
+
+                if (response != null) {
+                    final List<R> entries = getEntries.apply(response);
+                    if (entries != null) {
+                        allEntries.addAll(entries);
+                    }
+                    final String cursor = getCursor.apply(response);
+                    if (compareCursor && cursor != null && lastCursor != null) {
+                        if (new BigInteger(cursor).compareTo(new BigInteger(lastCursor)) < 0) {
+                            nextCursor = null;
+                        } else {
+                            nextCursor = cursor;
+                        }
+                    } else {
+                        nextCursor = cursor;
+                    }
+                } else {
+                    nextCursor = null;
+                }
+            } catch (Exception e) {
+                if (errorCounter < 3) {
+                    log.warn("error on fetching " + urlIntern);
+                    log.warn(e.getMessage());
+                    ++errorCounter;
+                } else {
+                    break;
+                }
+            }
+        } while (nextCursor != null);
+
+        if (allEntries.isEmpty()) {
+            return null;
+        }
+
+        return allEntries;
+    }
+
     public List<R> fetchPaginated(
             final String url,
             final String lastCursor,

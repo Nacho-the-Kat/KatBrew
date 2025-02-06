@@ -44,7 +44,7 @@ public class FetchNFTS implements JavaDelegate {
 
         final Map<String, BigInteger> nftMap = nftCollectionService.findAll().stream().collect(Collectors.toMap(NftCollection::getTick, NftCollection::getId));
 
-        final LastUpdate lastCursor = lastUpdateService.findByIdentifier("fetchNFTLastCursor");
+        LastUpdate lastCursor = lastUpdateService.findByIdentifier("fetchNFTLastCursor");
 
         final ParameterizedTypeReference<ParsingResponsePagedNFT<List<NftCollection>>> reference = new ParameterizedTypeReference<>() {
         };
@@ -55,20 +55,46 @@ public class FetchNFTS implements JavaDelegate {
 
             log.info("Start fetching the Transactions, last cursor: " + (lastCursor != null ? lastCursor.getData() : "not existing"));
 
-            final List<NftCollection> result = helper.fetchPaginated(
+            final List<NftCollection> result = helper.fetchPaginatedWithoutSave(
                     fetchBaseUrl,
                     lastCursor != null ? lastCursor.getData() : null,
                     false,
                     "?offset=",
                     reference,
                     FetchNFTS::getCursor,
-                    ParsingResponse::getResult,
-                    limit,
-                    internResult -> prepareData(internResult, nftMap)
+                    ParsingResponse::getResult
             );
 
             if (result != null) {
-                prepareData(result, nftMap);
+                final List<NftCollection> toUpdate = new ArrayList<>();
+                final List<NftCollection> toInsert = new ArrayList<>();
+
+
+                result.forEach(single -> {
+                    final BigInteger id = nftMap.get(single.getTick());
+                    if (id != null) {
+                        single.setId(id);
+                        toUpdate.add(single);
+                    } else {
+                        toInsert.add(single);
+                    }
+                });
+
+                nftCollectionService.batchUpdate(toUpdate);
+                final List<NftCollection> newCollection = nftCollectionService.insert(toInsert);
+
+                execution.setVariable("newCollectionIds", newCollection.stream().map(NftCollection::getId).toList());
+
+                if (lastCursor == null) {
+                    lastCursor = new LastUpdate();
+                    lastCursor.setData(null);
+                    lastCursor.setIdentifier("fetchNFTLastCursor");
+                    lastUpdateService.insert(lastCursor);
+                } else {
+                    lastCursor.setData(result.get(result.size() - 1).getOpScoreAdd().toString());
+                    lastUpdateService.update(lastCursor);
+                }
+
             } else {
                 log.error("no NFTs were loaded");
             }
@@ -77,41 +103,6 @@ public class FetchNFTS implements JavaDelegate {
             log.info(e.getMessage());
         }
         log.info("Finished the nft sync:" + LocalDateTime.now());
-    }
-
-    public Void prepareData(
-            final List<NftCollection> result,
-            final Map<String, BigInteger> nftIdMap
-    ) {
-
-
-        //Sorting by the creation time to get entries in the db as they created
-//        result.sort(Comparator.comparing(NftCollection::getMtsAdd));
-
-        final List<NftCollection> toUpdate = new ArrayList<>();
-        final List<NftCollection> toInsert = new ArrayList<>();
-
-
-        result.forEach(single -> {
-            final BigInteger id = nftIdMap.get(single.getTick());
-            if (id != null) {
-                single.setId(id);
-                toUpdate.add(single);
-            } else {
-                toInsert.add(single);
-            }
-        });
-
-        nftCollectionService.batchUpdate(toUpdate);
-        nftCollectionService.insert(toInsert);
-
-        final LastUpdate lastCursor = lastUpdateService.findByIdentifier("fetchNFTLastCursor");
-
-        lastCursor.setData(result.get(result.size() - 1).getOpScoreAdd().toString());
-
-        lastUpdateService.update(lastCursor);
-
-        return null;
     }
 
 }

@@ -16,8 +16,6 @@
                 <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
             </column>
             <column type="int" name="fk_token"/>
-            <!--we need this, if the transaction has a tick not found op_error -->
-            <column type="text" name="transaction_tick"/>
             <column type="text" name="hash_rev">
                 <constraints unique="true"/>
             </column>

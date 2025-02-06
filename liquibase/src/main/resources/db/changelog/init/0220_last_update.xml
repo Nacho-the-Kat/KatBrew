@@ -9,6 +9,7 @@
 
         <insert tableName="Last_Update">
             <column name="identifier" value="fetchNFT"/>
+            <column name="data" value="init"/>
         </insert>
 
         <rollback>

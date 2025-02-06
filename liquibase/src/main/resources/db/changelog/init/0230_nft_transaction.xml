@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="nft_transaction"/>
+            </not>
+        </preConditions>
+        <createTable tableName="nft_transaction">
+            <column type="BIGINT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_NFT_TRANSACTION" nullable="false"/>
+            </column>
+
+            <column type="text" name="p"/>
+            <column type="text" name="op"/>
+
+            <column type="bigint" name="deployer">
+                <constraints nullable="false"/>
+            </column>
+            <column type="bigint" name="to_address"/>
+
+            <column type="bigint" name="fk_nft_collection"/>
+            <!--we need this, if the transaction has a tick not found op_error -->
+            <column type="text" name="transaction_tick"/>
+            <column type="text" name="op_data"/>
+            <column type="text" name="op_score"/>
+            <column type="text" name="tx_id_rev">
+                <constraints unique="true"/>
+            </column>
+            <column type="text" name="op_error"/>
+            <column type="bigint" name="mts_add"/>
+            <column type="text" name="fee_rev"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="nft_transaction" baseColumnNames="fk_nft_collection"
+                                 constraintName="FK_NFT_TRANSACTION_NFT_COLLECTION" referencedTableName="nft_collection"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="nft_transaction" baseColumnNames="deployer"
+                                 constraintName="FK_NFT_TRANSACTION_HOLDER_DEPLOYER" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="nft_transaction" baseColumnNames="to_address"
+                                 constraintName="FK_NFT_TRANSACTION_HOLDER_TO" referencedTableName="Holder"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="nft_transaction" indexName="nft_transaction_fk_index">
+            <column name="fk_nft_collection"/>
+        </createIndex>
+        <createIndex tableName="nft_transaction" indexName="nft_transaction_index_op_score">
+            <column name="op_score"/>
+        </createIndex>
+        <rollback>
+            <dropTable tableName="nft_transaction"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
