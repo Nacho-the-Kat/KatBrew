@@ -19,7 +19,6 @@ public class Transaction implements ITransaction {
 
     private BigInteger id;
     private Integer fkToken;
-    private String transactionTick;
     private String hashRev;
     private String p;
     private String op;
@@ -40,7 +39,6 @@ public class Transaction implements ITransaction {
     public Transaction(ITransaction value) {
         this.id = value.getId();
         this.fkToken = value.getFkToken();
-        this.transactionTick = value.getTransactionTick();
         this.hashRev = value.getHashRev();
         this.p = value.getP();
         this.op = value.getOp();
@@ -60,7 +58,6 @@ public class Transaction implements ITransaction {
     public Transaction(
         BigInteger id,
         Integer fkToken,
-        String transactionTick,
         String hashRev,
         String p,
         String op,
@@ -78,7 +75,6 @@ public class Transaction implements ITransaction {
     ) {
         this.id = id;
         this.fkToken = fkToken;
-        this.transactionTick = transactionTick;
         this.hashRev = hashRev;
         this.p = p;
         this.op = op;
@@ -125,22 +121,6 @@ public class Transaction implements ITransaction {
     @Override
     public void setFkToken(Integer fkToken) {
         this.fkToken = fkToken;
-    }
-
-    /**
-     * Getter for <code>public.Transaction.transaction_tick</code>.
-     */
-    @Override
-    public String getTransactionTick() {
-        return this.transactionTick;
-    }
-
-    /**
-     * Setter for <code>public.Transaction.transaction_tick</code>.
-     */
-    @Override
-    public void setTransactionTick(String transactionTick) {
-        this.transactionTick = transactionTick;
     }
 
     /**
@@ -388,12 +368,6 @@ public class Transaction implements ITransaction {
         }
         else if (!this.fkToken.equals(other.fkToken))
             return false;
-        if (this.transactionTick == null) {
-            if (other.transactionTick != null)
-                return false;
-        }
-        else if (!this.transactionTick.equals(other.transactionTick))
-            return false;
         if (this.hashRev == null) {
             if (other.hashRev != null)
                 return false;
@@ -487,7 +461,6 @@ public class Transaction implements ITransaction {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.fkToken == null) ? 0 : this.fkToken.hashCode());
-        result = prime * result + ((this.transactionTick == null) ? 0 : this.transactionTick.hashCode());
         result = prime * result + ((this.hashRev == null) ? 0 : this.hashRev.hashCode());
         result = prime * result + ((this.p == null) ? 0 : this.p.hashCode());
         result = prime * result + ((this.op == null) ? 0 : this.op.hashCode());
@@ -511,7 +484,6 @@ public class Transaction implements ITransaction {
 
         sb.append(id);
         sb.append(", ").append(fkToken);
-        sb.append(", ").append(transactionTick);
         sb.append(", ").append(hashRev);
         sb.append(", ").append(p);
         sb.append(", ").append(op);
@@ -539,7 +511,6 @@ public class Transaction implements ITransaction {
     public void from(ITransaction from) {
         setId(from.getId());
         setFkToken(from.getFkToken());
-        setTransactionTick(from.getTransactionTick());
         setHashRev(from.getHashRev());
         setP(from.getP());
         setOp(from.getOp());

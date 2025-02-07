@@ -99,7 +99,7 @@
                                                 </forcedType>
                                                 <forcedType>
                                                     <userType>java.math.BigInteger</userType>
-                                                    <includeExpression>.*\.MAX|.*\.LIM|.*\.PRE|.*\.MTS_ADD|.*\.MTS_MOD|.*\.MINTED|.*\.TRANSFER_TOTAL|.*\.BALANCE|.*\.AMT|.*\.OP_SCORE|.*\.OP_SCORE_ADD|.*\.OP_SCORE_MOD</includeExpression>
+                                                    <includeExpression>.*\.MAX|.*\.LIM|.*\.PRE|.*\.MTS_ADD|.*\.MTS_MOD|.*\.MINTED|.*\.TRANSFER_TOTAL|.*\.BALANCE|.*\.AMT|.*\.OP_SCORE|.*\.OP_SCORE_ADD|.*\.OP_SCORE_MOD|.*\.ROYALTY_FEE</includeExpression>
                                                 </forcedType>
                                             </forcedTypes>
                                         </database>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_168gvxh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="Process_1afpkx9" name="fetchNFTSTimed" isExecutable="true" camunda:historyTimeToLive="2">
+    <bpmn:endEvent id="EndEvent_1jaf376">
+      <bpmn:incoming>Flow_1kzt4g6</bpmn:incoming>
+      <bpmn:incoming>Flow_0yx8irm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_0n5ggpg" name="Check if runable" camunda:asyncBefore="true" camunda:delegateExpression="${checkTaskRunable}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="lastUpdateIdentifier">fetchNFT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_07ccc61</bpmn:incoming>
+      <bpmn:outgoing>Flow_055n3zi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0r9fsg3">
+      <bpmn:incoming>Flow_055n3zi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kzt4g6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_035vgzu</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:startEvent id="Event_06hxpuk" name="Start every 15min" camunda:asyncBefore="true">
+      <bpmn:outgoing>SequenceFlow_07ccc61</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_10al1ad">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0/15 * * * ?</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_1eh7o64" name="Lock Task" camunda:asyncBefore="true" camunda:delegateExpression="${lockTask}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="lastUpdateIdentifier">fetchNFT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_035vgzu</bpmn:incoming>
+      <bpmn:outgoing>Flow_09erudp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_15s5sow" name="Fetch NFTS" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTS}">
+      <bpmn:incoming>Flow_09erudp</bpmn:incoming>
+      <bpmn:outgoing>Flow_02d94sv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1kzt4g6" sourceRef="Gateway_0r9fsg3" targetRef="EndEvent_1jaf376">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("isRunable") == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_02d94sv" sourceRef="Activity_15s5sow" targetRef="Activity_0qv3xi2" />
+    <bpmn:sequenceFlow id="SequenceFlow_07ccc61" sourceRef="Event_06hxpuk" targetRef="Activity_0n5ggpg" />
+    <bpmn:sequenceFlow id="Flow_055n3zi" sourceRef="Activity_0n5ggpg" targetRef="Gateway_0r9fsg3" />
+    <bpmn:sequenceFlow id="Flow_035vgzu" sourceRef="Gateway_0r9fsg3" targetRef="Activity_1eh7o64">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("isRunable") == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_09erudp" sourceRef="Activity_1eh7o64" targetRef="Activity_15s5sow" />
+    <bpmn:serviceTask id="Activity_1l19og9" name="Release Task" camunda:asyncBefore="true" camunda:delegateExpression="${releaseTask}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="lastUpdateIdentifier">fetchNFT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1stgj0c</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yx8irm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0yx8irm" sourceRef="Activity_1l19og9" targetRef="EndEvent_1jaf376" />
+    <bpmn:serviceTask id="Activity_0qv3xi2" name="Fetch NFTS Collection Info" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTSInfo}">
+      <bpmn:incoming>Flow_02d94sv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e8dcg6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_17ms37u" name="Fetch NFTS Collection Entries" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTSEntries}">
+      <bpmn:incoming>Flow_1e8dcg6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1stgj0c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1stgj0c" sourceRef="Activity_17ms37u" targetRef="Activity_1l19og9" />
+    <bpmn:sequenceFlow id="Flow_1e8dcg6" sourceRef="Activity_0qv3xi2" targetRef="Activity_17ms37u" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1afpkx9">
+      <bpmndi:BPMNShape id="EndEvent_1jaf376_di" bpmnElement="EndEvent_1jaf376">
+        <dc:Bounds x="1272" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_13pvvuu" bpmnElement="Activity_0n5ggpg">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05zj1z2" bpmnElement="Gateway_0r9fsg3" isMarkerVisible="true">
+        <dc:Bounds x="425" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19iua0q_di" bpmnElement="Event_06hxpuk">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="145" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ruz2ub" bpmnElement="Activity_1eh7o64">
+        <dc:Bounds x="530" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0hcr0jw" bpmnElement="Activity_15s5sow">
+        <dc:Bounds x="680" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oqulao_di" bpmnElement="Activity_1l19og9">
+        <dc:Bounds x="1130" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1vyg78u" bpmnElement="Activity_17ms37u">
+        <dc:Bounds x="980" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0qwe0ij" bpmnElement="Activity_0qv3xi2">
+        <dc:Bounds x="830" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1kzt4g6_di" bpmnElement="Flow_1kzt4g6">
+        <di:waypoint x="450" y="145" />
+        <di:waypoint x="450" y="210" />
+        <di:waypoint x="1290" y="210" />
+        <di:waypoint x="1290" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02d94sv_di" bpmnElement="Flow_02d94sv">
+        <di:waypoint x="780" y="120" />
+        <di:waypoint x="830" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07ccc61_di" bpmnElement="SequenceFlow_07ccc61">
+        <di:waypoint x="218" y="120" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_055n3zi_di" bpmnElement="Flow_055n3zi">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="425" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_035vgzu_di" bpmnElement="Flow_035vgzu">
+        <di:waypoint x="475" y="120" />
+        <di:waypoint x="530" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09erudp_di" bpmnElement="Flow_09erudp">
+        <di:waypoint x="630" y="120" />
+        <di:waypoint x="680" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yx8irm_di" bpmnElement="Flow_0yx8irm">
+        <di:waypoint x="1230" y="120" />
+        <di:waypoint x="1272" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1stgj0c_di" bpmnElement="Flow_1stgj0c">
+        <di:waypoint x="1080" y="120" />
+        <di:waypoint x="1130" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e8dcg6_di" bpmnElement="Flow_1e8dcg6">
+        <di:waypoint x="930" y="120" />
+        <di:waypoint x="980" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

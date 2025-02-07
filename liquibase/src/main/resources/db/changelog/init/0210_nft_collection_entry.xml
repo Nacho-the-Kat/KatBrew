@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="nft_collection_entry"/>
+            </not>
+        </preConditions>
+        <createTable tableName="nft_collection_entry">
+            <column type="BIGINT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_NFT_COLLECTION_ENTRY" nullable="false"/>
+            </column>
+            <column type="bigint" name="fk_collection">
+                <constraints nullable="false"/>
+            </column>
+            <column type="int" name="edition"/>
+            <column type="text" name="image"/>
+            <column type="text" name="name"/>
+            <column type="text" name="description"/>
+            <column type="text" name="attributes"/>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="nft_collection_entry" baseColumnNames="fk_collection"
+                                 constraintName="FK_COLLECTION_ENTRY_COLLECTION" referencedTableName="nft_collection"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="nft_collection_entry" indexName="nft_collection_entry_fk_collection_index">
+            <column name="fk_collection"/>
+        </createIndex>
+        <rollback>
+            <dropTable tableName="nft_collection_entry"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

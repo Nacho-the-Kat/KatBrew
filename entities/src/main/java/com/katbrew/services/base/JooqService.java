@@ -237,6 +237,15 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             throw ex;
         }
     }
+    public T insertNoSub(final T entityToInsert) {
+        try {
+            return Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
+        } catch (Exception e) {
+            IllegalArgumentException ex = new IllegalArgumentException(e.getMessage());
+            ex.setStackTrace(new StackTraceElement[0]);
+            throw ex;
+        }
+    }
 
     public List<T> insert(final List<T> entitiesToInsert) {
         return entitiesToInsert.stream().map(this::insert).toList();

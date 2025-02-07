@@ -16,20 +16,14 @@
                 <constraints primaryKey="true" primaryKeyName="PK_TRANSACTION" nullable="false"/>
             </column>
             <column type="int" name="fk_token"/>
-            <!--we need this, if the transaction has a tick not found op_error -->
-            <column type="text" name="transaction_tick"/>
             <column type="text" name="hash_rev">
                 <constraints unique="true"/>
             </column>
             <column type="text" name="p"/>
             <column type="text" name="op"/>
             <column type="text" name="amt"/>
-            <column type="bigint" name="from_address">
-                <constraints nullable="false"/>
-            </column>
-            <column type="bigint" name="to_address">
-                <constraints nullable="false"/>
-            </column>
+            <column type="bigint" name="from_address"/>
+            <column type="bigint" name="to_address"/>
             <column type="bigint" name="op_score"/>
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>

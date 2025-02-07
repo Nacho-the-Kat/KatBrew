@@ -37,16 +37,6 @@ public interface ITransaction extends Serializable {
     public Integer getFkToken();
 
     /**
-     * Setter for <code>public.Transaction.transaction_tick</code>.
-     */
-    public void setTransactionTick(String value);
-
-    /**
-     * Getter for <code>public.Transaction.transaction_tick</code>.
-     */
-    public String getTransactionTick();
-
-    /**
      * Setter for <code>public.Transaction.hash_rev</code>.
      */
     public void setHashRev(String value);

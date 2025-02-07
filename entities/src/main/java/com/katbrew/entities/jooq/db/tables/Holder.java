@@ -7,6 +7,8 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Balance.BalancePath;
+import com.katbrew.entities.jooq.db.tables.NftBalance.NftBalancePath;
+import com.katbrew.entities.jooq.db.tables.NftTransaction.NftTransactionPath;
 import com.katbrew.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 
@@ -163,6 +165,47 @@ public class Holder extends TableImpl<HolderRecord> {
             _balance = new BalancePath(this, null, Keys.BALANCE__FK_BALANCE_HOLDER.getInverseKey());
 
         return _balance;
+    }
+
+    private transient NftBalancePath _nftBalance;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.nft_balance</code>
+     * table
+     */
+    public NftBalancePath nftBalance() {
+        if (_nftBalance == null)
+            _nftBalance = new NftBalancePath(this, null, Keys.NFT_BALANCE__FK_NFT_BALANCE_HOLDER.getInverseKey());
+
+        return _nftBalance;
+    }
+
+    private transient NftTransactionPath _fkNftTransactionHolderDeployer;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.nft_transaction</code> table, via the
+     * <code>fk_nft_transaction_holder_deployer</code> key
+     */
+    public NftTransactionPath fkNftTransactionHolderDeployer() {
+        if (_fkNftTransactionHolderDeployer == null)
+            _fkNftTransactionHolderDeployer = new NftTransactionPath(this, null, Keys.NFT_TRANSACTION__FK_NFT_TRANSACTION_HOLDER_DEPLOYER.getInverseKey());
+
+        return _fkNftTransactionHolderDeployer;
+    }
+
+    private transient NftTransactionPath _fkNftTransactionHolderTo;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.nft_transaction</code> table, via the
+     * <code>fk_nft_transaction_holder_to</code> key
+     */
+    public NftTransactionPath fkNftTransactionHolderTo() {
+        if (_fkNftTransactionHolderTo == null)
+            _fkNftTransactionHolderTo = new NftTransactionPath(this, null, Keys.NFT_TRANSACTION__FK_NFT_TRANSACTION_HOLDER_TO.getInverseKey());
+
+        return _fkNftTransactionHolderTo;
     }
 
     private transient TransactionPath _fkTransactionHolderFrom;

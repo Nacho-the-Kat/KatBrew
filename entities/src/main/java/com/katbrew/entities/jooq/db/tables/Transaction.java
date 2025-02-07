@@ -73,11 +73,6 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, Integer> FK_TOKEN = createField(DSL.name("fk_token"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.Transaction.transaction_tick</code>.
-     */
-    public final TableField<TransactionRecord, String> TRANSACTION_TICK = createField(DSL.name("transaction_tick"), SQLDataType.CLOB, this, "");
-
-    /**
      * The column <code>public.Transaction.hash_rev</code>.
      */
     public final TableField<TransactionRecord, String> HASH_REV = createField(DSL.name("hash_rev"), SQLDataType.CLOB, this, "");
@@ -100,12 +95,12 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.Transaction.from_address</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> FROM_ADDRESS = createField(DSL.name("from_address"), SQLDataType.BIGINT.nullable(false), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> FROM_ADDRESS = createField(DSL.name("from_address"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.to_address</code>.
      */
-    public final TableField<TransactionRecord, BigInteger> TO_ADDRESS = createField(DSL.name("to_address"), SQLDataType.BIGINT.nullable(false), this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+    public final TableField<TransactionRecord, BigInteger> TO_ADDRESS = createField(DSL.name("to_address"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
 
     /**
      * The column <code>public.Transaction.op_score</code>.

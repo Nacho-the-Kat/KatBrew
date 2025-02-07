@@ -7,8 +7,14 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
+import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
+import com.katbrew.entities.jooq.db.tables.NftBalance;
+import com.katbrew.entities.jooq.db.tables.NftCollection;
+import com.katbrew.entities.jooq.db.tables.NftCollectionEntry;
+import com.katbrew.entities.jooq.db.tables.NftCollectionInfo;
+import com.katbrew.entities.jooq.db.tables.NftTransaction;
 import com.katbrew.entities.jooq.db.tables.PriceData;
 import com.katbrew.entities.jooq.db.tables.Token;
 import com.katbrew.entities.jooq.db.tables.TopHolder;
@@ -53,6 +59,11 @@ public class Public extends SchemaImpl {
     public final Balance BALANCE = Balance.BALANCE;
 
     /**
+     * The table <code>public.fetch_data</code>.
+     */
+    public final FetchData FETCH_DATA = FetchData.FETCH_DATA;
+
+    /**
      * The table <code>public.Holder</code>.
      */
     public final Holder HOLDER = Holder.HOLDER;
@@ -61,6 +72,31 @@ public class Public extends SchemaImpl {
      * The table <code>public.Last_Update</code>.
      */
     public final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
+
+    /**
+     * The table <code>public.nft_balance</code>.
+     */
+    public final NftBalance NFT_BALANCE = NftBalance.NFT_BALANCE;
+
+    /**
+     * The table <code>public.nft_collection</code>.
+     */
+    public final NftCollection NFT_COLLECTION = NftCollection.NFT_COLLECTION;
+
+    /**
+     * The table <code>public.nft_collection_entry</code>.
+     */
+    public final NftCollectionEntry NFT_COLLECTION_ENTRY = NftCollectionEntry.NFT_COLLECTION_ENTRY;
+
+    /**
+     * The table <code>public.nft_collection_info</code>.
+     */
+    public final NftCollectionInfo NFT_COLLECTION_INFO = NftCollectionInfo.NFT_COLLECTION_INFO;
+
+    /**
+     * The table <code>public.nft_transaction</code>.
+     */
+    public final NftTransaction NFT_TRANSACTION = NftTransaction.NFT_TRANSACTION;
 
     /**
      * The table <code>public.Price_Data</code>.
@@ -111,8 +147,14 @@ public class Public extends SchemaImpl {
             Advertisements.ADVERTISEMENTS,
             Announcements.ANNOUNCEMENTS,
             Balance.BALANCE,
+            FetchData.FETCH_DATA,
             Holder.HOLDER,
             LastUpdate.LAST_UPDATE,
+            NftBalance.NFT_BALANCE,
+            NftCollection.NFT_COLLECTION,
+            NftCollectionEntry.NFT_COLLECTION_ENTRY,
+            NftCollectionInfo.NFT_COLLECTION_INFO,
+            NftTransaction.NFT_TRANSACTION,
             PriceData.PRICE_DATA,
             Token.TOKEN,
             TopHolder.TOP_HOLDER,
