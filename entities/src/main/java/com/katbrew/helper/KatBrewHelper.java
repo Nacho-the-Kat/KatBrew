@@ -90,6 +90,7 @@ public class KatBrewHelper<T, R extends Serializable> {
     public List<R> fetchPaginated(
             final String url,
             final String lastCursor,
+            final Boolean isDesc,
             final Boolean compareCursor,
             final String paginationPrefix,
             final ParameterizedTypeReference<T> reference,
@@ -101,7 +102,11 @@ public class KatBrewHelper<T, R extends Serializable> {
 
         List<R> allEntries = new ArrayList<>();
 
-        String nextCursor = lastCursor;
+        /**
+         * only if the fetching direction is asc (we get the oldest first and with the cursor we getting newer entries) we insert the cursor
+         * if we fetching DESC we need to fetch with null and copare later
+         */
+        String nextCursor = isDesc ? null : lastCursor;
         int errorCounter = 0;
         do {
 

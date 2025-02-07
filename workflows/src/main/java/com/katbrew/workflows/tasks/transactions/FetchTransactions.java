@@ -93,11 +93,12 @@ public class FetchTransactions implements JavaDelegate {
                             FetchData lastCursor = safety != null && safety.getData() != null
                                     ? safety
                                     : lastUpdates.get("fetchTokenTransactionsLastCursor" + token.getTick());
-                            log.info("Start fetching the Transactions, last cursor: " + (lastCursor != null ? lastCursor.getData() : "not exists"));
+                            log.info("Start fetching the Transactions for tick " + token.getTick() + ", last cursor: " + (lastCursor != null ? lastCursor.getData() : "not exists"));
 
                             final List<TransactionExternal> result = helper.fetchPaginated(
                                     uri,
                                     lastCursor != null ? lastCursor.getData() : null,
+                                    true,
                                     true,
                                     "&next=",
                                     reference,

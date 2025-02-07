@@ -80,6 +80,7 @@ public class FetchNFTTransactions implements JavaDelegate {
                 final List<NftTransactionExternal> result = helper.fetchPaginated(
                         fetchBaseUrl,
                         lastCursor != null ? lastCursor.getData() : null,
+                        false,
                         true,
                         "?offset=",
                         reference,
@@ -143,7 +144,7 @@ public class FetchNFTTransactions implements JavaDelegate {
                     collection.setTick(single.getTick());
                     collection = nftCollectionService.insert(collection);
                     tokenIdMap.put(collection.getTick(), collection.getId());
-                }else{
+                } else {
                     transaction.setTransactionTick(single.getTick());
                 }
             }
