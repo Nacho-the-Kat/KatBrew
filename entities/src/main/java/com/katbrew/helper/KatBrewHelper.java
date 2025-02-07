@@ -168,6 +168,72 @@ public class KatBrewHelper<T, R extends Serializable> {
         return allEntries;
     }
 
+    public List<R> fetchInitPaginated(
+            final String url,
+            final String paginationPrefix,
+            final ParameterizedTypeReference<T> reference,
+            final Function<T, String> getCursor,
+            final Function<T, List<R>> getEntries,
+            final Integer limit,
+            final Function<List<R>, Void> prepareData
+    ) {
+
+        List<R> allEntries = new ArrayList<>();
+
+        String nextCursor = null;
+
+        int errorCounter = 0;
+        do {
+
+            String urlIntern = url;
+
+            if (nextCursor != null) {
+                urlIntern += paginationPrefix + nextCursor;
+            }
+            try {
+
+                final T response = fetch(
+                        urlIntern,
+                        reference
+                );
+
+                if (response != null) {
+                    final List<R> entries = getEntries.apply(response);
+                    if (entries != null) {
+                        allEntries.addAll(entries);
+                    }
+                    nextCursor = getCursor.apply(response);
+                } else {
+                    nextCursor = null;
+                }
+                if (limit != null && prepareData != null) {
+                    //if the data is too big, we insert the batch
+                    if (allEntries.size() >= limit) {
+                        log.info("inserting batch that reaches the limit: " + urlIntern);
+                        prepareData.apply(allEntries);
+                        allEntries.clear();
+                    }
+                }
+            } catch (Exception e) {
+                if (errorCounter < errorAmount) {
+                    long time = (long) (Math.random() * 1000) * (errorCounter + 1);
+                    log.warn("error on fetching " + urlIntern + " waiting seconds: " + time / 1000);
+                    log.warn(e.getMessage());
+                    waitFunction(time);
+                    ++errorCounter;
+                } else {
+                    break;
+                }
+            }
+        } while (nextCursor != null);
+
+        if (allEntries.isEmpty()) {
+            return null;
+        }
+
+        return allEntries;
+    }
+
     public T fetch(
             final String url,
             final ParameterizedTypeReference<T> reference

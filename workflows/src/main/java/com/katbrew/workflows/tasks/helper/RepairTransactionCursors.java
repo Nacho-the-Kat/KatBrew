@@ -5,7 +5,8 @@ import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.FetchData;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
 import com.katbrew.entities.jooq.db.tables.pojos.Transaction;
-import com.katbrew.services.tables.*;
+import com.katbrew.services.tables.FetchDataService;
+import com.katbrew.services.tables.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -14,7 +15,6 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -30,10 +30,8 @@ public class RepairTransactionCursors implements JavaDelegate {
         final List<Token> tokens = tokenService.findAll();
 
         for (final Token token : tokens) {
-            final String identifier = "fetchTokenTransactionsLastCursor" + token.getTick();
-            final String safetyIdentifier = "fetchTransactionsSafetySave" + token.getTick();
 
-            final FetchData lastUpdate = fetchDataService.findByIdentifier(identifier);
+            final String safetyIdentifier = "fetchTransactionsSafetySave" + token.getTick();
             final FetchData safetyLastUpdate = fetchDataService.findByIdentifier(safetyIdentifier);
 
             if (safetyLastUpdate != null && safetyLastUpdate.getData() == null) {
@@ -50,6 +48,9 @@ public class RepairTransactionCursors implements JavaDelegate {
                 if (!lastTransactionList.isEmpty()) {
                     final Transaction lastTransaction = lastTransactionList.get(0);
 
+                    final String identifier = "fetchTokenTransactionsLastCursor" + token.getTick();
+                    final FetchData lastUpdate = fetchDataService.findByIdentifier(identifier);
+
                     if (lastUpdate == null) {
                         final FetchData insert = new FetchData();
                         insert.setData(lastTransaction.getOpScore().toString());
@@ -61,6 +62,23 @@ public class RepairTransactionCursors implements JavaDelegate {
                     }
                 } else {
                     log.info("No transactions found");
+                }
+            }
+            if (safetyLastUpdate != null && safetyLastUpdate.getData() != null) {
+                //we repairing the cursors
+                final List<Transaction> lastTransactionList = dsl
+                        .select(Tables.TRANSACTION.ID, Tables.TRANSACTION.OP_SCORE)
+                        .from(Tables.TRANSACTION)
+                        .where(Tables.TRANSACTION.FK_TOKEN.eq(token.getId()))
+                        .orderBy(Tables.TRANSACTION.OP_SCORE.cast(BigInteger.class).asc())
+                        .limit(1)
+                        .fetch()
+                        .into(Transaction.class);
+                if (!lastTransactionList.isEmpty()) {
+                    final Transaction lastTransaction = lastTransactionList.get(0);
+
+                    safetyLastUpdate.setData(lastTransaction.getOpScore().toString());
+                    fetchDataService.update(safetyLastUpdate);
                 }
             }
         }

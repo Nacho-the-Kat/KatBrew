@@ -81,7 +81,7 @@ public class FetchNFTTransactions implements JavaDelegate {
                         fetchBaseUrl,
                         lastCursor != null ? lastCursor.getData() : null,
                         false,
-                        true,
+                        false,
                         "?offset=",
                         reference,
                         FetchNFTTransactions::getCursor,
