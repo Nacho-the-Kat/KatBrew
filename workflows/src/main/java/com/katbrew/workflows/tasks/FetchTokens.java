@@ -16,6 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class FetchTokens implements JavaDelegate {
                 tokenUrl + "/tokenlist",
                 lastUpdate != null ? lastUpdate.getData() : null,
                 true,
+                true,
                 "?next=",
                 tokenListReference,
                 FetchTokens::getCursor,
@@ -60,7 +62,10 @@ public class FetchTokens implements JavaDelegate {
             return;
         }
 
-        final Map<String, Token> dbEntries = tokenService.findAll().stream().collect(Collectors.toMap(Token::getTick, single -> single));
+        final Map<String, Token> dbEntries = tokenService.findByTicks(tokenList.stream().map(Token::getTick).toList())
+                .stream().collect(Collectors.toMap(Token::getTick, single -> single));
+        final List<Token> insert = new ArrayList<>();
+        final List<Token> toUpdate = new ArrayList<>();
 
         tokenList.forEach(single -> {
             final Token token = dbEntries.get(single.getTick());
@@ -70,14 +75,23 @@ public class FetchTokens implements JavaDelegate {
                 single.setTransferTotal(token.getTransferTotal());
                 single.setMintTotal(token.getMintTotal());
                 single.setLogo(token.getLogo());
+                single.setSocials(token.getSocials());
+                if (!token.equals(single)) {
+                    //check if the data is the same, then no need to update
+                    toUpdate.add(single);
+                }
+            } else {
+                insert.add(single);
             }
         });
         //Sorting by the creation time to get entries in the db as they created
-        tokenList.sort(Comparator.comparing(Token::getMtsAdd));
+        insert.sort(Comparator.comparing(Token::getMtsAdd));
 
-        tokenService.batchInsertVoid(tokenList.stream().filter(single -> single.getId() == null).toList());
-        tokenService.batchUpdate(tokenList.stream().filter(single -> single.getId() != null).toList());
-        tokenCachingService.invalidateTokenList();
+        tokenService.batchInsertVoidWithSub(insert);
+        tokenService.batchUpdate(toUpdate);
+        if (!insert.isEmpty() || !toUpdate.isEmpty()) {
+            tokenCachingService.invalidateTokenList();
+        }
 
         if (lastUpdate == null) {
             lastUpdate = new LastUpdate();

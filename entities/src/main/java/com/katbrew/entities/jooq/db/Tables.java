@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
+import com.katbrew.entities.jooq.db.tables.CodeWordings;
 import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
@@ -26,7 +27,7 @@ import com.katbrew.entities.jooq.db.tables.Whitelist;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
     /**
@@ -43,6 +44,11 @@ public class Tables {
      * The table <code>public.Balance</code>.
      */
     public static final Balance BALANCE = Balance.BALANCE;
+
+    /**
+     * The table <code>public.code_wordings</code>.
+     */
+    public static final CodeWordings CODE_WORDINGS = CodeWordings.CODE_WORDINGS;
 
     /**
      * The table <code>public.fetch_data</code>.

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="CrixusHD">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="code_wordings"/>
+            </not>
+        </preConditions>
+        <createTable tableName="code_wordings">
+            <column type="INT" name="id" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_CODE_WORDINGS" nullable="false"/>
+            </column>
+            <column type="text" name="identifier" >
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="code_wordings"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="KRC-20"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'KRC-20'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="deploy"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'deploy'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="mint"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'mint'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="transfer"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'transfer'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="6" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="mint finished"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'mint finished'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="7" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="fee not enough"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'fee not enough'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="8" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="tick reserved"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'tick reserved'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="9" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="tick not found"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'tick not found'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="10" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="order not found"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'order not found'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="11" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="tick existed"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'tick existed'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="12" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="balance insuff"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'balance insuff'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="13" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="address invalid"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'address invalid'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="14" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="send"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'send'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="15" author="CrixusHD">
+        <insert tableName="code_wordings">
+            <column name="identifier" value="list"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="code_wordings">
+                <where>
+                    identifier = 'list'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

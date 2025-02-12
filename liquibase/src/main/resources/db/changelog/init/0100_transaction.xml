@@ -19,8 +19,8 @@
             <column type="text" name="hash_rev">
                 <constraints unique="true"/>
             </column>
-            <column type="text" name="p"/>
-            <column type="text" name="op"/>
+            <column type="int" name="p"/>
+            <column type="int" name="op"/>
             <column type="text" name="amt"/>
             <column type="bigint" name="from_address"/>
             <column type="bigint" name="to_address"/>
@@ -28,7 +28,7 @@
             <column type="text" name="fee_rev"/>
             <column type="text" name="tx_accept"/>
             <column type="text" name="op_accept"/>
-            <column type="text" name="op_error"/>
+            <column type="int" name="op_error"/>
             <column type="text" name="checkpoint"/>
             <column type="bigint" name="mts_add"/>
             <column type="bigint" name="mts_mod"/>
@@ -44,12 +44,24 @@
         <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="to_address"
                                  constraintName="FK_TRANSACTION_HOLDER_TO" referencedTableName="Holder"
                                  referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="p"
+                                 constraintName="FK_TRANSACTION_P_CODES_WORDINGS" referencedTableName="code_wordings"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="op"
+                                 constraintName="FK_TRANSACTION_OP_CODES_WORDINGS" referencedTableName="code_wordings"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="Transaction" baseColumnNames="op_error"
+                                 constraintName="FK_TRANSACTION_OP_ERROR_CODES_WORDINGS" referencedTableName="code_wordings"
+                                 referencedColumnNames="id"/>
 
         <createIndex tableName="Transaction" indexName="transaction_fk_index">
             <column name="fk_token"/>
         </createIndex>
         <createIndex tableName="Transaction" indexName="transaction_index_op_score">
             <column name="op_score"/>
+        </createIndex>
+        <createIndex tableName="Transaction" indexName="transaction_index_op">
+            <column name="op"/>
         </createIndex>
         <rollback>
             <dropTable tableName="Transaction"/>

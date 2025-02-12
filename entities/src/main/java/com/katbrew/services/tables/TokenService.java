@@ -95,6 +95,10 @@ public class TokenService extends JooqService<Token, TokenDao> {
         return holder;
     }
 
+    public List<Token> findByTicks(final List<String> ticks) {
+        return this.findBy(Collections.singletonList(Tables.TOKEN.TICK.in(ticks)));
+    }
+
     public Token findByTick(final String tick) {
         List<Token> token = this.findBy(Collections.singletonList(Tables.TOKEN.TICK.eq(tick)));
         if (token.isEmpty()) {
