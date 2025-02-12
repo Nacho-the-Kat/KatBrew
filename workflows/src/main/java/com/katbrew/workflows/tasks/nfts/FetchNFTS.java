@@ -59,6 +59,7 @@ public class FetchNFTS implements JavaDelegate {
                     fetchBaseUrl,
                     lastCursor != null ? lastCursor.getData() : null,
                     false,
+                    false,
                     "?offset=",
                     reference,
                     FetchNFTS::getCursor,

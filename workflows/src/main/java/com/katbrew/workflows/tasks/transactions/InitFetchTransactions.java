@@ -56,10 +56,11 @@ public class InitFetchTransactions implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws JsonProcessingException {
+        // todo : THIS IS ONLY FOR COMPLETE RESYNC
         log.info("Starting the transaction sync:" + LocalDateTime.now());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
-            final List<Token> tokens = tokenService.findAll();
+            final List<Token> tokens = new ArrayList<>(List.of(tokenService.findByTick("KDAO")));
             tokens.sort(Comparator.comparing(Token::getMtsAdd));
 
             final ConcurrentMap<String, BigInteger> holderMap = holderService.getAddressIdMap();

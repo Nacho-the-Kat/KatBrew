@@ -1,16 +1,17 @@
 package com.katbrew.workflows.tasks.transactions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.*;
+import com.katbrew.helper.EntityConverter;
 import com.katbrew.helper.KatBrewHelper;
 import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.pojos.TransactionExternal;
 import com.katbrew.services.tables.*;
 import com.katbrew.workflows.helper.ParsingResponse;
 import com.katbrew.workflows.helper.ParsingResponsePagedNFT;
+import com.katbrew.workflows.tasks.balance.GenerateBalancesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -41,18 +42,25 @@ public class FetchTransactions implements JavaDelegate {
     @Value("${data.fetchTokenBaseUrl}")
     private String fetchBaseUrl;
     private final static int limit = 15000;
-    private final GenerateLastUpdateTransactionsService generateLastUpdateTransactionsService;
     private final LastUpdateService lastUpdateService;
+    private final CodeWordingsService codeWordingsService;
     private final FetchDataService fetchDataService;
     private final TransactionService transactionService;
     private final TokenService tokenService;
     private final HolderService holderService;
+    private final EntityConverter entityConverter;
     public final DSLContext dsl;
+    private final GenerateBalancesService generateBalancesService;
+    public final List<Transaction> toInsert = new ArrayList<>();
+    public final List<Transaction> toUpdate = new ArrayList<>();
+
     public final com.katbrew.entities.jooq.db.tables.Transaction transactionTable = Tables.TRANSACTION;
 
     private static String getCursor(ParsingResponsePagedNFT<List<TransactionExternal>> entity) {
         return entity.getNext();
     }
+
+    private Map<String, Integer> codes;
 
     @Override
     public void execute(DelegateExecution execution) throws JsonProcessingException {
@@ -61,6 +69,7 @@ public class FetchTransactions implements JavaDelegate {
         executorService.submit(() -> {
             final List<Token> tokens = tokenService.findAll();
             tokens.sort(Comparator.comparing(Token::getMtsAdd));
+            codes = codeWordingsService.getAsMapWithNull();
 
             final ConcurrentMap<String, BigInteger> holderMap = holderService.getAddressIdMap();
 
@@ -80,7 +89,6 @@ public class FetchTransactions implements JavaDelegate {
             };
 
             final KatBrewHelper<ParsingResponsePagedNFT<List<TransactionExternal>>, TransactionExternal> helper = new KatBrewHelper<>();
-
 
             final ExecutorService executor = Executors.newFixedThreadPool(10);
 
@@ -129,9 +137,51 @@ public class FetchTransactions implements JavaDelegate {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            generateLastUpdateTransactionsService.execute();
-            releaseTask();
+            transactionService.batchUpdate(toUpdate);
+            toInsert.sort(Comparator.comparing(Transaction::getOpScore));
+            final List<Transaction> inserted = transactionService.batchInsertWithSub(toInsert);
+            final List<Token> tokenToUpdate = new ArrayList<>();
+            final List<FetchData> fetchDataToUpdate = new ArrayList<>();
+            final List<FetchData> fetchDataToInsert = new ArrayList<>();
+            for (final Token token : tokens) {
+                //we update/add the transaction count, no full fetch needed;
+                final List<Transaction> tokenTransaction = inserted.stream().filter(single -> single.getFkToken().equals(token.getId())).sorted(Comparator.comparing(Transaction::getOpScore)).toList();
+                if (!tokenTransaction.isEmpty()) {
+                    final int transferAmount = tokenTransaction.stream().filter(single -> single.getOp().equals(codes.get("transfer")) && single.getOpError() == null).toList().size();
+                    final int mintAmount = tokenTransaction.stream().filter(single -> single.getOp().equals(codes.get("mint")) && single.getOpError() == null).toList().size();
+                    token.setTransferTotal(
+                            token.getTransferTotal().add(BigInteger.valueOf(transferAmount))
+                    );
+                    token.setMintTotal(
+                            token.getMintTotal() + mintAmount
+                    );
+                    tokenToUpdate.add(token);
+                    final String identifier = "fetchTokenTransactionsLastCursor" + token.getTick();
+                    final FetchData lastUpdate = fetchDataService.findByIdentifier(identifier);
+                    if (lastUpdate == null) {
+                        final FetchData insert = new FetchData();
+                        insert.setData(tokenTransaction.get(tokenTransaction.size() - 1).getOpScore().toString());
+                        insert.setIdentifier(identifier);
+                        fetchDataToInsert.add(insert);
+                    } else {
+                        lastUpdate.setData(tokenTransaction.get(tokenTransaction.size() - 1).getOpScore().toString());
+                        fetchDataToUpdate.add(lastUpdate);
+                    }
+                }
+            }
+            tokenService.batchUpdate(tokenToUpdate);
+            fetchDataService.batchUpdate(fetchDataToUpdate);
+            fetchDataService.batchInsert(fetchDataToInsert);
+            final LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTransactions");
+            if (lastUpdate != null) {
+                lastUpdate.setData(null);
+                lastUpdateService.update(lastUpdate);
+            }
+            toInsert.clear();
+            toUpdate.clear();
             log.info("Finished the transaction sync:" + LocalDateTime.now());
+            log.info("Starting the Balance generating: " + LocalDateTime.now());
+//            generateBalancesService.generateBalances();
             executorService.shutdown();
         });
     }
@@ -177,8 +227,7 @@ public class FetchTransactions implements JavaDelegate {
             }
             single.setFkToken(token.getId());
         });
-        final List<Transaction> transactions = mapper.convertValue(result, new TypeReference<>() {
-        });
+        final List<Transaction> transactions = new ArrayList<>(result.stream().map(entityConverter::convertToDbTransaction).toList());
         updateAndInsertAll(transactions, token, isSafetySave);
         return null;
     }
@@ -186,43 +235,33 @@ public class FetchTransactions implements JavaDelegate {
 
     private void updateAndInsertAll(final List<Transaction> transactions, final Token token, final Boolean isSafetySave) {
 
-        final Map<String, BigInteger> dbEntries = dsl
-                .select(transactionTable.ID, transactionTable.HASH_REV)
-                .from(transactionTable)
+        final Map<String, Transaction> dbEntries = dsl
+                .selectFrom(transactionTable)
                 .where(List.of(
                                 transactionTable.HASH_REV.in(transactions.stream().map(Transaction::getHashRev).toList())
                         )
                 )
                 .fetch()
-                .intoMaps()
+                .into(Transaction.class)
                 .stream()
-                .collect(Collectors.toMap(single -> (String) single.get("hash_rev"), single -> new BigInteger(String.valueOf(single.get("id")))));
+                .collect(Collectors.toMap(Transaction::getHashRev, single -> single));
 
         transactions.sort(Comparator.comparing(Transaction::getOpScore));
 
-        final List<Transaction> toUpdate = new ArrayList<>();
-        final List<Transaction> toInsert = new ArrayList<>();
+//        final List<Transaction> toUpdate = new ArrayList<>();
+//        final List<Transaction> toInsert = new ArrayList<>();
 
         transactions.forEach(transaction -> {
-            final BigInteger dbEntryId = dbEntries.get(transaction.getHashRev());
-            if (dbEntryId != null) {
-                transaction.setId(dbEntryId);
-                toUpdate.add(transaction);
+            final Transaction dbEntry = dbEntries.get(transaction.getHashRev());
+            if (dbEntry != null) {
+                transaction.setId(dbEntry.getId());
+                if (!transaction.equals(dbEntry)) {
+                    toUpdate.add(transaction);
+                }
             } else {
                 toInsert.add(transaction);
             }
         });
-
-        transactionService.batchUpdate(toUpdate);
-        transactionService.batchInsertVoid(toInsert);
-
-        //we update/add the transaction count, no full fetch needed;
-        final int amount = toInsert.size();
-        token.setTransferTotal(
-                token.getTransferTotal().add(BigInteger.valueOf(amount))
-        );
-
-        tokenService.update(token);
 
         FetchData lastSafetySave = fetchDataService.findByIdentifier("fetchTransactionsSafetySave" + token.getTick());
         if (lastSafetySave == null) {
@@ -236,13 +275,5 @@ public class FetchTransactions implements JavaDelegate {
             lastSafetySave.setData(null);
         }
         fetchDataService.update(lastSafetySave);
-    }
-
-    public void releaseTask() {
-        LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTransactions");
-        if (lastUpdate != null) {
-            lastUpdate.setData(null);
-            lastUpdateService.update(lastUpdate);
-        }
     }
 }

@@ -34,5 +34,19 @@
             </delete>
         </rollback>
     </changeSet>
+    <changeSet id="3" author="CrixusHD">
+
+        <insert tableName="Last_Update">
+            <column name="identifier" value="balancesLastOpScore"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="Last_Update">
+                <where>
+                    identifier = 'balancesLastOpScore'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

@@ -7,6 +7,7 @@ package com.katbrew.entities.jooq.db;
 import com.katbrew.entities.jooq.db.tables.Advertisements;
 import com.katbrew.entities.jooq.db.tables.Announcements;
 import com.katbrew.entities.jooq.db.tables.Balance;
+import com.katbrew.entities.jooq.db.tables.CodeWordings;
 import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
@@ -24,6 +25,7 @@ import com.katbrew.entities.jooq.db.tables.Whitelist;
 import com.katbrew.entities.jooq.db.tables.records.AdvertisementsRecord;
 import com.katbrew.entities.jooq.db.tables.records.AnnouncementsRecord;
 import com.katbrew.entities.jooq.db.tables.records.BalanceRecord;
+import com.katbrew.entities.jooq.db.tables.records.CodeWordingsRecord;
 import com.katbrew.entities.jooq.db.tables.records.FetchDataRecord;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 import com.katbrew.entities.jooq.db.tables.records.LastUpdateRecord;
@@ -50,7 +52,7 @@ import org.jooq.impl.Internal;
  * A class modelling foreign key relationships and constraints of tables in
  * public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Keys {
 
     // -------------------------------------------------------------------------
@@ -60,6 +62,8 @@ public class Keys {
     public static final UniqueKey<AdvertisementsRecord> PK_ADVERTISEMENTS = Internal.createUniqueKey(Advertisements.ADVERTISEMENTS, DSL.name("pk_advertisements"), new TableField[] { Advertisements.ADVERTISEMENTS.ID }, true);
     public static final UniqueKey<AnnouncementsRecord> PK_ANNOUNCEMENTS = Internal.createUniqueKey(Announcements.ANNOUNCEMENTS, DSL.name("pk_announcements"), new TableField[] { Announcements.ANNOUNCEMENTS.ID }, true);
     public static final UniqueKey<BalanceRecord> PK_BALANCE = Internal.createUniqueKey(Balance.BALANCE, DSL.name("pk_balance"), new TableField[] { Balance.BALANCE.ID }, true);
+    public static final UniqueKey<CodeWordingsRecord> CODE_WORDINGS_IDENTIFIER_KEY = Internal.createUniqueKey(CodeWordings.CODE_WORDINGS, DSL.name("code_wordings_identifier_key"), new TableField[] { CodeWordings.CODE_WORDINGS.IDENTIFIER }, true);
+    public static final UniqueKey<CodeWordingsRecord> PK_CODE_WORDINGS = Internal.createUniqueKey(CodeWordings.CODE_WORDINGS, DSL.name("pk_code_wordings"), new TableField[] { CodeWordings.CODE_WORDINGS.ID }, true);
     public static final UniqueKey<FetchDataRecord> FETCH_DATA_IDENTIFIER_KEY = Internal.createUniqueKey(FetchData.FETCH_DATA, DSL.name("fetch_data_identifier_key"), new TableField[] { FetchData.FETCH_DATA.IDENTIFIER }, true);
     public static final UniqueKey<FetchDataRecord> PK_LAST_UPDATE_DATA = Internal.createUniqueKey(FetchData.FETCH_DATA, DSL.name("pk_last_update_data"), new TableField[] { FetchData.FETCH_DATA.ID }, true);
     public static final UniqueKey<HolderRecord> HOLDER_ADDRESS_KEY = Internal.createUniqueKey(Holder.HOLDER, DSL.name("Holder_address_key"), new TableField[] { Holder.HOLDER.ADDRESS }, true);
@@ -102,4 +106,5 @@ public class Keys {
     public static final ForeignKey<TransactionRecord, HolderRecord> TRANSACTION__FK_TRANSACTION_HOLDER_FROM = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transaction_holder_from"), new TableField[] { Transaction.TRANSACTION.FROM_ADDRESS }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<TransactionRecord, HolderRecord> TRANSACTION__FK_TRANSACTION_HOLDER_TO = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transaction_holder_to"), new TableField[] { Transaction.TRANSACTION.TO_ADDRESS }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<TransactionRecord, TokenRecord> TRANSACTION__FK_TRANSACTION_TOKEN = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transaction_token"), new TableField[] { Transaction.TRANSACTION.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
+    public static final ForeignKey<TransactionRecord, CodeWordingsRecord> TRANSACTION__FK_TRANSACTIONS_OP_ERROR_CODE_WORDINGS = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("fk_transactions_op_error_code_wordings"), new TableField[] { Transaction.TRANSACTION.OP_ERROR }, Keys.PK_CODE_WORDINGS, new TableField[] { CodeWordings.CODE_WORDINGS.ID }, true);
 }

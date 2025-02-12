@@ -229,7 +229,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     public T insert(final T entityToInsert) {
         try {
             final T internal = Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
-            this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), new SubscriptionWrapper<>(dao.getTable().getName(), "insert", internal));
+            this.insertSubscription(internal);
             return internal;
         } catch (Exception e) {
             IllegalArgumentException ex = new IllegalArgumentException(e.getMessage());
@@ -237,6 +237,7 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
             throw ex;
         }
     }
+
     public T insertNoSub(final T entityToInsert) {
         try {
             return Objects.requireNonNull(dsl.insertInto(dao.getTable()).set(dsl.newRecord(dao.getTable(), entityToInsert)).returning().fetchOne()).into(type);
@@ -263,6 +264,21 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         dsl.batchInsert(
                 entitiesToInsert.stream().map(single -> (TableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
         ).execute();
+    }
+
+    //for inserting a large amount of entries like for sync with subscription
+    public void batchInsertVoidWithSub(final List<T> entitiesToInsert) {
+        dsl.batchInsert(
+                entitiesToInsert.stream().map(single -> (TableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
+        ).execute();
+        entitiesToInsert.forEach(this::insertSubscription);
+    }
+
+    //for inserting a large amount of entries like for sync with subscription
+    public List<T> batchInsertWithSub(final List<T> entitiesToInsert) {
+        List<T> inserts = this.batchInsert(entitiesToInsert);
+        inserts.forEach(this::insertSubscription);
+        return inserts;
     }
 
     //for inserting a large amount of entries like for sync
@@ -314,6 +330,10 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
     public void delete(T entityToDelete) {
         dao.delete(entityToDelete);
         deleteSubscription(entityToDelete);
+    }
+
+    private void insertSubscription(T entityToInsert) {
+        this.simpMessagingTemplate.convertAndSend(getMulticastUrl(MULTICAST_TYPE.INSERT), new SubscriptionWrapper<>(dao.getTable().getName(), "insert", entityToInsert));
     }
 
     private void deleteSubscription(T entityToDelete) {

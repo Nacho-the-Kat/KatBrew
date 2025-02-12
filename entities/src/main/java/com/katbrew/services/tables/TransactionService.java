@@ -17,12 +17,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionService extends JooqService<Transaction, TransactionDao> {
 
     private final TokenService tokenService;
+    private final CodeWordingsService codeWordingsService;
     private final DSLContext context;
 
     public List<Transaction> getTransactions(final String tick, final LocalDateTime start, LocalDateTime end) {
@@ -49,6 +51,7 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
         com.katbrew.entities.jooq.db.tables.Transaction transaction = Tables.TRANSACTION;
         List<Field> coll = new ArrayList<>(List.of(transaction.fields()));
         coll.add(Tables.TOKEN.TICK);
+        Map<String, Integer> codes = codeWordingsService.getAsMapWithNull();
 
         return context.select(coll)
                 .from(transaction)
@@ -57,7 +60,7 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
                 .where(List.of(
                         transaction.MTS_ADD.ge(BigInteger.valueOf(start.toEpochSecond(ZoneOffset.UTC))),
                         transaction.MTS_ADD.le(BigInteger.valueOf(end.toEpochSecond(ZoneOffset.UTC))),
-                        transaction.OP.eq("mint")
+                        transaction.OP.eq(codes.get("mint"))
                 ))
                 .fetch()
                 .intoMaps();
