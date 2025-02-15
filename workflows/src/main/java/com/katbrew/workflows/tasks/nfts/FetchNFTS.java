@@ -30,7 +30,6 @@ public class FetchNFTS implements JavaDelegate {
 
     @Value("${data.fetchNFT.list.baseUrl}")
     private String fetchBaseUrl;
-    private final static int limit = 2000;
     private final LastUpdateService lastUpdateService;
     private final NFTCollectionService nftCollectionService;
 
@@ -72,6 +71,7 @@ public class FetchNFTS implements JavaDelegate {
 
 
                 result.forEach(single -> {
+                    single.setBuri(single.getBuri().replace("ipfs://", ""));
                     final BigInteger id = nftMap.get(single.getTick());
                     if (id != null) {
                         single.setId(id);

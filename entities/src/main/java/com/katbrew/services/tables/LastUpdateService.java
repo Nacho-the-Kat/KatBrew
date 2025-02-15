@@ -18,4 +18,12 @@ public class LastUpdateService extends JooqService<LastUpdate, LastUpdateDao> {
         }
         return last.get(0);
     }
+
+    public void releaseTask(final String identifier){
+        final LastUpdate lastUpdate = findByIdentifier(identifier);
+        if (lastUpdate != null){
+            lastUpdate.setData(null);
+            update(lastUpdate);
+        }
+    }
 }

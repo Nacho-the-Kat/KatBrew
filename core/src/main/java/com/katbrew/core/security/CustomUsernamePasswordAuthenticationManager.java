@@ -1,9 +1,9 @@
 package com.katbrew.core.security;
 
-import com.katbrew.entities.jooq.db.tables.Users;
+import com.katbrew.entities.jooq.db.Tables;
+import com.katbrew.entities.jooq.db.tables.pojos.Users;
 import com.katbrew.services.tables.UsersService;
 import lombok.RequiredArgsConstructor;
-import org.jooq.Condition;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,15 +38,16 @@ public class CustomUsernamePasswordAuthenticationManager implements Authenticati
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         final String username = authentication.getPrincipal().toString();
         final String password = authentication.getCredentials().toString();
-        final List<Condition> conditions = new ArrayList<>();
         try {
             String encrypted = new String(Hex.encode(MessageDigest.getInstance("SHA512")
                     .digest(password.getBytes(StandardCharsets.UTF_8))));
 
-            conditions.add(Users.USERS.USERNAME.eq(username));
-            conditions.add(Users.USERS.PASSWORD.eq(encrypted));
+            final List<Users> user = usersService.findBy(List.of(
+                    Tables.USERS.USERNAME.eq(username),
+                    Tables.USERS.PASSWORD.eq(encrypted)
+            ));
 
-            if (!usersService.findBy(conditions).isEmpty()) {
+            if (!user.isEmpty()) {
                 return new UsernamePasswordAuthenticationToken(
                         username,
                         password,

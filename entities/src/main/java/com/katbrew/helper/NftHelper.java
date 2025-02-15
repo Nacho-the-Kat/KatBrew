@@ -25,6 +25,8 @@ public class NftHelper {
 
     public NFTCollectionEntryInternal parseEntry(final NftCollectionEntry info) throws JsonProcessingException {
         final NFTCollectionEntryInternal intern = new NFTCollectionEntryInternal();
+        intern.setId(info.getId());
+        intern.setFkCollection(info.getFkCollection());
         intern.setName(info.getName());
         intern.setDescription(info.getDescription());
         intern.setImage(info.getImage());
@@ -46,6 +48,8 @@ public class NftHelper {
 
     public NftCollectionEntry convertEntryToDbEntry(final NFTCollectionEntryInternal internal) throws JsonProcessingException {
         final NftCollectionEntry intern = new NftCollectionEntry();
+        intern.setId(internal.getId());
+        intern.setFkCollection(internal.getFkCollection());
         intern.setName(internal.getName());
         intern.setDescription(internal.getDescription());
         intern.setImage(internal.getImage());

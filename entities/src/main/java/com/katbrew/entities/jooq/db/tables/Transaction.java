@@ -212,7 +212,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.ERROR_CODES, Indexes.IDX_TOKEN_SCORE, Indexes.TRANSACTION_FK_INDEX, Indexes.TRANSACTION_INDEX_OP_SCORE);
+        return Arrays.asList(Indexes.TRANSACTION_FK_INDEX, Indexes.TRANSACTION_INDEX_OP, Indexes.TRANSACTION_INDEX_OP_SCORE);
     }
 
     @Override
@@ -232,7 +232,7 @@ public class Transaction extends TableImpl<TransactionRecord> {
 
     @Override
     public List<ForeignKey<TransactionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.TRANSACTION__FK_TRANSACTION_HOLDER_FROM, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_TO, Keys.TRANSACTION__FK_TRANSACTION_TOKEN, Keys.TRANSACTION__FK_TRANSACTIONS_OP_ERROR_CODE_WORDINGS);
+        return Arrays.asList(Keys.TRANSACTION__FK_TRANSACTION_HOLDER_FROM, Keys.TRANSACTION__FK_TRANSACTION_HOLDER_TO, Keys.TRANSACTION__FK_TRANSACTION_OP_CODES_WORDINGS, Keys.TRANSACTION__FK_TRANSACTION_OP_ERROR_CODES_WORDINGS, Keys.TRANSACTION__FK_TRANSACTION_P_CODES_WORDINGS, Keys.TRANSACTION__FK_TRANSACTION_TOKEN);
     }
 
     private transient HolderPath _fkTransactionHolderFrom;
@@ -261,6 +261,45 @@ public class Transaction extends TableImpl<TransactionRecord> {
         return _fkTransactionHolderTo;
     }
 
+    private transient CodeWordingsPath _fkTransactionOpCodesWordings;
+
+    /**
+     * Get the implicit join path to the <code>public.code_wordings</code>
+     * table, via the <code>fk_transaction_op_codes_wordings</code> key.
+     */
+    public CodeWordingsPath fkTransactionOpCodesWordings() {
+        if (_fkTransactionOpCodesWordings == null)
+            _fkTransactionOpCodesWordings = new CodeWordingsPath(this, Keys.TRANSACTION__FK_TRANSACTION_OP_CODES_WORDINGS, null);
+
+        return _fkTransactionOpCodesWordings;
+    }
+
+    private transient CodeWordingsPath _fkTransactionOpErrorCodesWordings;
+
+    /**
+     * Get the implicit join path to the <code>public.code_wordings</code>
+     * table, via the <code>fk_transaction_op_error_codes_wordings</code> key.
+     */
+    public CodeWordingsPath fkTransactionOpErrorCodesWordings() {
+        if (_fkTransactionOpErrorCodesWordings == null)
+            _fkTransactionOpErrorCodesWordings = new CodeWordingsPath(this, Keys.TRANSACTION__FK_TRANSACTION_OP_ERROR_CODES_WORDINGS, null);
+
+        return _fkTransactionOpErrorCodesWordings;
+    }
+
+    private transient CodeWordingsPath _fkTransactionPCodesWordings;
+
+    /**
+     * Get the implicit join path to the <code>public.code_wordings</code>
+     * table, via the <code>fk_transaction_p_codes_wordings</code> key.
+     */
+    public CodeWordingsPath fkTransactionPCodesWordings() {
+        if (_fkTransactionPCodesWordings == null)
+            _fkTransactionPCodesWordings = new CodeWordingsPath(this, Keys.TRANSACTION__FK_TRANSACTION_P_CODES_WORDINGS, null);
+
+        return _fkTransactionPCodesWordings;
+    }
+
     private transient TokenPath _token;
 
     /**
@@ -271,19 +310,6 @@ public class Transaction extends TableImpl<TransactionRecord> {
             _token = new TokenPath(this, Keys.TRANSACTION__FK_TRANSACTION_TOKEN, null);
 
         return _token;
-    }
-
-    private transient CodeWordingsPath _codeWordings;
-
-    /**
-     * Get the implicit join path to the <code>public.code_wordings</code>
-     * table.
-     */
-    public CodeWordingsPath codeWordings() {
-        if (_codeWordings == null)
-            _codeWordings = new CodeWordingsPath(this, Keys.TRANSACTION__FK_TRANSACTIONS_OP_ERROR_CODE_WORDINGS, null);
-
-        return _codeWordings;
     }
 
     @Override
