@@ -3,7 +3,7 @@
   <bpmn:process id="Process_1afpkx9" name="fetchNFTSTimed" isExecutable="true" camunda:historyTimeToLive="2">
     <bpmn:endEvent id="EndEvent_1jaf376">
       <bpmn:incoming>Flow_1kzt4g6</bpmn:incoming>
-      <bpmn:incoming>Flow_0yx8irm</bpmn:incoming>
+      <bpmn:incoming>Flow_1e8dcg6</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="Activity_0n5ggpg" name="Check if runable" camunda:asyncBefore="true" camunda:delegateExpression="${checkTaskRunable}">
       <bpmn:extensionElements>
@@ -48,32 +48,14 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("isRunable") == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_09erudp" sourceRef="Activity_1eh7o64" targetRef="Activity_15s5sow" />
-    <bpmn:serviceTask id="Activity_1l19og9" name="Release Task" camunda:asyncBefore="true" camunda:delegateExpression="${releaseTask}">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="lastUpdateIdentifier">fetchNFT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1stgj0c</bpmn:incoming>
-      <bpmn:outgoing>Flow_0yx8irm</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0yx8irm" sourceRef="Activity_1l19og9" targetRef="EndEvent_1jaf376" />
-    <bpmn:serviceTask id="Activity_0qv3xi2" name="Fetch NFTS Collection Info" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTSInfo}">
+    <bpmn:serviceTask id="Activity_0qv3xi2" name="Execute Script and fill NFTS Collection Info" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTSEntries}">
       <bpmn:incoming>Flow_02d94sv</bpmn:incoming>
       <bpmn:outgoing>Flow_1e8dcg6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_17ms37u" name="Fetch NFTS Collection Entries" camunda:asyncBefore="true" camunda:delegateExpression="${fetchNFTSEntries}">
-      <bpmn:incoming>Flow_1e8dcg6</bpmn:incoming>
-      <bpmn:outgoing>Flow_1stgj0c</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1stgj0c" sourceRef="Activity_17ms37u" targetRef="Activity_1l19og9" />
-    <bpmn:sequenceFlow id="Flow_1e8dcg6" sourceRef="Activity_0qv3xi2" targetRef="Activity_17ms37u" />
+    <bpmn:sequenceFlow id="Flow_1e8dcg6" sourceRef="Activity_0qv3xi2" targetRef="EndEvent_1jaf376" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1afpkx9">
-      <bpmndi:BPMNShape id="EndEvent_1jaf376_di" bpmnElement="EndEvent_1jaf376">
-        <dc:Bounds x="1272" y="102" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_13pvvuu" bpmnElement="Activity_0n5ggpg">
         <dc:Bounds x="280" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -95,23 +77,18 @@
         <dc:Bounds x="680" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0oqulao_di" bpmnElement="Activity_1l19og9">
-        <dc:Bounds x="1130" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1vyg78u" bpmnElement="Activity_17ms37u">
-        <dc:Bounds x="980" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0qwe0ij" bpmnElement="Activity_0qv3xi2">
         <dc:Bounds x="830" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1jaf376_di" bpmnElement="EndEvent_1jaf376">
+        <dc:Bounds x="972" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1kzt4g6_di" bpmnElement="Flow_1kzt4g6">
         <di:waypoint x="450" y="145" />
         <di:waypoint x="450" y="210" />
-        <di:waypoint x="1290" y="210" />
-        <di:waypoint x="1290" y="138" />
+        <di:waypoint x="990" y="210" />
+        <di:waypoint x="990" y="138" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02d94sv_di" bpmnElement="Flow_02d94sv">
         <di:waypoint x="780" y="120" />
@@ -133,17 +110,9 @@
         <di:waypoint x="630" y="120" />
         <di:waypoint x="680" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yx8irm_di" bpmnElement="Flow_0yx8irm">
-        <di:waypoint x="1230" y="120" />
-        <di:waypoint x="1272" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1stgj0c_di" bpmnElement="Flow_1stgj0c">
-        <di:waypoint x="1080" y="120" />
-        <di:waypoint x="1130" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1e8dcg6_di" bpmnElement="Flow_1e8dcg6">
         <di:waypoint x="930" y="120" />
-        <di:waypoint x="980" y="120" />
+        <di:waypoint x="972" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

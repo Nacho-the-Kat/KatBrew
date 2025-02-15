@@ -18,7 +18,7 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,12 +45,13 @@ public class GenerateBalancesService {
             final Map<String, Integer> codes = codeWordingsService.getAsMapWithNull();
             BigInteger opScore = lastUpdate.getData() != null ? new BigInteger(lastUpdate.getData()) : null;
             do {
-                final List<String> toUpdate = new ArrayList<>();
+                log.info("opscore: " + (opScore != null ? opScore.toString() : "null"));
+                final Map<String, Boolean> toUpdate = new HashMap<>();
 
                 final List<Transaction> transactions = dsl.selectFrom(Tables.TRANSACTION)
                         .where(Tables.TRANSACTION.OP_SCORE.gt(opScore == null ? BigInteger.ZERO : opScore).and(Tables.TRANSACTION.OP_ERROR.isNull()))
                         .orderBy(Tables.TRANSACTION.OP_SCORE.asc())
-                        .limit(100000)
+                        .limit(1000000)
                         .fetch()
                         .into(Transaction.class);
 
@@ -65,7 +66,7 @@ public class GenerateBalancesService {
                                     generateNewBalance(token.getPre(), single.getFkToken(), single.getFromAddress());
                                 } else {
                                     deploy.setBalance(token.getPre());
-                                    toUpdate.add(single.getFromAddress() + "-" + single.getFkToken());
+                                    toUpdate.put(single.getFromAddress() + "-" + single.getFkToken(), true);
                                 }
                             }
                         }
@@ -76,9 +77,9 @@ public class GenerateBalancesService {
                             } else {
                                 try {
                                     mint.setBalance(mint.getBalance().add(single.getAmt()));
-                                    toUpdate.add(single.getFromAddress() + "-" + single.getFkToken());
+                                    toUpdate.put(single.getFromAddress() + "-" + single.getFkToken(), true);
                                 } catch (Exception e) {
-                                    log.error("");
+                                    log.error(e.getMessage());
                                 }
                             }
                         }
@@ -86,12 +87,21 @@ public class GenerateBalancesService {
                             Balance from = getBalance(single.getFkToken(), single.getFromAddress());
                             Balance to = getBalance(single.getFkToken(), single.getToAddress());
 
-                            from.setBalance(from.getBalance().subtract(single.getAmt()));
+                            if (from == null) {
+                                //fallback for missing data
+                                generateNewBalance(single.getAmt(), single.getFkToken(), single.getFromAddress());
+                                from = getBalance(single.getFkToken(), single.getFromAddress());
+                                log.info(single.getFromAddress() + " providing ghost data for transaction " + single.getHashRev());
+                            }
+
+                            if (from.getBalance() != null && !from.getBalance().equals(BigInteger.ZERO)) {
+                                from.setBalance(from.getBalance().subtract(single.getAmt()));
+                            }
                             if (to == null) {
                                 generateNewBalance(single.getAmt(), single.getFkToken(), single.getToAddress());
                             } else {
                                 to.setBalance(to.getBalance().add(single.getAmt()));
-                                toUpdate.add(single.getToAddress() + "-" + single.getFkToken());
+                                toUpdate.put(single.getToAddress() + "-" + single.getFkToken(), true);
                             }
                         }
                     } catch (Exception e) {
@@ -111,8 +121,10 @@ public class GenerateBalancesService {
                     opScore = null;
                 }
                 final List<Balance> created = balanceService.batchInsert(balances.values().stream().filter(single -> single.getId() == null).toList());
-                balanceService.batchUpdate(balances.values().stream().filter(single -> toUpdate.contains(single.getHolderId() + "-" + single.getFkToken())).toList());
+                //todo check list takes longer as updateing?
+                balanceService.batchUpdate(balances.values().stream().filter(single -> toUpdate.containsKey(single.getHolderId() + "-" + single.getFkToken())).toList());
                 created.forEach(single -> balances.put(single.getHolderId() + "-" + single.getFkToken(), single));
+                log.info("opscore finished: " + (opScore != null ? opScore.toString() : "null"));
             } while (opScore != null);
 
             final List<Balance> toDelete = dsl.selectFrom(Tables.BALANCE)

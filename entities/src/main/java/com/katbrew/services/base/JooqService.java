@@ -303,8 +303,9 @@ public abstract class JooqService<T extends Serializable, D extends DAOImpl> {
         if (field == null) {
             throw new NotValidException("No id field");
         }
-        dsl.batch(
-                entitiesToUpdate.stream().map(single -> dsl.update(dao.getTable()).set(dsl.newRecord(dao.getTable(), single)).where(field.eq(getFieldValue(single, "id")))).toList()
+        //todo check
+        dsl.batchUpdate(
+                entitiesToUpdate.stream().map(single -> (UpdatableRecord<?>) dsl.newRecord(dao.getTable(), single)).toList()
         ).execute();
     }
 

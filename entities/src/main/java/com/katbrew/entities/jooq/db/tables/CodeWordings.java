@@ -149,17 +149,43 @@ public class CodeWordings extends TableImpl<CodeWordingsRecord> {
         return Arrays.asList(Keys.CODE_WORDINGS_IDENTIFIER_KEY);
     }
 
-    private transient TransactionPath _transaction;
+    private transient TransactionPath _fkTransactionOpCodesWordings;
 
     /**
      * Get the implicit to-many join path to the <code>public.Transaction</code>
-     * table
+     * table, via the <code>fk_transaction_op_codes_wordings</code> key
      */
-    public TransactionPath transaction() {
-        if (_transaction == null)
-            _transaction = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTIONS_OP_ERROR_CODE_WORDINGS.getInverseKey());
+    public TransactionPath fkTransactionOpCodesWordings() {
+        if (_fkTransactionOpCodesWordings == null)
+            _fkTransactionOpCodesWordings = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_OP_CODES_WORDINGS.getInverseKey());
 
-        return _transaction;
+        return _fkTransactionOpCodesWordings;
+    }
+
+    private transient TransactionPath _fkTransactionOpErrorCodesWordings;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.Transaction</code>
+     * table, via the <code>fk_transaction_op_error_codes_wordings</code> key
+     */
+    public TransactionPath fkTransactionOpErrorCodesWordings() {
+        if (_fkTransactionOpErrorCodesWordings == null)
+            _fkTransactionOpErrorCodesWordings = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_OP_ERROR_CODES_WORDINGS.getInverseKey());
+
+        return _fkTransactionOpErrorCodesWordings;
+    }
+
+    private transient TransactionPath _fkTransactionPCodesWordings;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.Transaction</code>
+     * table, via the <code>fk_transaction_p_codes_wordings</code> key
+     */
+    public TransactionPath fkTransactionPCodesWordings() {
+        if (_fkTransactionPCodesWordings == null)
+            _fkTransactionPCodesWordings = new TransactionPath(this, null, Keys.TRANSACTION__FK_TRANSACTION_P_CODES_WORDINGS.getInverseKey());
+
+        return _fkTransactionPCodesWordings;
     }
 
     @Override

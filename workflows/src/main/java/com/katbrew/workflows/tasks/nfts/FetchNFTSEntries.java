@@ -6,11 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry;
+import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionInfo;
 import com.katbrew.helper.KatBrewObjectMapper;
-import com.katbrew.helper.KatBrewWebClient;
 import com.katbrew.helper.NftHelper;
 import com.katbrew.pojos.NFTCollectionEntryInternal;
+import com.katbrew.pojos.NFTCollectionInfoInternal;
+import com.katbrew.services.helper.ImageService;
+import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.NFTCollectionEntryService;
+import com.katbrew.services.tables.NFTCollectionInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -18,102 +22,111 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class FetchNFTSEntries implements JavaDelegate {
 
-    @Value("${data.fetchNFT.collection.entries.baseUrl}")
-    private String fetchBaseUrl;
+    @Value("${data.fetchNFT.scriptPath}")
+    private String scriptPath;
+
+    @Value("${data.fetchNFT.baseDirectory}")
+    private String basePath;
     private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     private final NFTCollectionEntryService nftCollectionEntryService;
+    private final NFTCollectionInfoService nftCollectionInfoService;
+    private final ImageService imageService;
     private final DSLContext dsl;
-    private final WebClient client = KatBrewWebClient.createRedirectWebClient();
+    private final LastUpdateService lastUpdateService;
     private final NftHelper nftHelper = new NftHelper();
-    final List<String> urls = List.of("https://w3s.link/", "https://dweb.link/", "https://ipfs.io/");
-    final Random random = new Random();
-
 
     @Override
     public void execute(DelegateExecution execution) throws JsonProcessingException {
-        log.info("Starting the nft entry sync:" + LocalDateTime.now());
-
-
         final List<BigInteger> newCollectionIds = mapper.convertValue(execution.getVariable("newCollectionIds"), new TypeReference<>() {
         });
 
-        final List<NftCollection> nfts = dsl.selectFrom(Tables.NFT_COLLECTION)
-                .where(Tables.NFT_COLLECTION.ID.in(newCollectionIds))
-                .fetch()
-                .into(NftCollection.class);
-        final ExecutorService executor = Executors.newFixedThreadPool(3);
-        final List<String> endpointInUse = new ArrayList<>();
-        try {
-            nfts.forEach(nft -> {
-                final String prefix = urls.stream().filter(single->!endpointInUse.contains(single)).toList().get(0);
-                endpointInUse.add(prefix);
-                if (nft.getBuri() != null) {
-                    executor.submit(() -> {
-                        log.info("Starting the nft entry sync for: " + nft.getTick());
-                        final List<NftCollectionEntry> list = new ArrayList<>();
-                        for (int i = 1; i < nft.getMax().intValue() + 1; i++) {
-                            long time = (long) (Math.random() * 1000);
-                            long startZeit = System.currentTimeMillis();
-                            while (System.currentTimeMillis() - startZeit < time) {
-                                //empty while
-                            }
-                            if (nft.getBuri() != null) {
-                                String uri = prefix + fetchBaseUrl.replace("{buri}", nft.getBuri().replace("ipfs://", "")).replace("{id}", String.valueOf(i));
-                                try {
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            log.info("Starting the nft entry sync:" + LocalDateTime.now());
 
-                                    final NFTCollectionEntryInternal result = client
-                                            .get()
-                                            .uri(uri)
-                                            .retrieve()
-                                            .bodyToMono(NFTCollectionEntryInternal.class)
-                                            .retry(3)
-                                            .block();
+            final List<NftCollection> nfts = dsl.selectFrom(Tables.NFT_COLLECTION)
+                    .where(Tables.NFT_COLLECTION.ID.in(newCollectionIds))
+                    .fetch()
+                    .into(NftCollection.class);
 
-                                    if (result != null) {
-                                        NftCollectionEntry info;
-                                        try {
-                                            info = nftHelper.convertEntryToDbEntry(result);
-                                        } catch (JsonProcessingException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        info.setFkCollection(nft.getId());
-                                        list.add(info);
-                                    }
-                                } catch (Exception e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
+            for (final NftCollection single : nfts) {
+                log.info("Starting the nft entry:" + single.getTick());
+                String[] execute = {
+                        "bash",
+                        scriptPath,
+                        single.getTick(),
+                        single.getBuri().replace("ipfs://", "")
+                };
+                try {
+                    ProcessBuilder pb = new ProcessBuilder(execute);
+                    Process process = pb.start();
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            log.info(line); // Printing the script output
                         }
-                        nftCollectionEntryService.batchInsert(list);
-                    });
+                    } catch (IOException e) {
+                        log.info("Error on reading the script: " + e.getMessage());
+                    }
+
+                    generateCollectionEntries(single);
+
+                    log.info("done with nft info " + single.getTick());
+                } catch (Exception e) {
+                    System.out.println("Exception Raised" + e.toString());
                 }
-            });
-            executor.shutdown();
+            }
+            lastUpdateService.releaseTask("fetchNFT");
+        });
+        executorService.shutdown();
+    }
+
+    private void generateCollectionEntries(final NftCollection collection) throws IOException {
+        final Path path = Paths.get(basePath, "metadata", collection.getBuri());
+
+        final File dir = path.toFile();
+        final List<File> infos = Arrays.stream(dir.listFiles()).filter(file -> file.getName().equals("collection")).toList();
+        if (!infos.isEmpty()) {
+            final NftCollectionInfo info = nftHelper.convertInfoToDbEntry(mapper.readValue(infos.get(0), NFTCollectionInfoInternal.class));
+            info.setFkCollection(collection.getId());
+            nftCollectionInfoService.insert(info);
+        }
+        final List<NftCollectionEntry> list = Arrays.stream(dir.listFiles()).filter(file -> !file.getName().equals("collection")).map(file -> {
             try {
-                executor.awaitTermination(60, TimeUnit.MINUTES);
-            } catch (InterruptedException e) {
+                final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
+                entry.setFkCollection(collection.getId());
+                return entry;
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-        log.info("Finished the nft entry sync:" + LocalDateTime.now());
+        }).toList();
+
+        nftCollectionEntryService.batchInsert(list);
+    }
+
+    private void generateThumbnails(final NftCollection collection) {
+        final Path path = Paths.get(basePath, "images", collection.getTick());
+        final List<File> infos = Arrays.stream(path.toFile().listFiles()).toList();
+//        imageService.generateThumbnail();
     }
 }

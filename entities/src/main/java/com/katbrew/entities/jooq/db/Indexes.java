@@ -26,13 +26,12 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index ERROR_CODES = Internal.createIndex(DSL.name("error_codes"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.OP_ERROR }, false);
-    public static final Index IDX_TOKEN_SCORE = Internal.createIndex(DSL.name("idx_token_score"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.FK_TOKEN, Transaction.TRANSACTION.OP_SCORE.desc() }, false);
     public static final Index NFT_COLLECTION_ENTRY_FK_COLLECTION_INDEX = Internal.createIndex(DSL.name("nft_collection_entry_fk_collection_index"), NftCollectionEntry.NFT_COLLECTION_ENTRY, new OrderField[] { NftCollectionEntry.NFT_COLLECTION_ENTRY.FK_COLLECTION }, false);
     public static final Index NFT_COLLECTION_INFO_FK_COLLECTION_INDEX = Internal.createIndex(DSL.name("nft_collection_info_fk_collection_index"), NftCollectionInfo.NFT_COLLECTION_INFO, new OrderField[] { NftCollectionInfo.NFT_COLLECTION_INFO.FK_COLLECTION }, false);
     public static final Index NFT_COLLECTION_TICK_INDEX = Internal.createIndex(DSL.name("nft_collection_tick_index"), NftCollection.NFT_COLLECTION, new OrderField[] { NftCollection.NFT_COLLECTION.TICK }, false);
     public static final Index NFT_TRANSACTION_FK_INDEX = Internal.createIndex(DSL.name("nft_transaction_fk_index"), NftTransaction.NFT_TRANSACTION, new OrderField[] { NftTransaction.NFT_TRANSACTION.FK_NFT_COLLECTION }, false);
     public static final Index NFT_TRANSACTION_INDEX_OP_SCORE = Internal.createIndex(DSL.name("nft_transaction_index_op_score"), NftTransaction.NFT_TRANSACTION, new OrderField[] { NftTransaction.NFT_TRANSACTION.OP_SCORE }, false);
     public static final Index TRANSACTION_FK_INDEX = Internal.createIndex(DSL.name("transaction_fk_index"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.FK_TOKEN }, false);
+    public static final Index TRANSACTION_INDEX_OP = Internal.createIndex(DSL.name("transaction_index_op"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.OP }, false);
     public static final Index TRANSACTION_INDEX_OP_SCORE = Internal.createIndex(DSL.name("transaction_index_op_score"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.OP_SCORE }, false);
 }
