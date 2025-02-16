@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,11 +50,11 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
             end = LocalDateTime.now();
         }
         com.katbrew.entities.jooq.db.tables.Transaction transaction = Tables.TRANSACTION;
-        List<Field> coll = new ArrayList<>(List.of(transaction.fields()));
+        List<Field> coll = new ArrayList<>(List.of(transaction.ID, transaction.FK_TOKEN, transaction.OP));
         coll.add(Tables.TOKEN.TICK);
         Map<String, Integer> codes = codeWordingsService.getAsMapWithNull();
-
-        return context.select(coll)
+        Map<String, Integer> mints = new HashMap<>();
+        final List<Map<String, Object>> mintList = context.select(coll)
                 .from(transaction)
                 .join(Tables.TOKEN)
                 .on(transaction.FK_TOKEN.eq(Tables.TOKEN.ID))
@@ -66,5 +67,13 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
                 .limit(50000)
                 .fetch()
                 .intoMaps();
+        mintList.forEach(single->{
+            final String tick = (String) single.get("tick");
+            if (!mints.containsKey(tick)){
+                mints.put(tick, 0);
+            }
+            mints.put(tick, mints.get(tick) +1);
+        });
+        return mints.entrySet().stream().map(single -> Map.of("tick", single.getKey(), "mintTotal", single.getValue())).toList();
     }
 }

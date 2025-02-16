@@ -40,6 +40,13 @@ public class ImageService {
         }
     }
 
+    public void generateThumbnail(final File file, final String savePath, final String filename, final String extension, final int thumbnailWidth, final int thumbnailHeight) throws IOException {
+        if (file.exists()) {
+            final BufferedImage originalImage = ImageIO.read(new File(file.toPath().toString()));
+            generateThumbnailAndSave(originalImage, savePath, filename, extension, thumbnailWidth, thumbnailHeight);
+        }
+    }
+
     public String uploadFile(final MultipartFile file, final String path, final String filename) throws IOException {
         if (file != null && !file.isEmpty()) {
             String[] nameSplit = file.getOriginalFilename().split("\\.");
@@ -47,10 +54,22 @@ public class ImageService {
                 throw new NotValidException("to much dots in filename");
             }
 
-            final Path filepath = Paths.get(root, path,  filename + "." + nameSplit[1]);
+            final Path filepath = Paths.get(root, path, filename + "." + nameSplit[1]);
             file.transferTo(filepath);
             return filepath.toString();
         }
         return null;
+    }
+
+    private void generateThumbnailAndSave(final BufferedImage originalImage, final String savePath, final String filename, final String extension, final int thumbnailWidth, final int thumbnailHeight) throws IOException {
+        final BufferedImage thumbnail = new BufferedImage(thumbnailWidth, thumbnailHeight, 1);
+        final Graphics2D g = thumbnail.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
+        g.dispose();
+
+        final String outputThumbnailPath = Paths.get(savePath, filename).toString();
+        final File outputThumbnailFile = new File(outputThumbnailPath);
+        ImageIO.write(thumbnail, extension, outputThumbnailFile);
     }
 }
