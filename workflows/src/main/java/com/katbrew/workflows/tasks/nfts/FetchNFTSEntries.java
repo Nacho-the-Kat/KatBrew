@@ -17,12 +17,15 @@ import com.katbrew.services.tables.NFTCollectionEntryService;
 import com.katbrew.services.tables.NFTCollectionInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,6 +50,8 @@ public class FetchNFTSEntries implements JavaDelegate {
 
     @Value("${data.fetchNFT.baseDirectory}")
     private String basePath;
+    @Value("${filesystem.krc721-static-path}")
+    private String krc721staticPath;
     private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     private final NFTCollectionEntryService nftCollectionEntryService;
@@ -63,7 +69,6 @@ public class FetchNFTSEntries implements JavaDelegate {
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             log.info("Starting the nft entry sync:" + LocalDateTime.now());
-
             final List<NftCollection> nfts = dsl.selectFrom(Tables.NFT_COLLECTION)
                     .where(Tables.NFT_COLLECTION.ID.in(newCollectionIds))
                     .fetch()
@@ -90,12 +95,14 @@ public class FetchNFTSEntries implements JavaDelegate {
                     }
 
                     generateCollectionEntries(single);
+                    generateThumbnails(single);
 
                     log.info("done with nft info " + single.getTick());
                 } catch (Exception e) {
-                    System.out.println("Exception Raised" + e.toString());
+                    System.out.println("Exception Raised" + e.getMessage());
                 }
             }
+            log.info("done with generating nft entry and collection infos");
             lastUpdateService.releaseTask("fetchNFT");
         });
         executorService.shutdown();
@@ -105,13 +112,13 @@ public class FetchNFTSEntries implements JavaDelegate {
         final Path path = Paths.get(basePath, "metadata", collection.getBuri());
 
         final File dir = path.toFile();
-        final List<File> infos = Arrays.stream(dir.listFiles()).filter(file -> file.getName().equals("collection")).toList();
+        final List<File> infos = Arrays.stream(Objects.requireNonNullElse(dir.listFiles(), new File[]{})).filter(file -> file.getName().contains("collection")).toList();
         if (!infos.isEmpty()) {
             final NftCollectionInfo info = nftHelper.convertInfoToDbEntry(mapper.readValue(infos.get(0), NFTCollectionInfoInternal.class));
             info.setFkCollection(collection.getId());
             nftCollectionInfoService.insert(info);
         }
-        final List<NftCollectionEntry> list = Arrays.stream(dir.listFiles()).filter(file -> !file.getName().equals("collection")).map(file -> {
+        final List<NftCollectionEntry> list = Arrays.stream(Objects.requireNonNullElse(dir.listFiles(), new File[]{})).filter(file -> !file.getName().contains("collection")).map(file -> {
             try {
                 final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
                 entry.setFkCollection(collection.getId());
@@ -124,9 +131,17 @@ public class FetchNFTSEntries implements JavaDelegate {
         nftCollectionEntryService.batchInsert(list);
     }
 
-    private void generateThumbnails(final NftCollection collection) {
+    private void generateThumbnails(final NftCollection collection) throws IOException {
         final Path path = Paths.get(basePath, "images", collection.getTick());
-        final List<File> infos = Arrays.stream(path.toFile().listFiles()).toList();
-//        imageService.generateThumbnail();
+        final List<File> images = Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles(), new File[]{})).toList();
+        final Path savePath = Paths.get(krc721staticPath, "thumbnails", collection.getTick());
+        if (!savePath.toFile().exists()) {
+            savePath.toFile().mkdirs();
+        }
+        for (final File file : images) {
+            final BufferedImage img = ImageIO.read(file);
+            double ratio = (double) img.getWidth() / img.getHeight();
+            imageService.generateThumbnail(file, savePath.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 403, (int) (403 / ratio));
+        }
     }
 }
