@@ -58,10 +58,12 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
                 .join(Tables.TOKEN)
                 .on(transaction.FK_TOKEN.eq(Tables.TOKEN.ID))
                 .where(List.of(
-                        transaction.MTS_ADD.ge(BigInteger.valueOf(start.toEpochSecond(ZoneOffset.UTC))),
-                        transaction.MTS_ADD.le(BigInteger.valueOf(end.toEpochSecond(ZoneOffset.UTC))),
+                        transaction.MTS_ADD.ge(BigInteger.valueOf(start.toInstant(ZoneOffset.UTC).toEpochMilli())),
+                        transaction.MTS_ADD.le(BigInteger.valueOf(end.toInstant(ZoneOffset.UTC).toEpochMilli())),
                         transaction.OP.eq(codes.get("mint"))
                 ))
+                .orderBy(Tables.TRANSACTION.OP_SCORE.desc())
+                .limit(50000)
                 .fetch()
                 .intoMaps();
     }

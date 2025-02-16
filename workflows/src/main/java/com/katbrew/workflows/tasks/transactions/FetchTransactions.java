@@ -140,22 +140,12 @@ public class FetchTransactions implements JavaDelegate {
             transactionService.batchUpdate(toUpdate);
             toInsert.sort(Comparator.comparing(Transaction::getOpScore));
             final List<Transaction> inserted = transactionService.batchInsertWithSub(toInsert);
-            final List<Token> tokenToUpdate = new ArrayList<>();
             final List<FetchData> fetchDataToUpdate = new ArrayList<>();
             final List<FetchData> fetchDataToInsert = new ArrayList<>();
             for (final Token token : tokens) {
                 //we update/add the transaction count, no full fetch needed;
                 final List<Transaction> tokenTransaction = inserted.stream().filter(single -> single.getFkToken().equals(token.getId())).sorted(Comparator.comparing(Transaction::getOpScore)).toList();
                 if (!tokenTransaction.isEmpty()) {
-                    final int transferAmount = tokenTransaction.stream().filter(single -> single.getOp().equals(codes.get("transfer")) && single.getOpError() == null).toList().size();
-                    final int mintAmount = tokenTransaction.stream().filter(single -> single.getOp().equals(codes.get("mint")) && single.getOpError() == null).toList().size();
-                    token.setTransferTotal(
-                            token.getTransferTotal().add(BigInteger.valueOf(transferAmount))
-                    );
-                    token.setMintTotal(
-                            token.getMintTotal() + mintAmount
-                    );
-                    tokenToUpdate.add(token);
                     final String identifier = "fetchTokenTransactionsLastCursor" + token.getTick();
                     final FetchData lastUpdate = fetchDataService.findByIdentifier(identifier);
                     if (lastUpdate == null) {
@@ -169,7 +159,6 @@ public class FetchTransactions implements JavaDelegate {
                     }
                 }
             }
-            tokenService.batchUpdate(tokenToUpdate);
             fetchDataService.batchUpdate(fetchDataToUpdate);
             fetchDataService.batchInsert(fetchDataToInsert);
             final LastUpdate lastUpdate = lastUpdateService.findByIdentifier("fetchTransactions");
@@ -180,8 +169,6 @@ public class FetchTransactions implements JavaDelegate {
             toInsert.clear();
             toUpdate.clear();
             log.info("Finished the transaction sync:" + LocalDateTime.now());
-            log.info("Starting the Balance generating: " + LocalDateTime.now());
-//            generateBalancesService.generateBalances();
             executorService.shutdown();
         });
     }
@@ -247,9 +234,6 @@ public class FetchTransactions implements JavaDelegate {
                 .collect(Collectors.toMap(Transaction::getHashRev, single -> single));
 
         transactions.sort(Comparator.comparing(Transaction::getOpScore));
-
-//        final List<Transaction> toUpdate = new ArrayList<>();
-//        final List<Transaction> toInsert = new ArrayList<>();
 
         transactions.forEach(transaction -> {
             final Transaction dbEntry = dbEntries.get(transaction.getHashRev());
