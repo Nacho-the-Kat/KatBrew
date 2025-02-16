@@ -1,4 +1,4 @@
-package com.katbrew.workflows.tasks;
+package com.katbrew.workflows.tasks.token;
 
 import com.katbrew.entities.jooq.db.tables.pojos.LastUpdate;
 import com.katbrew.entities.jooq.db.tables.pojos.Token;
