@@ -51,8 +51,8 @@ public class FileUploadController {
         if (token == null) {
             throw new NotFoundException("Token tick not found");
         }
-        final String filePath = imageService.uploadFile(upload, "krc20-logos", token.getTick());
-        imageService.generateThumbnail(Paths.get(root, filePath), "krc20-thumbnails", 100);
+        final String filePath = imageService.uploadFile(upload, Paths.get("krc20", "logos").toString(), token.getTick());
+        imageService.generateThumbnail(Paths.get(root, filePath), Paths.get("krc20", "thumbnails").toString(), 100);
         token.setLogo(filePath);
         tokenService.update(token);
     }

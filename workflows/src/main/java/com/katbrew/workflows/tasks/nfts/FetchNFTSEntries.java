@@ -35,9 +35,7 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -120,7 +118,9 @@ public class FetchNFTSEntries implements JavaDelegate {
             info.setFkCollection(collection.getId());
             nftCollectionInfoService.insert(info);
         }
-        final List<NftCollectionEntry> list = Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> !name.contains("collection") && !name.contains("DS_Store") && !name.contains("metadata")), new File[]{})).map(file -> {
+        final List<File> files = new ArrayList<>(Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> !name.contains("collection") && !name.contains("DS_Store") && !name.contains("metadata")), new File[]{})).toList());
+        files.sort(Comparator.comparingInt(single -> Integer.parseInt(single.getName().replace(".json", ""))));
+        final List<NftCollectionEntry> list = files.stream().map(file -> {
             try {
                 final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
                 entry.setFkCollection(collection.getId());
@@ -136,7 +136,12 @@ public class FetchNFTSEntries implements JavaDelegate {
     private void generateThumbnails(final NftCollection collection) throws InterruptedException {
         log.info("Starting to generate the images");
         final Path path = Paths.get(basePath, "images", collection.getTick());
-        final List<File> images = Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles((dir, name) -> !name.contains("DS_Store")), new File[]{})).toList();
+        final List<File> images = new ArrayList<>(Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles((directory, name) -> !name.contains("DS_Store")), new File[]{})).toList());
+        if (!images.isEmpty()) {
+            final String extension = "." + FilenameUtils.getExtension(images.get(0).getName());
+            images.sort(Comparator.comparingInt(single -> Integer.parseInt(single.getName().replace(extension, ""))));
+        }
+
         final Path savePath = Paths.get(krc721staticPath, "thumbnails", collection.getTick());
         if (!savePath.toFile().exists()) {
             savePath.toFile().mkdirs();
