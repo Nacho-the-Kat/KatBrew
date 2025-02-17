@@ -3,6 +3,7 @@ package com.katbrew.workflows.tasks.nfts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -112,13 +114,13 @@ public class FetchNFTSEntries implements JavaDelegate {
         final Path path = Paths.get(basePath, "metadata", collection.getBuri());
 
         final File dir = path.toFile();
-        final List<File> infos = Arrays.stream(Objects.requireNonNullElse(dir.listFiles(), new File[]{})).filter(file -> file.getName().contains("collection")).toList();
+        final List<File> infos = Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> name.contains("collection")), new File[]{})).toList();
         if (!infos.isEmpty()) {
             final NftCollectionInfo info = nftHelper.convertInfoToDbEntry(mapper.readValue(infos.get(0), NFTCollectionInfoInternal.class));
             info.setFkCollection(collection.getId());
             nftCollectionInfoService.insert(info);
         }
-        final List<NftCollectionEntry> list = Arrays.stream(Objects.requireNonNullElse(dir.listFiles(), new File[]{})).filter(file -> !file.getName().contains("collection")).map(file -> {
+        final List<NftCollectionEntry> list = Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> !name.contains("collection") && !name.contains("DS_Store") && !name.contains("metadata")), new File[]{})).map(file -> {
             try {
                 final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
                 entry.setFkCollection(collection.getId());
@@ -131,17 +133,28 @@ public class FetchNFTSEntries implements JavaDelegate {
         nftCollectionEntryService.batchInsert(list);
     }
 
-    private void generateThumbnails(final NftCollection collection) throws IOException {
+    private void generateThumbnails(final NftCollection collection) throws InterruptedException {
+        log.info("Starting to generate the images");
         final Path path = Paths.get(basePath, "images", collection.getTick());
-        final List<File> images = Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles(), new File[]{})).toList();
+        final List<File> images = Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles((dir, name) -> !name.contains("DS_Store")), new File[]{})).toList();
         final Path savePath = Paths.get(krc721staticPath, "thumbnails", collection.getTick());
         if (!savePath.toFile().exists()) {
             savePath.toFile().mkdirs();
         }
-        for (final File file : images) {
-            final BufferedImage img = ImageIO.read(file);
-            double ratio = (double) img.getWidth() / img.getHeight();
-            imageService.generateThumbnail(file, savePath.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 403, (int) (403 / ratio));
-        }
+        final ExecutorService executor = Executors.newFixedThreadPool(100);
+        Lists.partition(images, 100).forEach(batch -> executor.submit(() -> {
+            for (final File file : batch) {
+                try {
+                    final BufferedImage img = ImageIO.read(file);
+                    double ratio = (double) img.getWidth() / img.getHeight();
+                    imageService.generateThumbnail(file, savePath.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 403, (int) (403 / ratio));
+                } catch (IOException e) {
+                    log.error("Failed to generate Image " + file.getName() + " " + e.getMessage());
+                }
+            }
+        }));
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.HOURS);
+        log.info("Finished to generate the images");
     }
 }
