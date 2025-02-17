@@ -1,17 +1,14 @@
 package com.katbrew.workflows.tasks.transactions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.*;
 import com.katbrew.helper.EntityConverter;
 import com.katbrew.helper.KatBrewHelper;
-import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.pojos.TransactionExternal;
 import com.katbrew.services.tables.*;
 import com.katbrew.workflows.helper.ParsingResponse;
 import com.katbrew.workflows.helper.ParsingResponsePagedNFT;
-import com.katbrew.workflows.tasks.balance.GenerateBalancesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -37,7 +34,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FetchTransactions implements JavaDelegate {
-    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
 
     @Value("${data.fetchTokenBaseUrl}")
     private String fetchBaseUrl;
@@ -50,7 +46,6 @@ public class FetchTransactions implements JavaDelegate {
     private final HolderService holderService;
     private final EntityConverter entityConverter;
     public final DSLContext dsl;
-    private final GenerateBalancesService generateBalancesService;
     public final List<Transaction> toInsert = new ArrayList<>();
     public final List<Transaction> toUpdate = new ArrayList<>();
 
@@ -101,7 +96,6 @@ public class FetchTransactions implements JavaDelegate {
                             FetchData lastCursor = safety != null && safety.getData() != null
                                     ? safety
                                     : lastUpdates.get("fetchTokenTransactionsLastCursor" + token.getTick());
-                            log.info("Start fetching the Transactions for tick " + token.getTick() + ", last cursor: " + (lastCursor != null ? lastCursor.getData() : "not exists"));
 
                             final List<TransactionExternal> result = helper.fetchPaginated(
                                     uri,
@@ -122,7 +116,6 @@ public class FetchTransactions implements JavaDelegate {
                                 log.error("no transactions were loaded for tick " + token.getTick());
                             }
 
-                            log.info("Finished the transaction fetching for tick: " + token.getTick() + " at " + LocalDateTime.now());
                         } catch (Exception e) {
                             log.error(e.getMessage());
                         }
