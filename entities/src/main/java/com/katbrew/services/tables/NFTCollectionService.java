@@ -21,7 +21,7 @@ public class NFTCollectionService extends JooqService<NftCollection, NftCollecti
 
     public List<NftCollection> getForList(final Integer offset) {
         return dsl.selectFrom(collectionTable)
-                .orderBy(collectionTable.OP_SCORE_ADD.asc())
+                .orderBy(collectionTable.ID.desc())
                 .limit(1000)
                 .offset(Objects.requireNonNullElse(offset, 0))
                 .fetch()
