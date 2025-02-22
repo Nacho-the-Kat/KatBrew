@@ -92,9 +92,8 @@ public class FetchNFTSEntries implements JavaDelegate {
                     if (!Paths.get(tarFile + ".tar").toFile().exists()) {
                         fetchMetadata(single, tarFile, tarParent);
                     }
-                    if (!metadataDirExtract.toFile().exists()) {
-                        extractTar(metadataDirExtract, tarFile, true);
-                    }
+
+                    extractTar(metadataDirExtract, tarFile, true);
 
                     final List<NftCollectionEntry> entries = generateCollectionEntries(single);
                     final String imgsBuri = entries.get(entries.size() - 1).getImage().replace("ipfs://", "").split("/")[0];
@@ -115,11 +114,9 @@ public class FetchNFTSEntries implements JavaDelegate {
                         imagesDir.toFile().mkdirs();
                     }
                     final Path staticFullFolder = Paths.get(imagesDir.toString(), single.getTick());
-                    if (!staticFullFolder.toFile().exists()) {
-                        staticFullFolder.toFile().mkdirs();
-                        extractTar(staticFullFolder, imgFolderPath, true);
-                        generateThumbnails(single);
-                    }
+                    staticFullFolder.toFile().mkdirs();
+                    extractTar(staticFullFolder, imgFolderPath, true);
+                    generateThumbnails(single);
 
                     log.info("done with nft info " + single.getTick());
                 } catch (Exception e) {
