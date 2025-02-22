@@ -216,26 +216,33 @@ public class FetchNFTSEntries implements JavaDelegate {
 
             final String finalPrefix = prefix;
             IntStream.range(0, subSets.size()).forEach(i -> executorService.submit(() -> {
-                final String port = "500" + (i + 1);
+                final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
                 subSets.get(i).forEach(single -> {
                     final Path tarPath = Paths.get(tarFile.toString(), single + ".tar");
+//                    final ProcessBuilder pb = new ProcessBuilder(
+//                            "curl",
+//                            "-L",
+//                            "-X",
+//                            "POST",
+//                            "http://localhost:" + port + "/api/v0/get?arg=" + collection.getBuri() + "/" + single + finalPrefix,
+//                            "--output",
+//                            tarPath.toString()
+//                    );
                     final ProcessBuilder pb = new ProcessBuilder(
-                            "curl",
-                            "-L",
-                            "-X",
-                            "POST",
-                            "http://localhost:" + port + "/api/v0/get?arg=" + collection.getBuri() + "/" + single + finalPrefix,
-                            "--output",
+                            "bash",
+                            scriptPath,
+                            collection.getBuri() + "/" + single + finalPrefix,
+                            "GET",
                             tarPath.toString()
                     );
                     awaitProcess(pb);
-                    extractTar(tarFile, tarPath, false);
+//                    extractTar(tarFile, tarPath, false);
 
-                    try {
-                        Files.deleteIfExists(tarPath);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+//                    try {
+//                        Files.deleteIfExists(tarPath);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
                 });
             }));
             executorService.shutdown();
@@ -260,7 +267,7 @@ public class FetchNFTSEntries implements JavaDelegate {
         try {
             final List<List<NftCollectionEntry>> subSets = Lists.partition(entries, (int) Math.ceil((entries.size() / 4.0)));
             final Path imagePath = Paths.get(compressedImageDir.toString(), imageBuri);
-            log.info(imagePath.toString());
+
             if (Paths.get(compressedImageDir.toString(), imageBuri + ".tar").toFile().exists()) {
                 log.info("Tar already exist, no download");
             } else {
@@ -268,18 +275,25 @@ public class FetchNFTSEntries implements JavaDelegate {
                 final ExecutorService executorService = Executors.newFixedThreadPool(4);
                 IntStream.range(0, subSets.size()).forEach(i -> {
                     executorService.submit(() -> {
-                        final String port = "808" + (i + 1);
+                        final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
                         subSets.get(i).forEach(single -> {
 
                             final String splitted = single.getImage().split("/")[1];
                             final String img = imagePath + "/" + splitted;
+//                            final ProcessBuilder pb = new ProcessBuilder(
+//                                    "curl",
+//                                    "-L",
+//                                    "-X",
+//                                    "GET",
+//                                    "http://localhost:" + port + "/ipfs/" + single.getImage(),
+//                                    "--output",
+//                                    img
+//                            );
                             final ProcessBuilder pb = new ProcessBuilder(
-                                    "curl",
-                                    "-L",
-                                    "-X",
+                                    "bash",
+                                    scriptPath,
+                                    single.getImage(),
                                     "GET",
-                                    "http://localhost:" + port + "/ipfs/" + single.getImage(),
-                                    "--output",
                                     img
                             );
                             awaitProcess(pb);
