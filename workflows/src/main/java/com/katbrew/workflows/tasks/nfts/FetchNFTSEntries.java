@@ -371,7 +371,7 @@ public class FetchNFTSEntries implements JavaDelegate {
     private void awaitProcess(final ProcessBuilder pb) {
         try {
             final Process process = pb.start();
-            readProcess(process);
+//            readProcess(process);
             process.waitFor();
         } catch (Exception e) {
             log.error(e.getMessage());
