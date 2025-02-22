@@ -291,11 +291,13 @@ public class FetchNFTSEntries implements JavaDelegate {
                 packTar(imagePath, Paths.get(imagePath + ".tar"));
 
                 //deleting the unpacked folder in compressed directory
-                try {
-                    Files.deleteIfExists(imagePath);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                ProcessBuilder pbRemove = new ProcessBuilder(
+                        "rm",
+                        "-rf",
+                        imagePath.toString()
+                );
+                awaitProcess(pbRemove);
+
                 log.info("Finished the image download for " + imageBuri);
             }
         } catch (Exception e) {
