@@ -40,6 +40,10 @@ public class ImageService {
         }
     }
 
+    public void generateThumbnail(final BufferedImage originalImage, final String savePath, final String filename, final String extension, final int thumbnailWidth, final int thumbnailHeight) throws IOException {
+        generateThumbnailAndSave(originalImage, savePath, filename, extension, thumbnailWidth, thumbnailHeight);
+    }
+
     public void generateThumbnail(final File file, final String savePath, final String filename, final String extension, final int thumbnailWidth, final int thumbnailHeight) throws IOException {
         if (file.exists()) {
             final BufferedImage originalImage = ImageIO.read(new File(file.toPath().toString()));
