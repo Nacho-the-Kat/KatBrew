@@ -92,8 +92,10 @@ public class FetchNFTSEntries implements JavaDelegate {
                     if (!Paths.get(tarFile + ".tar").toFile().exists()) {
                         fetchMetadata(single, tarFile, tarParent);
                     }
+                    if (!metadataDirExtract.toFile().exists()) {
+                        extractTar(metadataDirExtract, tarFile, true);
+                    }
 
-                    extractTar(metadataDirExtract, tarFile, true);
                     final List<NftCollectionEntry> entries = generateCollectionEntries(single);
                     final String imgsBuri = entries.get(entries.size() - 1).getImage().replace("ipfs://", "").split("/")[0];
 
@@ -110,13 +112,14 @@ public class FetchNFTSEntries implements JavaDelegate {
 
                     final Path imagesDir = Paths.get(krc721staticPath, "full");
                     if (!imagesDir.toFile().exists()) {
-                        log.info(imagesDir.toString());
                         imagesDir.toFile().mkdirs();
                     }
                     final Path staticFullFolder = Paths.get(imagesDir.toString(), single.getTick());
-                    staticFullFolder.toFile().mkdirs();
-                    extractTar(staticFullFolder, imgFolderPath, true);
-                    generateThumbnails(single);
+                    if (!staticFullFolder.toFile().exists()) {
+                        staticFullFolder.toFile().mkdirs();
+                        extractTar(staticFullFolder, imgFolderPath, true);
+                        generateThumbnails(single);
+                    }
 
                     log.info("done with nft info " + single.getTick());
                 } catch (Exception e) {
@@ -218,7 +221,7 @@ public class FetchNFTSEntries implements JavaDelegate {
             IntStream.range(0, subSets.size()).forEach(i -> executorService.submit(() -> {
                 final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
                 subSets.get(i).forEach(single -> {
-                    final Path tarPath = Paths.get(tarFile.toString(), single + ".tar");
+                    final Path dataPath = Paths.get(tarFile.toString(), single + finalPrefix);
 //                    final ProcessBuilder pb = new ProcessBuilder(
 //                            "curl",
 //                            "-L",
@@ -232,8 +235,7 @@ public class FetchNFTSEntries implements JavaDelegate {
                             "bash",
                             scriptPath,
                             collection.getBuri() + "/" + single + finalPrefix,
-                            "GET",
-                            tarPath.toString()
+                            dataPath.toString()
                     );
                     awaitProcess(pb);
 //                    extractTar(tarFile, tarPath, false);
@@ -293,7 +295,6 @@ public class FetchNFTSEntries implements JavaDelegate {
                                     "bash",
                                     scriptPath,
                                     single.getImage(),
-                                    "GET",
                                     img
                             );
                             awaitProcess(pb);
