@@ -32,6 +32,9 @@
             <column type="text" name="op_score_add"/>
             <column type="text" name="op_score_mod"/>
             <column type="text" name="royalty_fee"/>
+            <column type="boolean" name="completed" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createIndex tableName="nft_collection" indexName="nft_collection_tick_index">
