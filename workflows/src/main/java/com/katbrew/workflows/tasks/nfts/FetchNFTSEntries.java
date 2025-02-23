@@ -35,7 +35,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -219,15 +218,6 @@ public class FetchNFTSEntries implements JavaDelegate {
                 final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
                 subSets.get(i).forEach(single -> {
                     final Path dataPath = Paths.get(tarFile.toString(), single + finalPrefix);
-//                    final ProcessBuilder pb = new ProcessBuilder(
-//                            "curl",
-//                            "-L",
-//                            "-X",
-//                            "POST",
-//                            "http://localhost:" + port + "/api/v0/get?arg=" + collection.getBuri() + "/" + single + finalPrefix,
-//                            "--output",
-//                            tarPath.toString()
-//                    );
                     final ProcessBuilder pb = new ProcessBuilder(
                             "bash",
                             scriptPath,
@@ -235,13 +225,6 @@ public class FetchNFTSEntries implements JavaDelegate {
                             dataPath.toString()
                     );
                     awaitProcess(pb);
-//                    extractTar(tarFile, tarPath, false);
-
-//                    try {
-//                        Files.deleteIfExists(tarPath);
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
                 });
             }));
             executorService.shutdown();
@@ -279,15 +262,6 @@ public class FetchNFTSEntries implements JavaDelegate {
 
                             final String splitted = single.getImage().split("/")[1];
                             final String img = imagePath + "/" + splitted;
-//                            final ProcessBuilder pb = new ProcessBuilder(
-//                                    "curl",
-//                                    "-L",
-//                                    "-X",
-//                                    "GET",
-//                                    "http://localhost:" + port + "/ipfs/" + single.getImage(),
-//                                    "--output",
-//                                    img
-//                            );
                             final ProcessBuilder pb = new ProcessBuilder(
                                     "bash",
                                     scriptPath,
@@ -317,25 +291,26 @@ public class FetchNFTSEntries implements JavaDelegate {
         }
     }
 
-    private void packTar(final Path folder, final Path tar) throws IOException {
-        final FileOutputStream fos = new FileOutputStream(tar.toString());
-        final TarArchiveOutputStream tarOs = new TarArchiveOutputStream(fos);
-
-        final File[] files = folder.toFile().listFiles();
-
-        if (files != null) {
-            for (final File file : files) {
-                if (file.isFile()) {
-                    TarArchiveEntry entry = new TarArchiveEntry(file, file.getName());
-                    tarOs.putArchiveEntry(entry);
-                    FileInputStream fis = new FileInputStream(file);
-                    IOUtils.copy(fis, tarOs);
-                    tarOs.closeArchiveEntry();
-                    fis.close();
+    private void packTar(final Path folder, final Path tar) {
+        try (final FileOutputStream fos = new FileOutputStream(tar.toString())) {
+            try (final TarArchiveOutputStream tarOs = new TarArchiveOutputStream(fos)) {
+                final File[] files = folder.toFile().listFiles();
+                if (files != null) {
+                    for (final File file : files) {
+                        if (file.isFile()) {
+                            TarArchiveEntry entry = new TarArchiveEntry(file, file.getName());
+                            tarOs.putArchiveEntry(entry);
+                            try (final FileInputStream fis = new FileInputStream(file)) {
+                                IOUtils.copy(fis, tarOs);
+                                tarOs.closeArchiveEntry();
+                            }
+                        }
+                    }
                 }
             }
+        } catch (final IOException ex) {
+            log.error("error on creating the tar " + ex.getMessage());
         }
-        tarOs.close();
     }
 
     private void extractTar(final Path metadataDir, final Path tarFile, final Boolean withLog) {
