@@ -245,6 +245,22 @@ public class NftCollectionRecord extends UpdatableRecordImpl<NftCollectionRecord
         return (BigInteger) get(13);
     }
 
+    /**
+     * Setter for <code>public.nft_collection.completed</code>.
+     */
+    @Override
+    public void setCompleted(Boolean value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.nft_collection.completed</code>.
+     */
+    @Override
+    public Boolean getCompleted() {
+        return (Boolean) get(14);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -274,6 +290,7 @@ public class NftCollectionRecord extends UpdatableRecordImpl<NftCollectionRecord
         setOpScoreAdd(from.getOpScoreAdd());
         setOpScoreMod(from.getOpScoreMod());
         setRoyaltyFee(from.getRoyaltyFee());
+        setCompleted(from.getCompleted());
         resetChangedOnNotNull();
     }
 
@@ -297,7 +314,7 @@ public class NftCollectionRecord extends UpdatableRecordImpl<NftCollectionRecord
     /**
      * Create a detached, initialised NftCollectionRecord
      */
-    public NftCollectionRecord(BigInteger id, String tick, String deployer, String buri, String txIdRev, String state, BigInteger max, BigInteger minted, Integer premint, BigInteger daaMintStart, BigInteger mtsAdd, BigInteger opScoreAdd, BigInteger opScoreMod, BigInteger royaltyFee) {
+    public NftCollectionRecord(BigInteger id, String tick, String deployer, String buri, String txIdRev, String state, BigInteger max, BigInteger minted, Integer premint, BigInteger daaMintStart, BigInteger mtsAdd, BigInteger opScoreAdd, BigInteger opScoreMod, BigInteger royaltyFee, Boolean completed) {
         super(NftCollection.NFT_COLLECTION);
 
         setId(id);
@@ -314,6 +331,7 @@ public class NftCollectionRecord extends UpdatableRecordImpl<NftCollectionRecord
         setOpScoreAdd(opScoreAdd);
         setOpScoreMod(opScoreMod);
         setRoyaltyFee(royaltyFee);
+        setCompleted(completed);
         resetChangedOnNotNull();
     }
 
@@ -338,6 +356,7 @@ public class NftCollectionRecord extends UpdatableRecordImpl<NftCollectionRecord
             setOpScoreAdd(value.getOpScoreAdd());
             setOpScoreMod(value.getOpScoreMod());
             setRoyaltyFee(value.getRoyaltyFee());
+            setCompleted(value.getCompleted());
             resetChangedOnNotNull();
         }
     }

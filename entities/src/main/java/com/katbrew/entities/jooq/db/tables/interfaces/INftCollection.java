@@ -156,6 +156,16 @@ public interface INftCollection extends Serializable {
      */
     public BigInteger getRoyaltyFee();
 
+    /**
+     * Setter for <code>public.nft_collection.completed</code>.
+     */
+    public void setCompleted(Boolean value);
+
+    /**
+     * Getter for <code>public.nft_collection.completed</code>.
+     */
+    public Boolean getCompleted();
+
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

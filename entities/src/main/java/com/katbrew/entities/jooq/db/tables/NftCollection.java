@@ -133,6 +133,11 @@ public class NftCollection extends TableImpl<NftCollectionRecord> {
      */
     public final TableField<NftCollectionRecord, BigInteger> ROYALTY_FEE = createField(DSL.name("royalty_fee"), SQLDataType.CLOB, this, "", new AutoConverter<String, BigInteger>(String.class, BigInteger.class));
 
+    /**
+     * The column <code>public.nft_collection.completed</code>.
+     */
+    public final TableField<NftCollectionRecord, Boolean> COMPLETED = createField(DSL.name("completed"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "");
+
     private NftCollection(Name alias, Table<NftCollectionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

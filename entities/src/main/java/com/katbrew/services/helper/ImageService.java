@@ -28,15 +28,18 @@ public class ImageService {
             final BufferedImage originalImage = ImageIO.read(new File(file.toString()));
             final BufferedImage thumbnail = new BufferedImage(thumbnailWidth, thumbnailHeight, 1);
             final Graphics2D g = thumbnail.createGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
-            g.dispose();
+            try {
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
 
-            final String extension = FilenameUtils.getExtension(file.toString());
+                final String extension = FilenameUtils.getExtension(file.toString());
 
-            final String outputThumbnailPath = Paths.get(root, path, file.getFileName().toString()).toString();
-            final File outputThumbnailFile = new File(outputThumbnailPath);
-            ImageIO.write(thumbnail, extension, outputThumbnailFile);
+                final String outputThumbnailPath = Paths.get(root, path, file.getFileName().toString()).toString();
+                final File outputThumbnailFile = new File(outputThumbnailPath);
+                ImageIO.write(thumbnail, extension, outputThumbnailFile);
+            }finally {
+                g.dispose();
+            }
         }
     }
 
@@ -66,14 +69,17 @@ public class ImageService {
     }
 
     private void generateThumbnailAndSave(final BufferedImage originalImage, final String savePath, final String filename, final String extension, final int thumbnailWidth, final int thumbnailHeight) throws IOException {
-        final BufferedImage thumbnail = new BufferedImage(thumbnailWidth, thumbnailHeight, 1);
+        final BufferedImage thumbnail = new BufferedImage(thumbnailWidth, thumbnailHeight, BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = thumbnail.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
-        g.dispose();
+        try {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
 
-        final String outputThumbnailPath = Paths.get(savePath, filename).toString();
-        final File outputThumbnailFile = new File(outputThumbnailPath);
-        ImageIO.write(thumbnail, extension, outputThumbnailFile);
+            final String outputThumbnailPath = Paths.get(savePath, filename).toString();
+            final File outputThumbnailFile = new File(outputThumbnailPath);
+            ImageIO.write(thumbnail, extension, outputThumbnailFile);
+        } finally {
+            g.dispose();
+        }
     }
 }
