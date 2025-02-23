@@ -292,4 +292,19 @@ public class NftCollectionDao extends DAOImpl<NftCollectionRecord, com.katbrew.e
     public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchByRoyaltyFee(BigInteger... values) {
         return fetch(NftCollection.NFT_COLLECTION.ROYALTY_FEE, values);
     }
+
+    /**
+     * Fetch records that have <code>completed BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchRangeOfCompleted(Boolean lowerInclusive, Boolean upperInclusive) {
+        return fetchRange(NftCollection.NFT_COLLECTION.COMPLETED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>completed IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchByCompleted(Boolean... values) {
+        return fetch(NftCollection.NFT_COLLECTION.COMPLETED, values);
+    }
 }

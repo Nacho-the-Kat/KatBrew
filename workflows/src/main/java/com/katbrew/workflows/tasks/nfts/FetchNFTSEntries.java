@@ -119,7 +119,7 @@ public class FetchNFTSEntries implements JavaDelegate {
 
                     log.info("done with nft info " + single.getTick());
                 } catch (Exception e) {
-                    System.out.println("Exception Raised" + e.getMessage());
+                    log.error("Exception Raised " + e.getMessage());
                 }
             }
             log.info("done with generating nft entry and collection infos");
@@ -145,8 +145,12 @@ public class FetchNFTSEntries implements JavaDelegate {
                 final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
                 entry.setFkCollection(collection.getId());
                 if (entry.getEdition() == null) {
-                    final String editionNumber = entry.getImage().split("/")[1].split("\\.")[0];
-                    entry.setEdition(Integer.parseInt(editionNumber));
+                    try {
+                        final String editionNumber = entry.getImage().split("/")[1].split("\\.")[0];
+                        entry.setEdition(Integer.parseInt(editionNumber));
+                    } catch (final Exception e) {
+                        log.error("failed to parse the edition number " + entry.getId() + "-" + entry.getImage());
+                    }
                 }
                 return entry;
             } catch (IOException e) {
@@ -176,8 +180,9 @@ public class FetchNFTSEntries implements JavaDelegate {
         if (!savePathSized.toFile().exists()) {
             savePathSized.toFile().mkdirs();
         }
-        final ExecutorService executor = Executors.newFixedThreadPool(100);
-        Lists.partition(images, 100).forEach(batch -> executor.submit(() -> {
+        //100 Threads are too much
+        final ExecutorService executor = Executors.newFixedThreadPool(50);
+        Lists.partition(images, 50).forEach(batch -> executor.submit(() -> {
             for (final File file : batch) {
                 try {
                     final BufferedImage img = ImageIO.read(file);
@@ -241,6 +246,12 @@ public class FetchNFTSEntries implements JavaDelegate {
             log.info("Finished the metadata download for " + collection.getTick());
         } catch (Exception e) {
             log.error("fetching on metadata for " + collection.getTick() + ", " + e.getMessage());
+            ProcessBuilder pbRemoveFolder = new ProcessBuilder(
+                    "rm",
+                    "-rf",
+                    tarFile.toString()
+            );
+            awaitProcess(pbRemoveFolder);
         }
     }
 

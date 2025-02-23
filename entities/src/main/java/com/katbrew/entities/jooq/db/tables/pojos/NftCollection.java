@@ -31,6 +31,7 @@ public class NftCollection implements INftCollection {
     private BigInteger opScoreAdd;
     private BigInteger opScoreMod;
     private BigInteger royaltyFee;
+    private Boolean completed;
 
     public NftCollection() {}
 
@@ -49,6 +50,7 @@ public class NftCollection implements INftCollection {
         this.opScoreAdd = value.getOpScoreAdd();
         this.opScoreMod = value.getOpScoreMod();
         this.royaltyFee = value.getRoyaltyFee();
+        this.completed = value.getCompleted();
     }
 
     public NftCollection(
@@ -65,7 +67,8 @@ public class NftCollection implements INftCollection {
         BigInteger mtsAdd,
         BigInteger opScoreAdd,
         BigInteger opScoreMod,
-        BigInteger royaltyFee
+        BigInteger royaltyFee,
+        Boolean completed
     ) {
         this.id = id;
         this.tick = tick;
@@ -81,6 +84,7 @@ public class NftCollection implements INftCollection {
         this.opScoreAdd = opScoreAdd;
         this.opScoreMod = opScoreMod;
         this.royaltyFee = royaltyFee;
+        this.completed = completed;
     }
 
     /**
@@ -307,6 +311,22 @@ public class NftCollection implements INftCollection {
         this.royaltyFee = royaltyFee;
     }
 
+    /**
+     * Getter for <code>public.nft_collection.completed</code>.
+     */
+    @Override
+    public Boolean getCompleted() {
+        return this.completed;
+    }
+
+    /**
+     * Setter for <code>public.nft_collection.completed</code>.
+     */
+    @Override
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -400,6 +420,12 @@ public class NftCollection implements INftCollection {
         }
         else if (!this.royaltyFee.equals(other.royaltyFee))
             return false;
+        if (this.completed == null) {
+            if (other.completed != null)
+                return false;
+        }
+        else if (!this.completed.equals(other.completed))
+            return false;
         return true;
     }
 
@@ -421,6 +447,7 @@ public class NftCollection implements INftCollection {
         result = prime * result + ((this.opScoreAdd == null) ? 0 : this.opScoreAdd.hashCode());
         result = prime * result + ((this.opScoreMod == null) ? 0 : this.opScoreMod.hashCode());
         result = prime * result + ((this.royaltyFee == null) ? 0 : this.royaltyFee.hashCode());
+        result = prime * result + ((this.completed == null) ? 0 : this.completed.hashCode());
         return result;
     }
 
@@ -442,6 +469,7 @@ public class NftCollection implements INftCollection {
         sb.append(", ").append(opScoreAdd);
         sb.append(", ").append(opScoreMod);
         sb.append(", ").append(royaltyFee);
+        sb.append(", ").append(completed);
 
         sb.append(")");
         return sb.toString();
@@ -467,6 +495,7 @@ public class NftCollection implements INftCollection {
         setOpScoreAdd(from.getOpScoreAdd());
         setOpScoreMod(from.getOpScoreMod());
         setRoyaltyFee(from.getRoyaltyFee());
+        setCompleted(from.getCompleted());
     }
 
     @Override
