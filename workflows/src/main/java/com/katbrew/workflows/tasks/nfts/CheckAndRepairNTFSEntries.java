@@ -3,6 +3,7 @@ package com.katbrew.workflows.tasks.nfts;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry;
+import com.katbrew.helper.FilesystemHelper;
 import com.katbrew.services.tables.NFTCollectionEntryService;
 import com.katbrew.services.tables.NFTCollectionService;
 import lombok.RequiredArgsConstructor;
@@ -50,23 +51,43 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
         for (final NftCollection collection : nfts) {
             log.info("Verifying NFT entries for: " + collection.getTick());
 
+            boolean failed = !verifyEntryCount(collection);
+
             try {
-                if (!verifyEntryCount(collection)) {
-                    failedCollectionIds.add(collection.getId());
-                    continue; // Überspringe weitere Prüfungen, wenn die Anzahl der Einträge nicht stimmt
-                }
-
                 verifyMetadataTar(collection);
-                verifyMetadataFolder(collection);
-                verifyImageTar(collection);
-                verifyImageFolder(collection);
+            } catch (VerificationException | IOException e) {
+                log.error(e.getMessage());
+                failed = true;
+            }
 
+            try {
+                verifyMetadataFolder(collection);
+            } catch (VerificationException | IOException e) {
+                log.error(e.getMessage());
+                failed = true;
+            }
+
+            try {
+                verifyImageTar(collection);
+            } catch (VerificationException | IOException e) {
+                log.error(e.getMessage());
+                failed = true;
+            }
+
+            try {
+                verifyImageFolder(collection);
+            } catch (VerificationException | IOException e) {
+                log.error(e.getMessage());
+                failed = true;
+            }
+
+            if (failed) {
+                log.error("Verification failed for: " + collection.getTick());
+                failedCollectionIds.add(collection.getId());
+            } else {
                 log.info("Verification successful for: " + collection.getTick());
                 collection.setCompleted(true);
                 toUpdate.add(collection);
-            } catch (VerificationException e) {
-                log.error("Verification failed for: " + collection.getTick() + ", " + e.getMessage());
-                failedCollectionIds.add(collection.getId());
             }
         }
         nftCollectionService.batchUpdate(toUpdate);
@@ -88,10 +109,33 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
             nftCollectionEntryService.batchDelete(entries);
             return false;
         }
+        final List<NftCollectionEntry> entries = dsl.selectFrom(Tables.NFT_COLLECTION_ENTRY)
+                .where(Tables.NFT_COLLECTION_ENTRY.FK_COLLECTION.eq(collection.getId()))
+                .fetchInto(NftCollectionEntry.class);
+        boolean shouldUpdate = false;
+        if (entries.get(0).getImage().startsWith("ipfs:")) {
+            shouldUpdate = true;
+            entries.forEach(single -> {
+                //something went wrong with the replacement or the url is edited false
+                //we use regex to replace all that is before ipfs and until the next letter
+                single.setImage(single.getImage().replaceAll("^.*?ipfs[^a-zA-Z]*", ""));
+            });
+        }
+        if (entries.get(0).getEdition() == null) {
+            shouldUpdate = true;
+            entries.forEach(single -> {
+                //something went wrong with the replacement or the url is edited false
+                //we use regex to replace all letters after the number
+                single.setEdition(Integer.parseInt(single.getImage().split("/")[1].replaceAll("\\D+$", "")));
+            });
+        }
+        if (shouldUpdate) {
+            nftCollectionEntryService.batchUpdate(entries);
+        }
         return true;
     }
 
-    private void verifyMetadataTar(NftCollection collection) throws VerificationException {
+    private void verifyMetadataTar(NftCollection collection) throws VerificationException, IOException {
         final Path tarFile = Paths.get(basePath, "metadata", "compressed", collection.getTick() + ".tar");
         if (!Files.exists(tarFile)) {
             throw new VerificationException("Metadata TAR file not found: " + tarFile);
@@ -105,12 +149,15 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
             if (entryCount != collection.getMax().intValue()) {
                 throw new VerificationException("Metadata TAR entry count mismatch for: " + collection.getTick() + ". Expected: " + collection.getMax() + ", Found: " + entryCount);
             }
-        } catch (IOException e) {
+        } catch (VerificationException | IOException e) {
+            Files.delete(tarFile);
             throw new VerificationException("Error reading metadata TAR file: " + e.getMessage());
         }
+        //clean the empty directory
+        FilesystemHelper.deleteAll(Paths.get(basePath, "metadata", "compressed", collection.getTick()));
     }
 
-    private void verifyMetadataFolder(NftCollection collection) throws VerificationException {
+    private void verifyMetadataFolder(NftCollection collection) throws VerificationException, IOException {
         final Path metadataFolder = Paths.get(basePath, "metadata", collection.getBuri());
         if (!Files.exists(metadataFolder)) {
             throw new VerificationException("Metadata folder not found: " + metadataFolder);
@@ -121,11 +168,12 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
                 .count();
 
         if (fileCount != collection.getMax().intValue()) {
+            FilesystemHelper.deleteAll(metadataFolder);
             throw new VerificationException("Metadata folder file count mismatch for: " + collection.getTick() + ". Expected: " + collection.getMax() + ", Found: " + fileCount);
         }
     }
 
-    private void verifyImageTar(final NftCollection collection) throws VerificationException {
+    private void verifyImageTar(final NftCollection collection) throws VerificationException, IOException {
         final String imagesBuris = dsl.select(Tables.NFT_COLLECTION_ENTRY.IMAGE)
                 .from(Tables.NFT_COLLECTION_ENTRY)
                 .where(Tables.NFT_COLLECTION_ENTRY.FK_COLLECTION.eq(collection.getId()))
@@ -138,7 +186,7 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
 
         final String imageBuri = imagesBuris.split("/")[0];
         final Path imageTar = Paths.get(basePath, "images", "compressed", imageBuri + ".tar");
-
+        final String extension = imagesBuris.split("/")[1].split("\\.")[1];
         if (!Files.exists(imageTar)) {
             throw new VerificationException("Image TAR file not found: " + imageTar);
         }
@@ -146,17 +194,22 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(new FileInputStream(imageTar.toFile()))) {
             long entryCount = 0;
             while (tarIn.getNextTarEntry() != null) {
+                final String entryName = tarIn.getCurrentEntry().getName();
+                if (!entryName.contains(extension)){
+                    throw  new VerificationException("Image " + entryName+ " mismatches the extension: " + extension);
+                }
                 entryCount++;
             }
             if (entryCount != collection.getMax().intValue()) {
                 throw new VerificationException("Image TAR entry count mismatch for: " + collection.getTick() + ". Expected: " + collection.getMax() + ", Found: " + entryCount);
             }
-        } catch (IOException e) {
+        } catch (VerificationException | IOException e) {
+            FilesystemHelper.deleteAll(imageTar);
             throw new VerificationException("Error reading image TAR file: " + e.getMessage());
         }
     }
 
-    private void verifyImageFolder(NftCollection collection) throws VerificationException {
+    private void verifyImageFolder(NftCollection collection) throws VerificationException, IOException {
         final Path imageFolder = Paths.get(krc721staticPath, "full", collection.getTick());
         if (!Files.exists(imageFolder)) {
             throw new VerificationException("Image folder not found: " + imageFolder);
@@ -167,6 +220,7 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
                 .count();
 
         if (fileCount != collection.getMax().intValue()) {
+            FilesystemHelper.deleteAll(imageFolder);
             throw new VerificationException("Image folder file count mismatch for: " + collection.getTick() + ". Expected: " + collection.getMax() + ", Found: " + fileCount);
         }
     }

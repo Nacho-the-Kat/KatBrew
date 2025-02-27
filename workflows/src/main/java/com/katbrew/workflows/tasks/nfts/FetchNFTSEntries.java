@@ -1,19 +1,21 @@
 package com.katbrew.workflows.tasks.nfts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.katbrew.entities.jooq.db.Tables;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionInfo;
+import com.katbrew.helper.FilesystemHelper;
 import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.helper.KatBrewWebClient;
 import com.katbrew.helper.NftHelper;
 import com.katbrew.pojos.NFTCollectionEntryInternal;
 import com.katbrew.pojos.NFTCollectionInfoInternal;
+import com.katbrew.pojos.nft.IpfsCollectionFolderData;
 import com.katbrew.services.helper.ImageService;
+import com.katbrew.services.helper.IpfsHelper;
 import com.katbrew.services.tables.LastUpdateService;
 import com.katbrew.services.tables.NFTCollectionEntryService;
 import com.katbrew.services.tables.NFTCollectionInfoService;
@@ -60,12 +62,14 @@ public class FetchNFTSEntries implements JavaDelegate {
     private final ImageService imageService;
     private final DSLContext dsl;
     private final LastUpdateService lastUpdateService;
+    private final IpfsHelper ipfsHelper;
     private final NftHelper nftHelper = new NftHelper();
 
     @Override
     public void execute(DelegateExecution execution) throws JsonProcessingException {
-        final List<BigInteger> newCollectionIds = mapper.convertValue(execution.getVariable("newCollectionIds"), new TypeReference<>() {
-        });
+//        final List<BigInteger> newCollectionIds = mapper.convertValue(execution.getVariable("newCollectionIds"), new TypeReference<>() {
+//        });
+        final List<BigInteger> newCollectionIds = List.of(BigInteger.valueOf(18), BigInteger.valueOf(7));
 
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
@@ -139,17 +143,16 @@ public class FetchNFTSEntries implements JavaDelegate {
             nftCollectionInfoService.insert(info);
         }
         final List<File> files = new ArrayList<>(Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> !name.contains("collection") && !name.contains("DS_Store") && !name.contains("metadata")), new File[]{})).toList());
-        files.sort(Comparator.comparingInt(single -> Integer.parseInt(single.getName().replace(".json", ""))));
-        final List<NftCollectionEntry> list = files.stream().map(file -> {
+        final List<NftCollectionEntry> list = new ArrayList<>(files.stream().map(file -> {
             try {
                 final NftCollectionEntry entry = nftHelper.convertEntryToDbEntry(mapper.readValue(file, NFTCollectionEntryInternal.class));
                 entry.setFkCollection(collection.getId());
                 if (entry.getEdition() == null) {
                     try {
-                        final String editionNumber = entry.getImage().split("/")[1].split("\\.")[0];
+                        final String editionNumber = entry.getImage().split("/")[1].replaceAll("\\D+$", "");
                         entry.setEdition(Integer.parseInt(editionNumber));
                     } catch (final Exception e) {
-                        log.error("failed to parse the edition number " + entry.getId() + "-" + entry.getImage());
+                        log.error("failed to parse the edition number for image url " + entry.getImage());
                     }
                 }
                 return entry;
@@ -157,8 +160,8 @@ public class FetchNFTSEntries implements JavaDelegate {
                 log.error(e.getMessage());
                 throw new RuntimeException(e);
             }
-        }).toList();
-
+        }).toList());
+        list.sort(Comparator.comparingInt(NftCollectionEntry::getEdition));
         nftCollectionEntryService.batchInsert(list);
         return list;
     }
@@ -167,10 +170,6 @@ public class FetchNFTSEntries implements JavaDelegate {
         log.info("Starting to generate the images");
         final Path path = Paths.get(krc721staticPath, "full", collection.getTick());
         final List<File> images = new ArrayList<>(Arrays.stream(Objects.requireNonNullElse(path.toFile().listFiles((directory, name) -> !name.contains("DS_Store")), new File[]{})).toList());
-        if (!images.isEmpty()) {
-            final String extension = "." + FilenameUtils.getExtension(images.get(0).getName());
-            images.sort(Comparator.comparingInt(single -> Integer.parseInt(single.getName().replace(extension, ""))));
-        }
 
         final Path savePathThumbnails = Paths.get(krc721staticPath, "thumbnails", collection.getTick());
         final Path savePathSized = Paths.get(krc721staticPath, "sized", collection.getTick());
@@ -180,23 +179,30 @@ public class FetchNFTSEntries implements JavaDelegate {
         if (!savePathSized.toFile().exists()) {
             savePathSized.toFile().mkdirs();
         }
-        //100 Threads are too much
-        final ExecutorService executor = Executors.newFixedThreadPool(50);
-        Lists.partition(images, 50).forEach(batch -> executor.submit(() -> {
-            for (final File file : batch) {
-                try {
-                    final BufferedImage img = ImageIO.read(file);
-                    double ratio = (double) img.getWidth() / img.getHeight();
-                    imageService.generateThumbnail(img, savePathThumbnails.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 360, (int) (360 / ratio));
-                    imageService.generateThumbnail(img, savePathSized.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 720, (int) (720 / ratio));
-                } catch (IOException e) {
-                    log.error("Failed to generate Image " + file.getName() + " " + e.getMessage());
+        if (
+                Objects.requireNonNullElse(savePathThumbnails.toFile().listFiles(), new File[]{}).length != collection.getMax().intValue() ||
+                        Objects.requireNonNullElse(savePathSized.toFile().listFiles(), new File[]{}).length != collection.getMax().intValue()
+        ) {
+            //100 Threads are too much
+            final ExecutorService executor = Executors.newFixedThreadPool(50);
+            Lists.partition(images, 50).forEach(batch -> executor.submit(() -> {
+                for (final File file : batch) {
+                    try {
+                        final BufferedImage img = ImageIO.read(file);
+                        double ratio = (double) img.getWidth() / img.getHeight();
+                        imageService.generateThumbnail(img, savePathThumbnails.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 360, (int) (360 / ratio));
+                        imageService.generateThumbnail(img, savePathSized.toString(), file.getName(), FilenameUtils.getExtension(file.getName()), 720, (int) (720 / ratio));
+                    } catch (IOException e) {
+                        log.error("Failed to generate Image " + file.getName() + " " + e.getMessage());
+                    }
                 }
-            }
-        }));
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.HOURS);
-        log.info("Finished to generate the images");
+            }));
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.HOURS);
+            log.info("Finished to generate the images");
+        } else {
+            log.info("Skipping the image generation, thumbnails and sized images exists");
+        }
     }
 
     private void fetchMetadata(final NftCollection collection, final Path tarFile, final Path tarParent) {
@@ -204,54 +210,32 @@ public class FetchNFTSEntries implements JavaDelegate {
         tarFile.toFile().mkdirs();
         try {
             log.info("Starting to download the metadata for " + collection.getTick());
-            List<List<Integer>> subSets = Lists.partition(IntStream.range(1, collection.getMax().intValue() + 1).boxed().toList(), (int) Math.ceil((collection.getMax().intValue() / 4.0)));
             final ExecutorService executorService = Executors.newFixedThreadPool(4);
-            String prefix = "";
-            try {
-                //if this call fails, it needs a .json on the url
-                client.post()
-                        .uri("http://localhost:5001/api/v0/get?arg=" + collection.getBuri() + "/1")
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
-            } catch (final Exception e) {
-                prefix = ".json";
+            final IpfsCollectionFolderData collectionFolderData = ipfsHelper.sendLS(collection);
+
+            if (!collectionFolderData.getIsSingleFileCollection()) {
+                List<List<String>> subSets = Lists.partition(collectionFolderData.getImageDataNames(), (int) Math.ceil((collection.getMax().intValue() / 4.0)));
+                IntStream.range(0, subSets.size()).forEach(i -> executorService.submit(() -> {
+                    subSets.get(i).forEach(single -> {
+                        try {
+                            ipfsHelper.sendGet(i, collection.getBuri() + "/" + single, Paths.get(tarFile.toString(), single).toString());
+                        } catch (InterruptedException | IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }));
+                executorService.shutdown();
+                executorService.awaitTermination(1, TimeUnit.HOURS);
+            } else {
+                ipfsHelper.sendGet(collection.getBuri(), Paths.get(tarFile.toString(), "collectionData").toString());
             }
-
-            final String finalPrefix = prefix;
-            IntStream.range(0, subSets.size()).forEach(i -> executorService.submit(() -> {
-                final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
-                subSets.get(i).forEach(single -> {
-                    final Path dataPath = Paths.get(tarFile.toString(), single + finalPrefix);
-                    final ProcessBuilder pb = new ProcessBuilder(
-                            "bash",
-                            scriptPath,
-                            collection.getBuri() + "/" + single + finalPrefix,
-                            dataPath.toString()
-                    );
-                    awaitProcess(pb);
-                });
-            }));
-            executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.HOURS);
             packTar(Paths.get(tarParent.toString(), collection.getTick()), Paths.get(tarParent.toString(), collection.getTick() + ".tar"));
-
-            ProcessBuilder pbRemoveFolder = new ProcessBuilder(
-                    "rm",
-                    "-rf",
-                    tarFile.toString()
-            );
-            awaitProcess(pbRemoveFolder);
+            FilesystemHelper.deleteAll(tarFile);
 
             log.info("Finished the metadata download for " + collection.getTick());
         } catch (Exception e) {
             log.error("fetching on metadata for " + collection.getTick() + ", " + e.getMessage());
-            ProcessBuilder pbRemoveFolder = new ProcessBuilder(
-                    "rm",
-                    "-rf",
-                    tarFile.toString()
-            );
-            awaitProcess(pbRemoveFolder);
+            FilesystemHelper.deleteAll(tarFile);
         }
     }
 
@@ -288,12 +272,7 @@ public class FetchNFTSEntries implements JavaDelegate {
                 packTar(imagePath, Paths.get(imagePath + ".tar"));
 
                 //deleting the unpacked folder in compressed directory
-                ProcessBuilder pbRemove = new ProcessBuilder(
-                        "rm",
-                        "-rf",
-                        imagePath.toString()
-                );
-                awaitProcess(pbRemove);
+                FilesystemHelper.deleteAll(imagePath);
 
                 log.info("Finished the image download for " + imageBuri);
             }

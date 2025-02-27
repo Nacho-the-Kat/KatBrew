@@ -52,7 +52,7 @@ public class NftHelper {
         intern.setFkCollection(internal.getFkCollection());
         intern.setName(internal.getName());
         intern.setDescription(internal.getDescription());
-        intern.setImage(internal.getImage().replace("ipfs://", ""));
+        intern.setImage(internal.getImage().replaceAll("^.*?ipfs[^a-zA-Z]*", ""));
         intern.setAttributes(mapper.writeValueAsString(internal.getAttributes()));
         intern.setEdition(internal.getEdition());
         return intern;
