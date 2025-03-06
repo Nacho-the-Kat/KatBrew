@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.katbrew.rest.base.StaticVariables.API_URL_PREFIX;
@@ -24,7 +23,7 @@ public class TransactionRestController extends AbstractRestController<Transactio
     private final TransactionService transactionService;
 
     @GetMapping("/mint-totals")
-    public List getMintTotals(@RequestParam(required = false) final LocalDateTime start, @RequestParam(required = false) final LocalDateTime end) {
+    public List getMintTotals(@RequestParam(required = false) final String start, @RequestParam(required = false) final String end) {
         return transactionService.getMintsTotal(start, end);
     }
 
