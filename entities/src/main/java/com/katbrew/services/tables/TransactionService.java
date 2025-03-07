@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,13 +43,21 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
         return this.findBy(conditions);
     }
 
-    public List getMintsTotal(LocalDateTime start, LocalDateTime end) {
+    public List getMintsTotal(final String start, final String end) {
+        LocalDateTime startDate;
+        LocalDateTime endDate;
         if (start == null) {
-            start = LocalDateTime.now().minusDays(3);
+            startDate = LocalDateTime.now().minusDays(3);
+        }else{
+            startDate = LocalDateTime.parse(start);
         }
         if (end == null) {
-            end = LocalDateTime.now();
+            endDate = LocalDateTime.now();
+        }else{
+            endDate = LocalDateTime.parse(end);
         }
+        endDate = endDate.toLocalDate().atTime(LocalTime.MAX);
+        startDate = startDate.toLocalDate().atTime(LocalTime.MIN);
         com.katbrew.entities.jooq.db.tables.Transaction transaction = Tables.TRANSACTION;
         List<Field> coll = new ArrayList<>(List.of(transaction.ID, transaction.FK_TOKEN, transaction.OP));
         coll.add(Tables.TOKEN.TICK);
@@ -59,8 +68,8 @@ public class TransactionService extends JooqService<Transaction, TransactionDao>
                 .join(Tables.TOKEN)
                 .on(transaction.FK_TOKEN.eq(Tables.TOKEN.ID))
                 .where(List.of(
-                        transaction.MTS_ADD.ge(BigInteger.valueOf(start.toInstant(ZoneOffset.UTC).toEpochMilli())),
-                        transaction.MTS_ADD.le(BigInteger.valueOf(end.toInstant(ZoneOffset.UTC).toEpochMilli())),
+                        transaction.MTS_ADD.ge(BigInteger.valueOf(startDate.toInstant(ZoneOffset.UTC).toEpochMilli())),
+                        transaction.MTS_ADD.le(BigInteger.valueOf(endDate.toInstant(ZoneOffset.UTC).toEpochMilli())),
                         transaction.OP.eq(codes.get("mint"))
                 ))
                 .orderBy(Tables.TRANSACTION.OP_SCORE.desc())
