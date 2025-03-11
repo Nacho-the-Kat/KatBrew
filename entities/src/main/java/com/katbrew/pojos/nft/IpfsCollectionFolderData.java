@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class IpfsCollectionFolderData {
     List<String> imageDataNames = new ArrayList<>();
-    Boolean hasCollectionFile;
+    Boolean hasCollectionFile = false;
+    String collectionFileName;
     Boolean isSingleFileCollection = false;
 }

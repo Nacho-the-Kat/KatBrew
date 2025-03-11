@@ -40,7 +40,7 @@ public class NftHelper {
         final NftCollectionInfo intern = new NftCollectionInfo();
         intern.setName(internal.getName());
         intern.setDescription(internal.getDescription());
-        intern.setImage(internal.getImage());
+        intern.setImage(internal.getImage().replaceAll("^.*?ipfs[^a-zA-Z]*", ""));
         intern.setExtensions(mapper.writeValueAsString(internal.getExtensions()));
         intern.setProperties(mapper.writeValueAsString(internal.getProperties()));
         return intern;

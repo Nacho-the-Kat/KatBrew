@@ -1,8 +1,6 @@
 package com.katbrew.services.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.katbrew.entities.jooq.db.tables.pojos.NftCollection;
-import com.katbrew.helper.KatBrewObjectMapper;
 import com.katbrew.pojos.nft.IpfsCollectionFolderData;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -26,9 +23,7 @@ public class IpfsHelper {
     @Value("${data.fetchNFT.baseDirectory}")
     private String basePath;
 
-    Pattern pattern = Pattern.compile("\\d+");
-
-    private final ObjectMapper mapper = KatBrewObjectMapper.createObjectMapper();
+    Pattern pattern = Pattern.compile("^\\d+");
 
     //this is a general script, there you can pass the "function" you want to use
     private String lsScript;
@@ -65,23 +60,22 @@ public class IpfsHelper {
         }
         final IpfsCollectionFolderData data = new IpfsCollectionFolderData();
         if (!filenames.isEmpty()) {
-            filenames = filenames.stream().filter(single -> pattern.matcher(single).find() || single.contains("collection")).toList();
-            if (filenames.size() != collection.getMax().intValue()) {
-                data.setIsSingleFileCollection(true);
-            }
+            filenames = filenames.stream().filter(single -> pattern.matcher(single).find() || (single.equals("collection") || single.equals("collection.json")) || (single.equals("metadata") || single.equals("metadata.json"))).toList();
             filenames.forEach(single -> {
                 if (pattern.matcher(single).find()) {
                     data.getImageDataNames().add(single);
                 } else {
-                    if (single.equals("collection")) {
+                    if (single.equals("collection") || single.equals("metadata")) {
                         data.setHasCollectionFile(true);
+                        data.setCollectionFileName(single);
                     }
                 }
             });
+        } else {
+            data.setIsSingleFileCollection(true);
+            data.setHasCollectionFile(true);
         }
-
         return data;
-//        return mapper.readValue(string.toString(), IpfsBuriData.class);
     }
 
     public void sendGet(final String buri, final String savePath) throws IOException, InterruptedException {

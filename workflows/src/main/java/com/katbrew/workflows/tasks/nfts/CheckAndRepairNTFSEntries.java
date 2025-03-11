@@ -167,7 +167,7 @@ public class CheckAndRepairNTFSEntries implements JavaDelegate {
                 .filter(file -> file.isFile() && !file.getName().contains("collection") && !file.getName().contains("DS_Store"))
                 .count();
 
-        if (fileCount != collection.getMax().intValue()) {
+        if (fileCount != collection.getMax().intValue() && fileCount != collection.getMax().intValue() + 1) {
             FilesystemHelper.deleteAll(metadataFolder);
             throw new VerificationException("Metadata folder file count mismatch for: " + collection.getTick() + ". Expected: " + collection.getMax() + ", Found: " + fileCount);
         }
