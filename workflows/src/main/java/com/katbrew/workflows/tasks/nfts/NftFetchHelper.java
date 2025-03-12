@@ -113,9 +113,9 @@ public class NftFetchHelper {
         NftCollectionInfo collectionInfo;
         if (folderData.getHasCollectionFile()) {
             List<File> infos;
-            if (folderData.getIsSingleFileCollection()){
+            if (folderData.getIsSingleFileCollection()) {
                 infos = List.of(dir.listFiles()[0]);
-            }else{
+            } else {
                 infos = Arrays.stream(Objects.requireNonNullElse(dir.listFiles((directory, name) -> name.contains(folderData.getCollectionFileName())), new File[]{})).toList();
             }
 
@@ -226,7 +226,7 @@ public class NftFetchHelper {
             } else {
                 ipfsHelper.sendGet(collection.getBuri(), Paths.get(tarFile.toString(), "collection").toString());
             }
-            if (folderData.getHasCollectionFile() && !folderData.getIsSingleFileCollection()){
+            if (folderData.getHasCollectionFile() && !folderData.getIsSingleFileCollection()) {
                 ipfsHelper.sendGet(1, collection.getBuri() + "/" + folderData.getCollectionFileName(), Paths.get(tarFile.toString(), folderData.getCollectionFileName()).toString());
             }
             packTar(Paths.get(tarParent.toString(), collection.getTick()), Paths.get(tarParent.toString(), collection.getTick() + ".tar"));
@@ -275,7 +275,7 @@ public class NftFetchHelper {
                     final String[] splitted = entries.get(0).getImage().split("/");
                     String img;
                     if (splitted.length > 1) {
-                        img = imagePath + "/" + splitted[splitted.length -1];
+                        img = imagePath + "/" + splitted[splitted.length - 1];
                     } else {
                         img = imagePath + "/" + entries.get(0).getImage().split("\\?filename=")[1];
                     }
