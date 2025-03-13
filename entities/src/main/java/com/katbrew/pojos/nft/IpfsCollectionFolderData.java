@@ -1,5 +1,6 @@
 package com.katbrew.pojos.nft;
 
+import com.katbrew.entities.jooq.db.tables.pojos.NftCollectionInfo;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,4 +12,5 @@ public class IpfsCollectionFolderData {
     Boolean hasCollectionFile = false;
     String collectionFileName;
     Boolean isSingleFileCollection = false;
+    NftCollectionInfo nftCollectionInfo;
 }

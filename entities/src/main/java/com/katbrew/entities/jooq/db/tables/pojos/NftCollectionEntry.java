@@ -24,6 +24,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
     private String name;
     private String description;
     private String attributes;
+    private BigInteger fkHolder;
 
     public NftCollectionEntry() {}
 
@@ -35,6 +36,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
         this.name = value.getName();
         this.description = value.getDescription();
         this.attributes = value.getAttributes();
+        this.fkHolder = value.getFkHolder();
     }
 
     public NftCollectionEntry(
@@ -44,7 +46,8 @@ public class NftCollectionEntry implements INftCollectionEntry {
         String image,
         String name,
         String description,
-        String attributes
+        String attributes,
+        BigInteger fkHolder
     ) {
         this.id = id;
         this.fkCollection = fkCollection;
@@ -53,6 +56,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
         this.name = name;
         this.description = description;
         this.attributes = attributes;
+        this.fkHolder = fkHolder;
     }
 
     /**
@@ -167,6 +171,22 @@ public class NftCollectionEntry implements INftCollectionEntry {
         this.attributes = attributes;
     }
 
+    /**
+     * Getter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    @Override
+    public BigInteger getFkHolder() {
+        return this.fkHolder;
+    }
+
+    /**
+     * Setter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    @Override
+    public void setFkHolder(BigInteger fkHolder) {
+        this.fkHolder = fkHolder;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -218,6 +238,12 @@ public class NftCollectionEntry implements INftCollectionEntry {
         }
         else if (!this.attributes.equals(other.attributes))
             return false;
+        if (this.fkHolder == null) {
+            if (other.fkHolder != null)
+                return false;
+        }
+        else if (!this.fkHolder.equals(other.fkHolder))
+            return false;
         return true;
     }
 
@@ -232,6 +258,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
         result = prime * result + ((this.attributes == null) ? 0 : this.attributes.hashCode());
+        result = prime * result + ((this.fkHolder == null) ? 0 : this.fkHolder.hashCode());
         return result;
     }
 
@@ -246,6 +273,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
         sb.append(", ").append(name);
         sb.append(", ").append(description);
         sb.append(", ").append(attributes);
+        sb.append(", ").append(fkHolder);
 
         sb.append(")");
         return sb.toString();
@@ -264,6 +292,7 @@ public class NftCollectionEntry implements INftCollectionEntry {
         setName(from.getName());
         setDescription(from.getDescription());
         setAttributes(from.getAttributes());
+        setFkHolder(from.getFkHolder());
     }
 
     @Override

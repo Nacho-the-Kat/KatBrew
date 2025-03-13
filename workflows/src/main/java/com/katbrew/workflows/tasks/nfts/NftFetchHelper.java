@@ -15,6 +15,7 @@ import com.katbrew.services.helper.ImageService;
 import com.katbrew.services.helper.IpfsHelper;
 import com.katbrew.services.tables.NFTCollectionEntryService;
 import com.katbrew.services.tables.NFTCollectionInfoService;
+import com.katbrew.services.tables.NFTCollectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -49,6 +50,7 @@ public class NftFetchHelper {
 
     private final NFTCollectionEntryService nftCollectionEntryService;
     private final NFTCollectionInfoService nftCollectionInfoService;
+    private final NFTCollectionService nftCollectionService;
     private final ImageService imageService;
 
     private final IpfsHelper ipfsHelper;
@@ -95,9 +97,19 @@ public class NftFetchHelper {
             }
             final Path staticFullFolder = Paths.get(imagesDir.toString(), single.getTick());
             staticFullFolder.toFile().mkdirs();
+            if (folderData.getNftCollectionInfo() != null) {
+                String img = folderData.getNftCollectionInfo().getImage();
+                img = img.substring(img.lastIndexOf("."));
+                ipfsHelper.sendGet(folderData.getNftCollectionInfo().getImage(), Paths.get(staticFullFolder.toString(), "0" + img).toString());
+                single.setLogo("0" + img);
+            } else {
+                String img = entries.stream().filter(entry->entry.getEdition().equals(1)).toList().get(0).getImage();
+                img = img.substring(img.lastIndexOf("/")+1);
+                single.setLogo(img);
+            }
             extractTar(staticFullFolder, imgFolderPath, true);
             generateThumbnails(single);
-
+            nftCollectionService.update(single);
             log.info("done with nft info " + single.getTick());
         } catch (Exception e) {
             log.error("Exception Raised " + e.getMessage());
@@ -122,6 +134,7 @@ public class NftFetchHelper {
             final NftCollectionInfo info = nftHelper.convertInfoToDbEntry(mapper.readValue(infos.get(0), NFTCollectionInfoInternal.class));
             info.setFkCollection(collection.getId());
             collectionInfo = nftCollectionInfoService.insert(info);
+            folderData.setNftCollectionInfo(collectionInfo);
         } else {
             collectionInfo = null;
         }
@@ -253,7 +266,6 @@ public class NftFetchHelper {
                     final ExecutorService executorService = Executors.newFixedThreadPool(4);
                     IntStream.range(0, subSets.size()).forEach(i -> {
                         executorService.submit(() -> {
-                            final String scriptPath = Paths.get(basePath, "ipfs" + (i + 1) + ".sh").toString();
                             subSets.get(i).forEach(single -> {
 
                                 final String splitted = single.getImage().split("/")[1];
