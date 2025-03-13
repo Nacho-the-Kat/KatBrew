@@ -7,7 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Indexes;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
-import com.katbrew.entities.jooq.db.tables.NftBalance.NftBalancePath;
+import com.katbrew.entities.jooq.db.tables.Holder.HolderPath;
 import com.katbrew.entities.jooq.db.tables.NftCollection.NftCollectionPath;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionEntryRecord;
 
@@ -97,6 +97,11 @@ public class NftCollectionEntry extends TableImpl<NftCollectionEntryRecord> {
      */
     public final TableField<NftCollectionEntryRecord, String> ATTRIBUTES = createField(DSL.name("attributes"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    public final TableField<NftCollectionEntryRecord, BigInteger> FK_HOLDER = createField(DSL.name("fk_holder"), SQLDataType.BIGINT, this, "", new AutoConverter<Long, BigInteger>(Long.class, BigInteger.class));
+
     private NftCollectionEntry(Name alias, Table<NftCollectionEntryRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -183,7 +188,7 @@ public class NftCollectionEntry extends TableImpl<NftCollectionEntryRecord> {
 
     @Override
     public List<ForeignKey<NftCollectionEntryRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_COLLECTION);
+        return Arrays.asList(Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_COLLECTION, Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_HOLDER);
     }
 
     private transient NftCollectionPath _nftCollection;
@@ -199,17 +204,16 @@ public class NftCollectionEntry extends TableImpl<NftCollectionEntryRecord> {
         return _nftCollection;
     }
 
-    private transient NftBalancePath _nftBalance;
+    private transient HolderPath _holder;
 
     /**
-     * Get the implicit to-many join path to the <code>public.nft_balance</code>
-     * table
+     * Get the implicit join path to the <code>public.Holder</code> table.
      */
-    public NftBalancePath nftBalance() {
-        if (_nftBalance == null)
-            _nftBalance = new NftBalancePath(this, null, Keys.NFT_BALANCE__FK_NFT_BALANCE_ENTRY.getInverseKey());
+    public HolderPath holder() {
+        if (_holder == null)
+            _holder = new HolderPath(this, Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_HOLDER, null);
 
-        return _nftBalance;
+        return _holder;
     }
 
     @Override

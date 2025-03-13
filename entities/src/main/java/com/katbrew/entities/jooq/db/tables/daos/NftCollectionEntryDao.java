@@ -159,4 +159,19 @@ public class NftCollectionEntryDao extends DAOImpl<NftCollectionEntryRecord, com
     public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry> fetchByAttributes(String... values) {
         return fetch(NftCollectionEntry.NFT_COLLECTION_ENTRY.ATTRIBUTES, values);
     }
+
+    /**
+     * Fetch records that have <code>fk_holder BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry> fetchRangeOfFkHolder(BigInteger lowerInclusive, BigInteger upperInclusive) {
+        return fetchRange(NftCollectionEntry.NFT_COLLECTION_ENTRY.FK_HOLDER, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>fk_holder IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollectionEntry> fetchByFkHolder(BigInteger... values) {
+        return fetch(NftCollectionEntry.NFT_COLLECTION_ENTRY.FK_HOLDER, values);
+    }
 }

@@ -307,4 +307,19 @@ public class NftCollectionDao extends DAOImpl<NftCollectionRecord, com.katbrew.e
     public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchByCompleted(Boolean... values) {
         return fetch(NftCollection.NFT_COLLECTION.COMPLETED, values);
     }
+
+    /**
+     * Fetch records that have <code>logo BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchRangeOfLogo(String lowerInclusive, String upperInclusive) {
+        return fetchRange(NftCollection.NFT_COLLECTION.LOGO, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>logo IN (values)</code>
+     */
+    public List<com.katbrew.entities.jooq.db.tables.pojos.NftCollection> fetchByLogo(String... values) {
+        return fetch(NftCollection.NFT_COLLECTION.LOGO, values);
+    }
 }

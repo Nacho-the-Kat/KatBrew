@@ -35,6 +35,7 @@
             <column type="boolean" name="completed" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
+            <column type="text" name="logo"/>
         </createTable>
 
         <createIndex tableName="nft_collection" indexName="nft_collection_tick_index">
