@@ -7,7 +7,7 @@ package com.katbrew.entities.jooq.db.tables;
 import com.katbrew.entities.jooq.db.Keys;
 import com.katbrew.entities.jooq.db.Public;
 import com.katbrew.entities.jooq.db.tables.Balance.BalancePath;
-import com.katbrew.entities.jooq.db.tables.NftBalance.NftBalancePath;
+import com.katbrew.entities.jooq.db.tables.NftCollectionEntry.NftCollectionEntryPath;
 import com.katbrew.entities.jooq.db.tables.NftTransaction.NftTransactionPath;
 import com.katbrew.entities.jooq.db.tables.Transaction.TransactionPath;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
@@ -167,17 +167,17 @@ public class Holder extends TableImpl<HolderRecord> {
         return _balance;
     }
 
-    private transient NftBalancePath _nftBalance;
+    private transient NftCollectionEntryPath _nftCollectionEntry;
 
     /**
-     * Get the implicit to-many join path to the <code>public.nft_balance</code>
-     * table
+     * Get the implicit to-many join path to the
+     * <code>public.nft_collection_entry</code> table
      */
-    public NftBalancePath nftBalance() {
-        if (_nftBalance == null)
-            _nftBalance = new NftBalancePath(this, null, Keys.NFT_BALANCE__FK_NFT_BALANCE_HOLDER.getInverseKey());
+    public NftCollectionEntryPath nftCollectionEntry() {
+        if (_nftCollectionEntry == null)
+            _nftCollectionEntry = new NftCollectionEntryPath(this, null, Keys.NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_HOLDER.getInverseKey());
 
-        return _nftBalance;
+        return _nftCollectionEntry;
     }
 
     private transient NftTransactionPath _fkNftTransactionHolderDeployer;

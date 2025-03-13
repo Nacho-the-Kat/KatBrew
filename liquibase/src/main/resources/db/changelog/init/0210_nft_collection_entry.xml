@@ -23,10 +23,17 @@
             <column type="text" name="name"/>
             <column type="text" name="description"/>
             <column type="text" name="attributes"/>
+            <column type="bigint" name="fk_holder">
+                <constraints nullable="true"/>
+            </column>
 
         </createTable>
         <addForeignKeyConstraint baseTableName="nft_collection_entry" baseColumnNames="fk_collection"
                                  constraintName="FK_COLLECTION_ENTRY_COLLECTION" referencedTableName="nft_collection"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="nft_collection_entry" baseColumnNames="fk_collection"
+                                 constraintName="FK_COLLECTION_ENTRY_HOLDER" referencedTableName="Holder"
                                  referencedColumnNames="id"/>
 
         <createIndex tableName="nft_collection_entry" indexName="nft_collection_entry_fk_collection_index">

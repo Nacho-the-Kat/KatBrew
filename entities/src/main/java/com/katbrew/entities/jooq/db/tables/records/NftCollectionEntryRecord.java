@@ -133,6 +133,22 @@ public class NftCollectionEntryRecord extends UpdatableRecordImpl<NftCollectionE
         return (String) get(6);
     }
 
+    /**
+     * Setter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    @Override
+    public void setFkHolder(BigInteger value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    @Override
+    public BigInteger getFkHolder() {
+        return (BigInteger) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -155,6 +171,7 @@ public class NftCollectionEntryRecord extends UpdatableRecordImpl<NftCollectionE
         setName(from.getName());
         setDescription(from.getDescription());
         setAttributes(from.getAttributes());
+        setFkHolder(from.getFkHolder());
         resetChangedOnNotNull();
     }
 
@@ -178,7 +195,7 @@ public class NftCollectionEntryRecord extends UpdatableRecordImpl<NftCollectionE
     /**
      * Create a detached, initialised NftCollectionEntryRecord
      */
-    public NftCollectionEntryRecord(BigInteger id, BigInteger fkCollection, Integer edition, String image, String name, String description, String attributes) {
+    public NftCollectionEntryRecord(BigInteger id, BigInteger fkCollection, Integer edition, String image, String name, String description, String attributes, BigInteger fkHolder) {
         super(NftCollectionEntry.NFT_COLLECTION_ENTRY);
 
         setId(id);
@@ -188,6 +205,7 @@ public class NftCollectionEntryRecord extends UpdatableRecordImpl<NftCollectionE
         setName(name);
         setDescription(description);
         setAttributes(attributes);
+        setFkHolder(fkHolder);
         resetChangedOnNotNull();
     }
 
@@ -205,6 +223,7 @@ public class NftCollectionEntryRecord extends UpdatableRecordImpl<NftCollectionE
             setName(value.getName());
             setDescription(value.getDescription());
             setAttributes(value.getAttributes());
+            setFkHolder(value.getFkHolder());
             resetChangedOnNotNull();
         }
     }

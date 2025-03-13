@@ -86,6 +86,16 @@ public interface INftCollectionEntry extends Serializable {
      */
     public String getAttributes();
 
+    /**
+     * Setter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    public void setFkHolder(BigInteger value);
+
+    /**
+     * Getter for <code>public.nft_collection_entry.fk_holder</code>.
+     */
+    public BigInteger getFkHolder();
+
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

@@ -166,6 +166,16 @@ public interface INftCollection extends Serializable {
      */
     public Boolean getCompleted();
 
+    /**
+     * Setter for <code>public.nft_collection.logo</code>.
+     */
+    public void setLogo(String value);
+
+    /**
+     * Getter for <code>public.nft_collection.logo</code>.
+     */
+    public String getLogo();
+
     // -------------------------------------------------------------------------
     // FROM and INTO
     // -------------------------------------------------------------------------

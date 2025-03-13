@@ -11,7 +11,6 @@ import com.katbrew.entities.jooq.db.tables.CodeWordings;
 import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
-import com.katbrew.entities.jooq.db.tables.NftBalance;
 import com.katbrew.entities.jooq.db.tables.NftCollection;
 import com.katbrew.entities.jooq.db.tables.NftCollectionEntry;
 import com.katbrew.entities.jooq.db.tables.NftCollectionInfo;
@@ -29,7 +28,6 @@ import com.katbrew.entities.jooq.db.tables.records.CodeWordingsRecord;
 import com.katbrew.entities.jooq.db.tables.records.FetchDataRecord;
 import com.katbrew.entities.jooq.db.tables.records.HolderRecord;
 import com.katbrew.entities.jooq.db.tables.records.LastUpdateRecord;
-import com.katbrew.entities.jooq.db.tables.records.NftBalanceRecord;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionEntryRecord;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionInfoRecord;
 import com.katbrew.entities.jooq.db.tables.records.NftCollectionRecord;
@@ -70,7 +68,6 @@ public class Keys {
     public static final UniqueKey<HolderRecord> PK_HOLDER = Internal.createUniqueKey(Holder.HOLDER, DSL.name("pk_holder"), new TableField[] { Holder.HOLDER.ID }, true);
     public static final UniqueKey<LastUpdateRecord> LAST_UPDATE_IDENTIFIER_KEY = Internal.createUniqueKey(LastUpdate.LAST_UPDATE, DSL.name("Last_Update_identifier_key"), new TableField[] { LastUpdate.LAST_UPDATE.IDENTIFIER }, true);
     public static final UniqueKey<LastUpdateRecord> PK_LAST_UPDATE = Internal.createUniqueKey(LastUpdate.LAST_UPDATE, DSL.name("pk_last_update"), new TableField[] { LastUpdate.LAST_UPDATE.ID }, true);
-    public static final UniqueKey<NftBalanceRecord> PK_NFT_BALANCE = Internal.createUniqueKey(NftBalance.NFT_BALANCE, DSL.name("pk_nft_balance"), new TableField[] { NftBalance.NFT_BALANCE.ID }, true);
     public static final UniqueKey<NftCollectionRecord> NFT_COLLECTION_TICK_KEY = Internal.createUniqueKey(NftCollection.NFT_COLLECTION, DSL.name("nft_collection_tick_key"), new TableField[] { NftCollection.NFT_COLLECTION.TICK }, true);
     public static final UniqueKey<NftCollectionRecord> NFT_COLLECTION_TX_ID_REV_KEY = Internal.createUniqueKey(NftCollection.NFT_COLLECTION, DSL.name("nft_collection_tx_id_rev_key"), new TableField[] { NftCollection.NFT_COLLECTION.TX_ID_REV }, true);
     public static final UniqueKey<NftCollectionRecord> PK_NFT_COLLECTION = Internal.createUniqueKey(NftCollection.NFT_COLLECTION, DSL.name("pk_nft_collection"), new TableField[] { NftCollection.NFT_COLLECTION.ID }, true);
@@ -95,9 +92,8 @@ public class Keys {
 
     public static final ForeignKey<BalanceRecord, HolderRecord> BALANCE__FK_BALANCE_HOLDER = Internal.createForeignKey(Balance.BALANCE, DSL.name("fk_balance_holder"), new TableField[] { Balance.BALANCE.HOLDER_ID }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<BalanceRecord, TokenRecord> BALANCE__FK_BALANCE_TOKEN = Internal.createForeignKey(Balance.BALANCE, DSL.name("fk_balance_token"), new TableField[] { Balance.BALANCE.FK_TOKEN }, Keys.PK_TOKEN, new TableField[] { Token.TOKEN.ID }, true);
-    public static final ForeignKey<NftBalanceRecord, NftCollectionEntryRecord> NFT_BALANCE__FK_NFT_BALANCE_ENTRY = Internal.createForeignKey(NftBalance.NFT_BALANCE, DSL.name("fk_nft_balance_entry"), new TableField[] { NftBalance.NFT_BALANCE.FK_NFT_ENTRY }, Keys.PK_NFT_COLLECTION_ENTRY, new TableField[] { NftCollectionEntry.NFT_COLLECTION_ENTRY.ID }, true);
-    public static final ForeignKey<NftBalanceRecord, HolderRecord> NFT_BALANCE__FK_NFT_BALANCE_HOLDER = Internal.createForeignKey(NftBalance.NFT_BALANCE, DSL.name("fk_nft_balance_holder"), new TableField[] { NftBalance.NFT_BALANCE.HOLDER_ID }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<NftCollectionEntryRecord, NftCollectionRecord> NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_COLLECTION = Internal.createForeignKey(NftCollectionEntry.NFT_COLLECTION_ENTRY, DSL.name("fk_collection_entry_collection"), new TableField[] { NftCollectionEntry.NFT_COLLECTION_ENTRY.FK_COLLECTION }, Keys.PK_NFT_COLLECTION, new TableField[] { NftCollection.NFT_COLLECTION.ID }, true);
+    public static final ForeignKey<NftCollectionEntryRecord, HolderRecord> NFT_COLLECTION_ENTRY__FK_COLLECTION_ENTRY_HOLDER = Internal.createForeignKey(NftCollectionEntry.NFT_COLLECTION_ENTRY, DSL.name("fk_collection_entry_holder"), new TableField[] { NftCollectionEntry.NFT_COLLECTION_ENTRY.FK_COLLECTION }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<NftCollectionInfoRecord, NftCollectionRecord> NFT_COLLECTION_INFO__FK_COLLECTION_INFO_COLLECTION = Internal.createForeignKey(NftCollectionInfo.NFT_COLLECTION_INFO, DSL.name("fk_collection_info_collection"), new TableField[] { NftCollectionInfo.NFT_COLLECTION_INFO.FK_COLLECTION }, Keys.PK_NFT_COLLECTION, new TableField[] { NftCollection.NFT_COLLECTION.ID }, true);
     public static final ForeignKey<NftTransactionRecord, HolderRecord> NFT_TRANSACTION__FK_NFT_TRANSACTION_HOLDER_DEPLOYER = Internal.createForeignKey(NftTransaction.NFT_TRANSACTION, DSL.name("fk_nft_transaction_holder_deployer"), new TableField[] { NftTransaction.NFT_TRANSACTION.DEPLOYER }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);
     public static final ForeignKey<NftTransactionRecord, HolderRecord> NFT_TRANSACTION__FK_NFT_TRANSACTION_HOLDER_TO = Internal.createForeignKey(NftTransaction.NFT_TRANSACTION, DSL.name("fk_nft_transaction_holder_to"), new TableField[] { NftTransaction.NFT_TRANSACTION.TO_ADDRESS }, Keys.PK_HOLDER, new TableField[] { Holder.HOLDER.ID }, true);

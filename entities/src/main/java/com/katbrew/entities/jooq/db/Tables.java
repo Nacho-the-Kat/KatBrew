@@ -11,7 +11,6 @@ import com.katbrew.entities.jooq.db.tables.CodeWordings;
 import com.katbrew.entities.jooq.db.tables.FetchData;
 import com.katbrew.entities.jooq.db.tables.Holder;
 import com.katbrew.entities.jooq.db.tables.LastUpdate;
-import com.katbrew.entities.jooq.db.tables.NftBalance;
 import com.katbrew.entities.jooq.db.tables.NftCollection;
 import com.katbrew.entities.jooq.db.tables.NftCollectionEntry;
 import com.katbrew.entities.jooq.db.tables.NftCollectionInfo;
@@ -64,11 +63,6 @@ public class Tables {
      * The table <code>public.Last_Update</code>.
      */
     public static final LastUpdate LAST_UPDATE = LastUpdate.LAST_UPDATE;
-
-    /**
-     * The table <code>public.nft_balance</code>.
-     */
-    public static final NftBalance NFT_BALANCE = NftBalance.NFT_BALANCE;
 
     /**
      * The table <code>public.nft_collection</code>.
